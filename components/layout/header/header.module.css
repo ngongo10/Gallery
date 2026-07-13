@@ -1,159 +1,71 @@
 .header {
   position: fixed;
-  top: var(--safe);
-  left: var(--safe);
-  z-index: 20;
-  font-family: var(--next-font-mono);
-  font-size: calc((10 * 100) / var(--device-width) * 1vw);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 40px;
+  z-index: 9999;
+  pointer-events: none;
+  transition: color 0.4s ease;
+}
 
-  @media (--desktop) {
-    font-size: calc((11 * 100) / var(--device-width) * 1vw);
+@media (max-width: 800px) {
+  .header {
+    padding: 20px;
   }
 }
 
-.brand {
-  font-size: calc((12 * 100) / var(--device-width) * 1vw);
-  margin-bottom: calc((6 * 100) / var(--device-width) * 1vw);
-  display: flex;
-  align-items: baseline;
-  gap: 0.15em;
-
-  @media (--desktop) {
-    font-size: calc((13 * 100) / var(--device-width) * 1vw);
-  }
+.isLight {
+  color: #000000;
 }
 
-.brandPath {
-  opacity: 0.45;
-  max-width: 12ch;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.isDark {
+  color: #ffffff;
 }
 
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.navItem {
-  display: flex;
-  align-items: center;
-  gap: 0.3em;
-}
-
-.chevron {
-  width: 0.75em;
-  flex-shrink: 0;
-  color: var(--color-contrast);
-  opacity: 0;
-  transition: opacity var(--duration-fast) var(--ease-out-expo);
-}
-
-.chevronActive {
-  opacity: 1;
-}
-
-.navLink {
-  transition:
-    color var(--duration-fast) var(--ease-out-expo),
-    opacity var(--duration-fast) var(--ease-out-expo);
-
-  @media (--hover) {
-    &:hover {
-      color: var(--color-contrast);
-      text-decoration: none;
-      opacity: 1;
-    }
-  }
-}
-
-.navLinkActive {
-  opacity: 1;
-}
-
-.navLinkDim {
-  opacity: 0.5;
-}
-
-/* Examples sub-group */
-.examplesGroup {
-  display: flex;
-  flex-direction: column;
-}
-
-.examplesLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.3em;
-}
-
-.examplesList {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  padding-left: calc((12 * 100) / var(--device-width) * 1vw);
-  margin-top: 1px;
-  overflow: hidden;
-  transition:
-    opacity var(--duration-fast) var(--ease-out-expo),
-    transform var(--duration-fast) var(--ease-out-expo);
-}
-
-/* Mobile menu toggle button — only shown on mobile */
-.menuToggle {
-  display: none;
-  align-items: center;
-  gap: 0.4em;
-  background: none;
+.logo {
   border: none;
-  color: inherit;
-  font: inherit;
-  text-transform: inherit;
-  letter-spacing: inherit;
-  cursor: pointer;
+  background: transparent;
   padding: 0;
-  min-height: 44px;
-  min-width: 44px;
-
-  @media (--mobile) {
-    display: flex;
-  }
+  margin: 0;
+  font-family: var(--next-font-mono);
+  font-size: 22px; /* Increased from 13px */
+  font-weight: 700;
+  letter-spacing: 0.12em; /* Default tighter */
+  text-transform: uppercase;
+  color: inherit;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: letter-spacing 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
 }
 
-/* Left-aligned vertical nav; hidden behind the toggle on mobile */
-.navList {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1px;
-
-  @media (--mobile) {
-    display: none;
-    margin-top: calc((4 * 100) / var(--device-width) * 1vw);
-  }
+.logo:hover {
+  letter-spacing: 0.25em; /* Expands on hover */
+  opacity: 1;
 }
 
-.navListOpen {
-  @media (--mobile) {
-    display: flex;
-  }
+.menuToggle {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-family: var(--next-font-mono);
+  font-size: 22px; /* Increased from 13px */
+  font-weight: 700;
+  letter-spacing: 0.12em; /* Default tighter */
+  text-transform: uppercase;
+  color: inherit;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: letter-spacing 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
 }
 
-/* Mobile touch targets — bump up link height */
-@media (--mobile) {
-  .navItem {
-    min-height: 44px;
-  }
-
-  .examplesLabel {
-    min-height: 44px;
-  }
-
-  .examplesGroup .navItem {
-    min-height: 44px;
-  }
+.menuToggle:hover {
+  letter-spacing: 0.25em; /* Expands on hover */
+  opacity: 1;
 }

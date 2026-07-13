@@ -1,0 +1,182 @@
+﻿    {
+      id: "monuments",
+      title: "MONUMENTS",
+      year: "2024",
+      essay: "Monuments is a visual study of post-industrial remnants fading into the landscape. Through analog medium format photography, the series captures the quiet, statuesque presence of concrete monolithic structures. These monuments stand as artifacts of an era of collective ambition, now slowly reclaimed by wind and dust. The images emphasize the weight of time, texture, and silence.",
+      images: [
+        {
+          src: "/images/1.png",
+          placeholder: "#202020",
+          aspectRatio: 1.77,
+          hasEmbeddedSidebar: true
+        },
+        {
+          src: "/images/2.png",
+          placeholder: "#202020",
+          aspectRatio: 1.77,
+          hasEmbeddedSidebar: true
+        },
+        {
+          src: "/images/20210223-DSC0935.jpg",
+          placeholder: "#2b568c",
+          aspectRatio: 1.2,
+          shotNumber: "SHOT 3",
+          shotType: "MEDIUM SHOT (PORTRAIT)",
+          description: "Sinh sitting on blue stadium seats.",
+          hasEmbeddedSidebar: false
+        },
+        {
+          src: "/images/20210223-DSC09353.jpg",
+          placeholder: "#2b568c",
+          aspectRatio: 1.2,
+          shotNumber: "SHOT 4",
+          shotType: "WIDE SHOT (LOW ANGLE)",
+          description: "Sinh reclining on blue stadium seats next to a red bag.",
+          hasEmbeddedSidebar: false
+        }
+      ]
+    },
+    {
+      id: "chrysalises",
+      title: "CHRYSALISES",
+      year: "2025",
+      essay: "Chrysalises explores the fragile boundary between protection and transformation. Focused on organic textures, shells, and delicate natural membranes, these close-up photographs highlight the sculptural beauty of temporary biological structures. They serve as metaphors for psychological growth, isolation, and the inevitable vulnerability that precedes new forms of existence.",
+      images: [
+        {
+          src: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=1200",
+          placeholder: "#5c6660",
+          aspectRatio: 0.75
+        },
+        {
+          src: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=1200",
+          placeholder: "#49534c",
+          aspectRatio: 1.5
+        },
+        {
+          src: "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1200",
+          placeholder: "#6d7870",
+          aspectRatio: 0.75
+        },
+        {
+          src: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=1200",
+          placeholder: "#3d4741",
+          aspectRatio: 1.2
+        },
+        {
+          src: "https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?q=80&w=1200",
+          placeholder: "#535d57",
+          aspectRatio: 0.75
+        }
+      ]
+    },
+    {
+      id: "uncanny-spaces",
+      title: "UNCANNY SPACES",
+      year: "2023",
+      essay: "Uncanny Spaces interrogates the modern urban condition by documenting empty nocturnal environments. Illuminated by harsh, artificial streetlights, these normally bustling spaces become alien, theatrical, and suspenseful. The absent human presence is felt intensely, leaving behind only the concrete monuments of daily routine transformed into eerie, cinematic sets.",
+      images: [
+        {
+          src: "https://images.unsplash.com/photo-1513829096999-4978602297a7?q=80&w=1200",
+          placeholder: "#1a1f1c",
+          aspectRatio: 0.75
+        },
+        {
+          src: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?q=80&w=1200",
+          placeholder: "#2d3530",
+          aspectRatio: 1.4
+        },
+        {
+          src: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=1200",
+          placeholder: "#141715",
+          aspectRatio: 0.75
+        },
+        {
+          src: "https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=1200",
+          placeholder: "#232926",
+          aspectRatio: 1.1
+        },
+        {
+          src: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200",
+          placeholder: "#0f1210",
+          aspectRatio: 0.75
+        }
+      ]
+    },
+    {
+      id: "street-minimalism",
+      title: "STREET MINIMALISM",
+      year: "2025",
+      essay: "Street Minimalism explores the quiet pockets of empty space within major metropolitan areas. By reducing the visual frame to raw textures, sharp shadows, and solitary human figures, the series attempts to isolate moments of singular awareness. The images invite viewers to pause and discover the artistic patterns that form organically around our concrete environments.",
+      images: [
+        {
+          src: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200",
+          placeholder: "#2d2a23",
+          aspectRatio: 1.5
+        },
+        {
+          src: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200",
+          placeholder: "#1f2226",
+          aspectRatio: 1.5
+        },
+        {
+          src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1200",
+          placeholder: "#333d29",
+          aspectRatio: 1.3
+        },
+        {
+          src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200",
+          placeholder: "#203a43",
+          aspectRatio: 1.5
+        },
+        {
+          src: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=1200",
+          placeholder: "#47433c",
+          aspectRatio: 0.75
+        },
+        {
+          src: "https://images.unsplash.com/photo-1472214222541-d510753a4907?q=80&w=1200",
+          placeholder: "#2f3e46",
+          aspectRatio: 1.4
+        }
+      ]
+    },
+
+    {
+      id: "muse-concept",
+      title: "NÃ€NG THÆ ",
+      year: "2026",
+      essay: "MUSE CONCEPT (NÃ ng ThÆ¡) captures the delicate and romantic essence of contemporary portraiture. Drawing inspiration from classical muses and modern fashion, the series utilizes soft studio lighting, vintage tones, and natural elements to create dreamy, ethereal compositions. Each portrait reflects a quiet, contemplative mood that transcends time.",
+      images: [
+        {
+          src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1200",
+          placeholder: "#1d1a1b",
+          aspectRatio: 0.75
+        },
+        {
+          src: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1200",
+          placeholder: "#c8b0a2",
+          aspectRatio: 1.5
+        },
+        {
+          src: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1200",
+          placeholder: "#2d2a29",
+          aspectRatio: 1.5
+        },
+        {
+          src: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=1200",
+          placeholder: "#b99c8f",
+          aspectRatio: 0.75
+        },
+        {
+          src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200",
+          placeholder: "#7f6f69",
+          aspectRatio: 1.5
+        },
+        {
+          src: "https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?q=80&w=1200",
+          placeholder: "#302621",
+          aspectRatio: 1.4
+        }
+      ]
+    }
+  ],

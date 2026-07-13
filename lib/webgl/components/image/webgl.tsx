@@ -1,8 +1,9 @@
 import { useTexture } from '@react-three/drei'
 import type { Rect } from 'hamo'
 import { useEffect, useRef, useState } from 'react'
-import { LinearFilter, type Mesh, MeshBasicMaterial } from 'three'
+import { LinearFilter, type Mesh, ShaderMaterial, Vector2 } from 'three'
 import { useWebGLRect } from '@/webgl/hooks/use-webgl-rect'
+import gsap from 'gsap'
 
 type WebGLImageProps = {
   src: string | undefined
@@ -18,9 +19,30 @@ type WebGLImageMeshProps = {
   visible?: boolean
 }
 
-/**
- * Check if rect has valid measurements (not initial empty state)
- */
+const vertexShader = `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`
+
+const fragmentShader = `
+  uniform sampler2D tMap;
+  uniform vec2 uOffset;
+  uniform float uAlpha;
+  varying vec2 vUv;
+
+  void main() {
+    // Chromatic aberration (RGB split) sampling
+    float r = texture2D(tMap, vUv + uOffset).r;
+    float g = texture2D(tMap, vUv).g;
+    float b = texture2D(tMap, vUv - uOffset).b;
+    
+    gl_FragColor = vec4(r, g, b, uAlpha);
+  }
+`
+
 function isRectValid(rect: Rect): boolean {
   return (
     rect.width !== undefined &&
@@ -30,15 +52,6 @@ function isRectValid(rect: Rect): boolean {
   )
 }
 
-/**
- * WebGL image mesh with visibility-aware optimizations.
- *
- * Hooks can't be conditional, so the `useTexture` call (and the real decode
- * it triggers) only happens once a real `src` exists — see
- * {@link WebGLImageMesh}. Without this split, `useTexture(src ?? '', ...)`
- * would resolve `''` to the document's own URL and three's `ImageLoader`
- * would attempt to decode the page's HTML as an image.
- */
 export function WebGLImage({ src, rect, visible = true }: WebGLImageProps) {
   if (!src) return null
 
@@ -47,7 +60,18 @@ export function WebGLImage({ src, rect, visible = true }: WebGLImageProps) {
 
 function WebGLImageMesh({ src, rect, visible = true }: WebGLImageMeshProps) {
   const meshRef = useRef<Mesh>(null!)
-  const [material] = useState(() => new MeshBasicMaterial())
+  
+  // Custom RGB split shader material
+  const [material] = useState(() => new ShaderMaterial({
+    vertexShader,
+    fragmentShader,
+    uniforms: {
+      tMap: { value: null },
+      uOffset: { value: new Vector2(0, 0) },
+      uAlpha: { value: 1.0 }
+    },
+    transparent: true
+  }))
 
   // Mount effect owns the material it creates — dispose it on unmount.
   useEffect(() => {
@@ -56,18 +80,27 @@ function WebGLImageMesh({ src, rect, visible = true }: WebGLImageMeshProps) {
     }
   }, [material])
 
-  // The texture comes from drei's `useTexture` cache, keyed by `src` — it's
-  // shared across every consumer of the same URL, so it is NOT owned here
-  // and must never be disposed by this component (that would corrupt other
-  // consumers still reading it). The cache retains one texture per distinct
-  // src it has ever been asked to load; this effect only clears the
-  // material's reference to it, on src change and on unmount, so the
-  // material never points at a stale/replaced texture.
-  // biome-ignore lint/correctness/useExhaustiveDependencies(src): `src` is deliberately a dependency — the cleanup must re-run on src change so the material never keeps a stale texture reference.
+  // Trigger RGB Split glitch transition when image source changes
+  useEffect(() => {
+    if (!material) return
+
+    // Offset uniforms to trigger chromatic aberration
+    material.uniforms.uOffset!.value.set(0.015, 0.01)
+
+    // Smoothly animate the offset back to 0 (normal)
+    gsap.to(material.uniforms.uOffset!.value, {
+      x: 0,
+      y: 0,
+      duration: 0.6,
+      ease: 'power2.out'
+    })
+  }, [src, material])
+
+  // Reset material map on source change or unmount
+  // biome-ignore lint/correctness/useExhaustiveDependencies(src): src dependency is intended to reset map references
   useEffect(() => {
     return () => {
-      material.map = null
-      material.needsUpdate = true
+      material.uniforms.tMap!.value = null
     }
   }, [material, src])
 
@@ -75,7 +108,7 @@ function WebGLImageMesh({ src, rect, visible = true }: WebGLImageMeshProps) {
     texture.magFilter = texture.minFilter = LinearFilter
     texture.generateMipmaps = false
 
-    material.map = texture
+    material.uniforms.tMap!.value = texture
     material.needsUpdate = true
   })
 

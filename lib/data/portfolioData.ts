@@ -1,0 +1,674 @@
+export interface Photo {
+  src: string;
+  placeholder: string; // HEX color representative of average image color
+  aspectRatio: number; // width / height
+  shotNumber?: string;
+  shotType?: string;
+  description?: string;
+  hasEmbeddedSidebar?: boolean;
+}
+
+export interface Series {
+  id: string;
+  title: string;
+  year: string;
+  essay: string;
+  images: Photo[];
+}
+
+export interface PrintProduct {
+  id: string;
+  title: string;
+  year: string;
+  type: string;
+  paper: string;
+  price: number;
+  image: string;
+  placeholder: string;
+  sizes: string[];
+  inStock: boolean;
+}
+
+export interface PortfolioData {
+  series: Series[];
+  shop: PrintProduct[];
+  about: {
+    bioParagraphs: string[];
+    email: string;
+    instagram: string;
+    cvUrl: string;
+    sideProjects: { title: string; url: string }[];
+  };
+}
+
+export const portfolioData: PortfolioData = {
+  series: [
+    {
+      id: "osean",
+      title: "OCEAN",
+      year: "2026",
+      essay: "A deep dive into the calm and turbulent moods of the sea. These images explore the vastness of the ocean, highlighting the interplay of light and water.",
+      images: [
+        {
+                "src": "/images/osean/1108237420831272260.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/osean/1108237420831272345.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/osean/1108237420831272412.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/osean/1108237420831272424.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/osean/1108237420831272428.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/osean/1108237420831272432_Aquarium pose idea.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/osean/1108237420831272440.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/osean/1108237420831272456.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/osean/1108237420831272460.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/osean/1108237420831272478_🩵.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/osean/1108237420831272479.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/osean/1108237420831272484.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/osean/1108237420831272491.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/osean/1108237420831565540.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        }
+]
+    },
+    {
+      id: "portrait",
+      title: "PORTRAIT",
+      year: "2026",
+      essay: "Intimate and expressive portraiture capturing human emotion and character. This series emphasizes subtle lighting and raw authenticity.",
+      images: [
+        {
+                "src": "/images/portrait/0505276dcaa53a08facc7774d01224f7.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/0521e357d66b2383561c0675d5e39831.png",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/0742c8a7a057634bf6e15c3f920ece9b.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/0fb42351c4ddf68288e31b205d3661ef.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/0ff1699a8f2d4b4298150e87f8abbe6f.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/1560ffb7fb7c892fe2e556bb14dcfcc9.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/17b910e23b73b5e9608dbbb08585ed46.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/1e6a901307699ad320f51c23476caa8f.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/1f3ca4b3733096e73496f6ba6df06665.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/223ddb17a4716a361675880cb406286a.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/2a5e64e87aa8f5acba8e9f6733b3f9df.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/2eebdd95fad3c95e2378ddfb332c1796.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/2fdd71418999c348a9ba5f698315ddc8.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/354c3c84ead2f818f5222faa847fd2e7.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/39a3f185f0ff7aac3394205293ee9155.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/3f36e517cfa1d319e95f479d6a89b278.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/41ef8a2a64b251f4bd5655b8a64376b5.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/44a316057b3da071a0962231c3f1cf00.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/4518e79209edb580ad7676ed82ae172c.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/4b4f61477f147001132575ca58b15fe1.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/4e1cc37a477587a67d7a68d2cab74287.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/5629cfa3503164ef7b2231f05c3d42aa.png",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/571a172ee377a1abbfe23819edb2f770.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/5dd3f5417fd5ace9d56a64804e663c5a.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/60d428a7dc86c34b87c515683a92d593.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/622f518fb930d3f07d13236b3e4be7de.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/78578be83ec5b4a75c6a0d473a72ff35.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/7863fe0ef22283400dba3ef637ed3fc1.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/7ebcf5e6aa1fd132658fa1bf8e55e39e.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/9e51f4bc45ac15d0e4a64663089349c4.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/9f9f2bf61cf0cf65b87fc03654add163.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/a0a85ad28ac6542f780ba84d8e7fb797.png",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/a2554a6ee470358c1acbcbf1f17f2154.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/a98557f9a4619dd044cc941765e4ae0d.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/c07b3e465dc8a2c2f27cbc3109ee02aa.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/c6135c893b744abfb0d307afd71ffe98.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/ce21f7fcaca5b02024b169626243c03d.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/cfcd2dc6fa191eeea5fb5917a5c75896.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/d156b49840ccac7858044fb6a8258309.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/d671df67526faf05919114264e0ebf7a.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/daad936cfa07edc836426085ae74943b.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/db6dea115e2693044b4f2a702fc368b9.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/de735cc6b580c663047a900080880059.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/e78d673b773022f6b38ef61090804cb9.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/eafd15dd1d76e5f825283e227ec8e4c5.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/f4f2cdc6030baf089b24a844ca702537.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/fa5a183b8aefa06299c64bb4efed34b8.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/portrait/fad39d00376672e4ed6d89c15b55e911.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/faeaddc83780bbde8df24d9b52fa7a49.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/portrait/fb9bbef0d9f948f2f884d1574350c9ed.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        }
+]
+    },
+    {
+      id: "white-moonlight",
+      title: "WHITE MOONLIGHT",
+      year: "2026",
+      essay: "Ethereal, high-key photography inspired by the concept of 'White Moonlight'. The visual narrative revolves around pure, nostalgic, and dreamy aesthetics.",
+      images: [
+        {
+                "src": "/images/white-moonlight/0a4eca0e235c474c7ba22f5e24714d85.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/1a796e0dd260fa3867658dfa19461d1d.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/1ad84b9ab4a1e2ab17c7aab37fcff0a5.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/white-moonlight/1b2e945ffa23f7894ab00477d215a186.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/1fe9747ba4bdd57114872a81f3e0148f.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/3ca47f896b0f0bf998ee7e31cce0c75e.webp",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/3eb002f7a2c129e37447f1056f87481d.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/510a21f0b8a190b95a94a17a5e151873.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/60cbd670063cf5c8756d1d4abd237efa.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/76dd82f2e6fa6a8c33c395911421b133.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/791b09a459ae31ae3d8278eb4d502044.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/852e934d99aa22fd07e507ea13a54b4b.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/white-moonlight/aee685e268f0d1b816edbf72d1916fe7.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/b49fbfea071ec0f77610868f6f14f83f.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/white-moonlight/bc62ee7ceaab64c37f210ea6f6ec5041.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/cf03bc669807edd6a0878bdf19a68698.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/white-moonlight/d21a73b3e8d638eb258997ad54913f03.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/white-moonlight/d6a90e2dc25c81cb85dbb090607ae41c.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/white-moonlight/d6e8bf1ae07e47f524fee23527303b94.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/db39ef4bf3bdbc56802825100be51a73.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/white-moonlight/e5f1a7274a4a92c40e5ee63007939936.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/white-moonlight/e7acb42b11bfe6be32a1c2d9d3027c04.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/e9511e877943b46579595efa4eee1c9d.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/white-moonlight/ea4d9108d4b6049cb005caf77182ed77.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 0.75
+        },
+        {
+                "src": "/images/white-moonlight/ea9d5559580b93384c2943de28dc0aee.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/ee78f827d13e75a6d511d4e55762deed.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        },
+        {
+                "src": "/images/white-moonlight/f71be5629ec46e487f8404d46ad3440c.jpg",
+                "placeholder": "#202020",
+                "aspectRatio": 1.5
+        }
+]
+    },
+    {
+      id: "mysterious-light",
+      title: "MYSTERIOUS LIGHT",
+      year: "2026",
+      essay: "A collection exploring the magic of dramatic, moody lighting. Each frame captures the interplay of shadow and light, revealing hidden depths and emotions within the subject.",
+      images: [
+        {
+          "src": "/images/mysterious-light/1108237420830224868.jpg",
+          "placeholder": "#1a1a2e",
+          "aspectRatio": 0.75
+        },
+        {
+          "src": "/images/mysterious-light/1108237420830224942.jpg",
+          "placeholder": "#2d2d2d",
+          "aspectRatio": 1.0
+        },
+        {
+          "src": "/images/mysterious-light/1108237420830224975_Mirror shoot.jpg",
+          "placeholder": "#1c1c1c",
+          "aspectRatio": 0.75
+        },
+        {
+          "src": "/images/mysterious-light/1108237420830224985.jpg",
+          "placeholder": "#0d0d0d",
+          "aspectRatio": 0.75
+        },
+        {
+          "src": "/images/mysterious-light/1108237420831273309.jpg",
+          "placeholder": "#3a2a1a",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/mysterious-light/1108237420833509391.jpg",
+          "placeholder": "#1a1a1a",
+          "aspectRatio": 1.25
+        },
+        {
+          "src": "/images/mysterious-light/1108237420833509872.jpg",
+          "placeholder": "#2a1a0a",
+          "aspectRatio": 0.75
+        },
+        {
+          "src": "/images/mysterious-light/1108237420833509936.jpg",
+          "placeholder": "#1e1e2e",
+          "aspectRatio": 1.5
+        }
+      ]
+    },
+    {
+      id: "men-studio",
+      title: "MEN STUDIO",
+      year: "2026",
+      essay: "Bold, confident studio portraits of men — raw masculinity meets refined artistry. High-contrast lighting and intentional composition bring out the character and depth of each subject.",
+      images: [
+        {
+          "src": "/images/men-studio/1108237420831272991.jpg",
+          "placeholder": "#1a1a1a",
+          "aspectRatio": 0.75
+        },
+        {
+          "src": "/images/men-studio/1108237420831273170.jpg",
+          "placeholder": "#0a0a0a",
+          "aspectRatio": 0.8
+        },
+        {
+          "src": "/images/men-studio/1108237420831273174.jpg",
+          "placeholder": "#2a2a2a",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/men-studio/1108237420831273267.jpg",
+          "placeholder": "#1e1e1e",
+          "aspectRatio": 1.33
+        },
+        {
+          "src": "/images/men-studio/1108237420831400716.jpg",
+          "placeholder": "#252525",
+          "aspectRatio": 0.75
+        },
+        {
+          "src": "/images/men-studio/1108237420832607239.jpg",
+          "placeholder": "#1a0a0a",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/men-studio/1108237420833506865.jpg",
+          "placeholder": "#2a1a1a",
+          "aspectRatio": 0.75
+        },
+        {
+          "src": "/images/men-studio/1108237420833509415.jpg",
+          "placeholder": "#0d0d0d",
+          "aspectRatio": 0.75
+        }
+      ]
+    }
+  ],
+  shop: [
+    {
+      id: "monument-i-print",
+      title: "Monument I",
+      year: "2024",
+      type: "Print",
+      paper: "Hahnemühle Photo Rag 308gsm (100% Cotton, Matte)",
+      price: 180,
+      image: "https://images.unsplash.com/photo-1605538032432-a9f0c8d9baac?q=80&w=800",
+      placeholder: "#cbb9a8",
+      sizes: ["8.5 x 11", "11 x 14", "17 x 22"],
+      inStock: true
+    },
+    {
+      id: "chrysalises-ii-print",
+      title: "Chrysalis II",
+      year: "2025",
+      type: "Print",
+      paper: "Canson Infinity Baryta Prestige II 340gsm (Satin)",
+      price: 220,
+      image: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=800",
+      placeholder: "#5c6660",
+      sizes: ["8.5 x 11", "11 x 14", "17 x 22"],
+      inStock: false
+    },
+    {
+      id: "uncanny-v-print",
+      title: "Uncanny V (Night)",
+      year: "2023",
+      type: "Print",
+      paper: "Hahnemühle Photo Rag 308gsm (100% Cotton, Matte)",
+      price: 195,
+      image: "https://images.unsplash.com/photo-1513829096999-4978602297a7?q=80&w=800",
+      placeholder: "#1a1f1c",
+      sizes: ["8.5 x 11", "11 x 14", "17 x 22"],
+      inStock: true
+    }
+  ],
+  about: {
+    bioParagraphs: [
+      "Guillaume Tomasi is a French-Canadian visual artist and photographer whose practice examines the intersection of memory, decay, and the built environment. Utilizing medium and large format film photography, Tomasi uncovers the latent, melancholic beauty residing within forgotten spaces and everyday monoliths.",
+      "His work is characterized by a meticulous attention to light, geometric composition, and painterly color palettes reminiscent of analog processes. Tomasi has exhibited widely in both solo and group contexts across Montreal, Paris, and Berlin. He currently divides his time between fine art commissions, publishing books, and producing limited edition prints."
+    ],
+    email: "contact@guillaumetomasi.com",
+    instagram: "@guillaumetomasi",
+    cvUrl: "#",
+    sideProjects: [
+      { title: "Fiiiirst Magazine", url: "https://fiiiirst.com" },
+      { title: "NBA Guessing game", url: "#" },
+      { title: "Developer Portfolio template", url: "#" }
+    ]
+  }
+};

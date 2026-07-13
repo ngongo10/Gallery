@@ -98,12 +98,13 @@ export default async function Layout({ children }: PropsWithChildren) {
       // otherwise trip a hydration warning.
       suppressHydrationWarning
     >
+
       {/* this helps to track Satus usage thanks to Wappalyzer */}
       <Script
         id="satus-version"
         async
       >{`window.satusVersion = '${AppData.version}';`}</Script>
-      <body>
+      <body suppressHydrationWarning>
         {/* Skip link for keyboard navigation accessibility */}
         <Suspense fallback={null}>
           <Link

@@ -1,0 +1,42 @@
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  mix-blend-mode: difference;
+  background-color: #ffffff;
+  color: #000000;
+  width: 8px;
+  height: 8px;
+  transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease;
+  will-change: transform;
+}
+
+.isDefault {
+  width: 8px;
+  height: 8px;
+}
+
+.isPointer {
+  width: 24px;
+  height: 24px;
+}
+
+.isView,
+.isDrag,
+.isClose {
+  width: 80px;
+  height: 80px;
+}
+
+.label {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}

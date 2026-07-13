@@ -2,6 +2,7 @@ import * as config from '../config'
 import { generateRoot } from './generate-root'
 import { generateScale } from './generate-scale'
 import { generateTailwind } from './generate-tailwind'
+import fs from 'fs'
 
 const tailwind = generateTailwind(config)
 const root = generateRoot(config)
@@ -12,15 +13,16 @@ const banner = `/*
  * DO NOT EDIT IT DIRECTLY.
  */`
 
-const tailwindcss = [banner, tailwind, scale]
-const rootcss = [banner, root]
+const tailwindcss = [banner, tailwind, scale].join('\n\n')
+const rootcss = [banner, root].join('\n\n')
 
-await Bun.write('./lib/styles/css/tailwind.css', tailwindcss.join('\n\n'))
-await Bun.write('./lib/styles/css/root.css', rootcss.join('\n\n'))
+if (typeof Bun !== 'undefined') {
+  await Bun.write('./lib/styles/css/tailwind.css', tailwindcss)
+  await Bun.write('./lib/styles/css/root.css', rootcss)
+} else {
+  fs.writeFileSync('./lib/styles/css/tailwind.css', tailwindcss)
+  fs.writeFileSync('./lib/styles/css/root.css', rootcss)
+}
 
-console.log(
-  Bun.color('green', 'ansi'),
-  '✓',
-  Bun.color('black', 'ansi'),
-  'Style config generated successfully'
-)
+console.log('✓ Style config generated successfully')
+
