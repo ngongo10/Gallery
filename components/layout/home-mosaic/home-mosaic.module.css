@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100dvh;
-  z-index: 1;
+  z-index: 0;
   background-color: #ffffff;
 }
 
@@ -20,7 +20,7 @@
   -webkit-mask-image: url(#cursor-mask);
   pointer-events: none;
   background: transparent;
-  z-index: 2;
+  z-index: 1;
 }
 
 .cameraContainer {
@@ -46,6 +46,9 @@
   will-change: transform;
   cursor: pointer;
   z-index: 1;
+  opacity: 0;        /* Start hidden — JS RAF sets opacity once positions are calculated */
+  visibility: hidden;
+  pointer-events: none; /* Start non-clickable — JS enables once positioned */
 }
 
 @keyframes gridEntrance {

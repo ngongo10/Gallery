@@ -317,7 +317,6 @@ export function HomeMosaic() {
         if (maskedImagesRef.current[i]) {
           maskedImagesRef.current[i]!.style.transform = imgTransform
           maskedImagesRef.current[i]!.style.opacity = isVisible ? String(depthOpacity) : '0'
-          maskedImagesRef.current[i]!.style.pointerEvents = isVisible ? 'auto' : 'none'
           maskedImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
         }
       })
