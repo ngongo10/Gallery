@@ -1,13 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { usePortfolioStore } from '@/lib/store/portfolioStore'
 import s from './loader.module.css'
-import gsap from 'gsap'
 
 export function Loader() {
   const setRoute = usePortfolioStore((state) => state.setRoute)
-  const [progress, setProgress] = useState(0)
+
 
   useEffect(() => {
     let currentProgress = 0;
