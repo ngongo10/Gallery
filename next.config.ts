@@ -94,7 +94,7 @@ const nextConfig: NextConfig = {
     taint: true,
     cachedNavigations: true,
     prefetchInlining: true,
-    sri: { algorithm: 'sha384' },
+    // sri: { algorithm: 'sha384' }, // Disabled: causes hash mismatch on Vercel CDN → JS blocked
     optimizePackageImports: [
       '@react-three/drei',
       '@react-three/fiber',
