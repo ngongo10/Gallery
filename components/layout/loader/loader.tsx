@@ -10,33 +10,33 @@ export function Loader() {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    // Animate progress 0 -> 100
-    const obj = { value: 0 }
-    const tl = gsap.timeline({
-      onComplete: () => {
-        // Fade out loader page
-        gsap.to(`.${s.loader}`, {
-          opacity: 0,
-          duration: 0.6,
-          ease: 'power2.out',
-          onComplete: () => {
-            setRoute('home')
-          }
-        })
+    let currentProgress = 0
+    const interval = setInterval(() => {
+      currentProgress += Math.floor(Math.random() * 15) + 5
+      if (currentProgress >= 100) {
+        currentProgress = 100
+        clearInterval(interval)
+        
+        // Tránh bị đè hiệu ứng, dùng fade out chuẩn và chuyển route
+        const loaderEl = document.querySelector(`.${s.loader}`)
+        if (loaderEl) {
+          gsap.to(loaderEl, {
+            opacity: 0,
+            duration: 0.5,
+            ease: 'power2.out',
+            onComplete: () => {
+              setRoute('home')
+            }
+          })
+        } else {
+          setRoute('home')
+        }
       }
-    })
-
-    tl.to(obj, {
-      value: 100,
-      duration: 1.5,
-      ease: 'power1.inOut',
-      onUpdate: () => {
-        setProgress(Math.floor(obj.value))
-      }
-    })
+      setProgress(currentProgress)
+    }, 80)
 
     return () => {
-      tl.kill()
+      clearInterval(interval)
     }
   }, [setRoute])
 
