@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useEffect, useRef, useState, forwardRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { CSSProperties, MouseEventHandler } from 'react'
 import s from './home-mosaic.module.css'
 import cn from 'clsx'
 
@@ -28,17 +29,19 @@ function getDominantColor(img: HTMLImageElement): string {
 }
 
 interface ScatteredImageProps {
+  ref?: React.Ref<HTMLDivElement>
   src: string
   aspectRatio: number
   isMasked: boolean
-  onClick?: (() => void) | undefined
-  onMouseEnter?: (() => void) | undefined
-  onMouseLeave?: (() => void) | undefined
+  onClick?: MouseEventHandler<HTMLDivElement> | undefined
+  onMouseEnter?: MouseEventHandler<HTMLDivElement> | undefined
+  onMouseLeave?: MouseEventHandler<HTMLDivElement> | undefined
   className?: string | undefined
-  style?: React.CSSProperties | undefined
+  style?: CSSProperties | undefined
 }
 
-export const ScatteredImage = forwardRef<HTMLDivElement, ScatteredImageProps>(({ 
+export function ScatteredImage({ 
+  ref,
   src, 
   aspectRatio, 
   isMasked, 
@@ -47,7 +50,7 @@ export const ScatteredImage = forwardRef<HTMLDivElement, ScatteredImageProps>(({
   onMouseLeave,
   className,
   style
-}, ref) => {
+}: ScatteredImageProps) {
   const [dominantColor, setDominantColor] = useState<string>('transparent')
   const [loaded, setLoaded] = useState(false)
   const [realAspectRatio, setRealAspectRatio] = useState(aspectRatio)
@@ -100,6 +103,4 @@ export const ScatteredImage = forwardRef<HTMLDivElement, ScatteredImageProps>(({
       )}
     </div>
   )
-})
-
-ScatteredImage.displayName = 'ScatteredImage'
+}
