@@ -10,47 +10,49 @@ export function Loader() {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    let currentProgress = 0
+    let currentProgress = 0;
+    const bar = document.getElementById('loader-bar');
+    const text = document.getElementById('loader-text');
+    const container = document.getElementById('loader-container');
+
     const interval = setInterval(() => {
-      currentProgress += Math.floor(Math.random() * 15) + 5
+      currentProgress += Math.floor(Math.random() * 15) + 5;
       if (currentProgress >= 100) {
-        currentProgress = 100
-        clearInterval(interval)
+        currentProgress = 100;
+        clearInterval(interval);
         
-        // Tránh bị đè hiệu ứng, dùng fade out chuẩn và chuyển route
-        const loaderEl = document.querySelector(`.${s.loader}`)
-        if (loaderEl) {
-          gsap.to(loaderEl, {
-            opacity: 0,
-            duration: 0.5,
-            ease: 'power2.out',
-            onComplete: () => {
-              setRoute('home')
-            }
-          })
+        if (container) {
+          container.style.transition = 'opacity 0.5s ease';
+          container.style.opacity = '0';
+          setTimeout(() => {
+            setRoute('home');
+          }, 500);
         } else {
-          setRoute('home')
+          setRoute('home');
         }
       }
-      setProgress(currentProgress)
-    }, 80)
+      
+      if (bar) bar.style.width = `${currentProgress}%`;
+      if (text) text.innerText = `${currentProgress}%`;
+    }, 40);
 
     return () => {
-      clearInterval(interval)
-    }
-  }, [setRoute])
+      clearInterval(interval);
+    };
+  }, [setRoute]);
 
   return (
-    <div className={s.loader}>
+    <div id="loader-container" className={s.loader}>
       <div className={s.content}>
         <h1 className={s.title}>JUBI SATAKA</h1>
         <div className={s.progressBarWrapper}>
           <div 
+            id="loader-bar"
             className={s.progressBar} 
-            style={{ width: `${progress}%` }} 
+            style={{ width: '0%' }} 
           />
         </div>
-        <span className={s.progressText}>{progress}%</span>
+        <span id="loader-text" className={s.progressText}>0%</span>
       </div>
     </div>
   )
