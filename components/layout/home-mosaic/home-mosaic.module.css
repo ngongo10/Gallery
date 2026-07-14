@@ -1,0 +1,187 @@
+.pageWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 1;
+  background-color: #ffffff;
+}
+
+.mosaicPage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  perspective: 800px; /* 3D depth */
+}
+
+.maskedPage {
+  mask-image: url(#cursor-mask);
+  -webkit-mask-image: url(#cursor-mask);
+  pointer-events: none;
+  background: transparent;
+  z-index: 2;
+}
+
+.cameraContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d; /* Crucial for child Z translations */
+  will-change: transform;
+}
+
+.layerBase {
+  pointer-events: auto;
+}
+
+.imageWrapper {
+  position: absolute;
+  left: 50%; /* Center origin */
+  top: 50%;
+  transform-origin: center center;
+  /* GSAP Parallax and Hover Scale handled via JS */
+  will-change: transform;
+  cursor: pointer;
+  z-index: 1;
+}
+
+@keyframes gridEntrance {
+  from {
+    transform: scale(0.01);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* The Solid Color Placeholder */
+.imagePlaceholder {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  animation: gridEntrance 1.6s cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation-delay: var(--entrance-delay, 0s);
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.8s ease, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, opacity;
+  animation: gridEntrance 1.6s cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation-delay: var(--entrance-delay, 0s);
+}
+
+
+
+/* Glitch Cursor Frame — Chromatic Aberration Border Glow */
+.glitchCursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 450px;
+  height: 450px;
+  border-radius: 0;
+  pointer-events: none;
+  z-index: 100;
+  will-change: transform;
+  background: transparent;
+  mix-blend-mode: screen; /* Blends colors away on white backgrounds */
+}
+
+
+
+/* Floating UI */
+.floatingUI {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000; /* Ensure UI is always on top */
+}
+
+.titleContainer {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  transform: translateY(-50%);
+  pointer-events: auto;
+  cursor: pointer;
+  color: #000000;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+.title {
+  font-family: 'BorelLocal', 'Borel', cursive !important;
+  font-style: normal;
+  font-size: clamp(28px, 5.5vw, 76px); /* Adjusted size for script font */
+  font-weight: 400;
+  text-transform: none;
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0.7;          /* Starts slightly faded */
+  transition: opacity 0.3s ease, filter 0.5s ease;
+}
+
+.titleContainer:hover .title {
+  opacity: 1;            /* Becomes fully opaque, no other hover effects */
+}
+
+.bottomCenter {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #000000;
+  z-index: 1001;
+}
+
+.scrollText {
+  font-family: var(--next-font-mono);
+  font-size: 12px; /* Increased from 10px */
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  opacity: 0.65;
+}
+
+.bottomRight {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  color: #000000;
+  z-index: 1001;
+}
+
+.counter {
+  font-family: var(--next-font-mono);
+  font-size: 12px; /* Increased from 10px */
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  opacity: 0.65;
+}
+
+/* Mobile adjustments */
+@media (max-width: 800px) {
+  .glitchCursor {
+    width: 250px;
+    height: 250px;
+  }
+  .titleContainer {
+    right: auto;
+    left: 20px;
+    top: 90px;
+    transform: none;
+  }
+  .bottomCenter {
+    display: none;
+  }
+}

@@ -1,0 +1,100 @@
+/* ── Info Overlay ── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: #ffffff;
+  z-index: 9990;
+  display: flex;
+  flex-direction: column;
+  padding: 120px 80px 80px;
+  overflow-y: auto;
+}
+
+@media (max-width: 800px) {
+  .overlay {
+    padding: 100px 20px 80px;
+  }
+}
+
+/* ── Content ── */
+
+.content {
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.seriesNumber {
+  font-family: var(--next-font-display);
+  font-size: clamp(80px, 15vw, 200px);
+  font-weight: 700;
+  opacity: 0.06;
+  line-height: 1;
+  color: #000000;
+}
+
+.seriesTitle {
+  font-family: var(--next-font-display);
+  font-size: clamp(32px, 5vw, 72px);
+  font-weight: 700;
+  margin-top: -30px;
+  text-transform: uppercase;
+  color: #000000;
+}
+
+.year {
+  font-family: var(--next-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  opacity: 0.4;
+  margin-top: 16px;
+  color: #000000;
+}
+
+/* ── Essay Grid ── */
+
+.essayGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 60px;
+}
+
+@media (max-width: 800px) {
+  .essayGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.essayText {
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+/* ── Close Button ── */
+
+.closeButton {
+  position: fixed;
+  bottom: 40px;
+  left: 40px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-family: var(--next-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #000000;
+  cursor: pointer;
+}
+
+@media (max-width: 800px) {
+  .closeButton {
+    bottom: 20px;
+    left: 20px;
+  }
+}

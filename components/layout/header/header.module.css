@@ -1,0 +1,71 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 40px;
+  z-index: 9999;
+  pointer-events: none;
+  transition: color 0.4s ease;
+}
+
+@media (max-width: 800px) {
+  .header {
+    padding: 20px;
+  }
+}
+
+.isLight {
+  color: #000000;
+}
+
+.isDark {
+  color: #ffffff;
+}
+
+.logo {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-family: var(--next-font-mono);
+  font-size: 22px; /* Increased from 13px */
+  font-weight: 700;
+  letter-spacing: 0.12em; /* Default tighter */
+  text-transform: uppercase;
+  color: inherit;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: letter-spacing 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+}
+
+.logo:hover {
+  letter-spacing: 0.25em; /* Expands on hover */
+  opacity: 1;
+}
+
+.menuToggle {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-family: var(--next-font-mono);
+  font-size: 22px; /* Increased from 13px */
+  font-weight: 700;
+  letter-spacing: 0.12em; /* Default tighter */
+  text-transform: uppercase;
+  color: inherit;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: letter-spacing 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+}
+
+.menuToggle:hover {
+  letter-spacing: 0.25em; /* Expands on hover */
+  opacity: 1;
+}

@@ -1,0 +1,141 @@
+.newsPage {
+  position: relative;
+  min-height: 100dvh;
+  background-color: #ffffff;
+  padding: 120px 80px 80px 80px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+}
+
+@media (max-width: 800px) {
+  .newsPage {
+    padding: 100px 20px 80px 20px;
+  }
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 900px;
+  width: 100%;
+  margin-bottom: 60px;
+}
+
+@media (max-width: 600px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+}
+
+.pageTitle {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #000000;
+  margin: 0;
+}
+
+.yearNav {
+  display: flex;
+  gap: 24px;
+}
+
+.yearBtn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #888888;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.yearBtn:hover,
+.isActive {
+  color: #000000;
+}
+
+.timeline {
+  max-width: 900px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.timelineItem {
+  display: grid;
+  grid-template-columns: 0.3fr 0.7fr;
+  gap: 40px;
+  padding: 40px 0;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.timelineItem:first-child {
+  border-top: 1px solid #eaeaea;
+}
+
+@media (max-width: 800px) {
+  .timelineItem {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 30px 0;
+  }
+}
+
+.itemMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.date {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.category {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888888;
+}
+
+.itemContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: clamp(20px, 3.5vw, 28px);
+  font-weight: 300;
+  color: #000000;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.summary {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 14px;
+  line-height: 1.6;
+  color: #555555;
+  margin: 0;
+}
