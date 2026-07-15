@@ -29,7 +29,7 @@ interface PortfolioState {
 }
 
 export const usePortfolioStore = create<PortfolioState>((set) => ({
-  currentRoute: 'home',
+  currentRoute: 'loader',
   prevRoute: null,
   menuOpen: false,
   activeSeriesId: 'osean',
