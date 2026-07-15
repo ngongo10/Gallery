@@ -14,7 +14,6 @@ import { Wrapper } from '@/components/layout/wrapper'
 export default function Page() {
   const currentRoute = usePortfolioStore((state) => state.currentRoute)
   const infoOpen = usePortfolioStore((state) => state.infoOpen)
-  const menuOpen = usePortfolioStore((state) => state.menuOpen)
 
   // Disable Lenis on home (wheel-driven), enable on scrollable content views
   const enableLenis = currentRoute === 'detail' || currentRoute === 'shop' || currentRoute === 'product' || currentRoute === 'about'
@@ -30,7 +29,7 @@ export default function Page() {
       
       {/* Overlays render independently of route */}
       {infoOpen && <InfoOverlay />}
-      {menuOpen && <MenuOverlay />}
+      <MenuOverlay />
     </Wrapper>
   )
 }

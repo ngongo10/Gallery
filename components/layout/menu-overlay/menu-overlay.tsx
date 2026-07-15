@@ -95,7 +95,7 @@ export function MenuOverlay() {
           <div className={s.languageSelector}>
             <span className={s.activeLang}>EN</span>
             <span className={s.langSeparator}>/</span>
-            <span className={s.inactiveLang}>FR</span>
+            <span className={s.inactiveLang}>VN</span>
           </div>
         </div>
       </div>
