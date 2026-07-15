@@ -319,7 +319,8 @@ export function HomeMosaic() {
           maskedImagesRef.current[i]!.style.transform = imgTransform
           maskedImagesRef.current[i]!.style.opacity = isVisible ? String(depthOpacity) : '0'
           maskedImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
-          maskedImagesRef.current[i]!.style.pointerEvents = 'none' // masked layer never receives clicks
+          maskedImagesRef.current[i]!.style.pointerEvents = isVisible ? 'auto' : 'none'
+          maskedImagesRef.current[i]!.style.cursor = isVisible ? 'pointer' : 'default'
         }
       })
     }
