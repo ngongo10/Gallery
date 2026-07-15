@@ -155,6 +155,14 @@
   opacity: 0.65;
 }
 
+.desktopText {
+  display: inline;
+}
+
+.mobileText {
+  display: none;
+}
+
 .bottomRight {
   position: absolute;
   bottom: 40px;
@@ -184,6 +192,15 @@
     transform: none;
   }
   .bottomCenter {
+    display: block;
+    width: 100%;
+    text-align: center;
+    bottom: 20px;
+  }
+  .desktopText {
     display: none;
+  }
+  .mobileText {
+    display: inline;
   }
 }

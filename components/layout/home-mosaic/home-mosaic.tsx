@@ -370,21 +370,19 @@ export function HomeMosaic() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Setup Wheel Event for Chapter Navigation
+  // Handle Scrolling, Swiping, and Auto-Scroll
   useEffect(() => {
     let lastScrollTime = 0
-    const WHEEL_THROTTLE_MS = 2500 // Increased throttle to account for sequenced animations
+    const WHEEL_THROTTLE_MS = 2500
+    let autoScrollTimer: ReturnType<typeof setInterval> | null = null
 
-    const handleWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) <= 30) return
-      
+    const changeChapter = (direction: 1 | -1) => {
       const now = Date.now()
       if (now - lastScrollTime < WHEEL_THROTTLE_MS) return
       lastScrollTime = now
 
       if (isTransitioningRef.current) return
 
-      const direction = e.deltaY > 0 ? 1 : -1
       currentChapterRef.current += direction
       
       const wrappedIndex = (((currentChapterRef.current % portfolioData.series.length) + portfolioData.series.length) % portfolioData.series.length)
@@ -393,25 +391,19 @@ export function HomeMosaic() {
 
       isTransitioningRef.current = true
       
-      // Target Z position for the new chapter
       const targetZ = currentChapterRef.current * CHAPTER_Z_SPACING
 
-      // Sequence: 1. Shrink mask -> 2. Move Camera -> 3. Expand mask
       gsap.to(maskSizeRef.current, {
         size: 0,
         duration: 0.4,
         ease: 'power2.in',
         onComplete: () => {
-          
-          // Animate camera after mask is completely hidden to prevent lag
           gsap.to(cameraZRef.current, {
             z: targetZ,
             duration: 1.5,
             ease: 'power3.inOut',
             onComplete: () => {
               isTransitioningRef.current = false
-              
-              // Expand mask back once camera motion settles
               gsap.to(maskSizeRef.current, {
                 size: 450,
                 duration: 0.8,
@@ -422,7 +414,6 @@ export function HomeMosaic() {
         }
       })
 
-      // Animate title
       if (titleRef.current) {
         gsap.to(titleRef.current, {
           opacity: 0,
@@ -432,9 +423,8 @@ export function HomeMosaic() {
             if (nextSeries) {
               activeSeriesIdRef.current = nextSeries.id
               setActiveSeriesId(nextSeries.id)
-              triggerScramble(nextSeries.title) // Trigger scramble for new title
+              triggerScramble(nextSeries.title)
             }
-            
             if (titleRef.current) {
               gsap.fromTo(
                 titleRef.current,
@@ -445,10 +435,61 @@ export function HomeMosaic() {
           }
         })
       }
+
+      resetAutoScroll()
+    }
+
+    const resetAutoScroll = () => {
+      if (autoScrollTimer) clearInterval(autoScrollTimer)
+      autoScrollTimer = setInterval(() => {
+        if (!isLeavingPageRef.current && document.visibilityState === 'visible') {
+          changeChapter(1)
+        }
+      }, 3000)
+    }
+
+    // Start auto scroll
+    resetAutoScroll()
+
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) <= 30) return
+      const direction = e.deltaY > 0 ? 1 : -1
+      changeChapter(direction)
+    }
+
+    // Touch support
+    let touchStartX = 0
+    
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches && e.touches[0]) {
+        touchStartX = e.touches[0].clientX
+      }
+    }
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (e.changedTouches && e.changedTouches[0]) {
+        const touchEndX = e.changedTouches[0].clientX
+        const dx = touchEndX - touchStartX
+        
+        // Swipe threshold
+        if (Math.abs(dx) > 40) {
+          const direction = dx < 0 ? 1 : -1 // Swipe left -> next (+1), swipe right -> prev (-1)
+          changeChapter(direction)
+        }
+      }
     }
 
     window.addEventListener('wheel', handleWheel, { passive: true })
-    return () => window.removeEventListener('wheel', handleWheel)
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    window.addEventListener('touchend', handleTouchEnd, { passive: true })
+    
+    // Clear timer when leaving page or unmounting
+    return () => {
+      if (autoScrollTimer) clearInterval(autoScrollTimer)
+      window.removeEventListener('wheel', handleWheel)
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchend', handleTouchEnd)
+    }
   }, [activeIndex, setActiveSeriesId])
 
   const handleTransitionOut = () => {
@@ -574,7 +615,10 @@ export function HomeMosaic() {
           </div>
 
           <div className={s.bottomCenter}>
-            <span className={s.scrollText}>SCROLL TO EXPLORE CHAPTERS</span>
+            <span className={s.scrollText}>
+              <span className={s.desktopText}>SCROLL TO EXPLORE CHAPTERS</span>
+              <span className={s.mobileText}>VUỐT TRÁI, VUỐT PHẢI</span>
+            </span>
           </div>
           <div className={s.bottomRight}>
             <span className={s.counter}>
