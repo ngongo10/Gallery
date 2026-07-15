@@ -57,7 +57,7 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/osean/1108237420831272345.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 0.75
+                "aspectRatio": 1.5
         },
         {
                 "src": "/images/osean/1108237420831272412.jpg",
@@ -67,27 +67,27 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/osean/1108237420831272424.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 1.5
+                "aspectRatio": 0.75
         },
         {
                 "src": "/images/osean/1108237420831272428.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 1.5
+                "aspectRatio": 0.75
         },
         {
                 "src": "/images/osean/1108237420831272432_Aquarium pose idea.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 1.5
+                "aspectRatio": 0.75
         },
         {
                 "src": "/images/osean/1108237420831272440.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 0.75
+                "aspectRatio": 1.5
         },
         {
                 "src": "/images/osean/1108237420831272456.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 0.75
+                "aspectRatio": 1.5
         },
         {
                 "src": "/images/osean/1108237420831272460.jpg",
@@ -97,7 +97,7 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/osean/1108237420831272478_🩵.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 1.5
+                "aspectRatio": 0.75
         },
         {
                 "src": "/images/osean/1108237420831272479.jpg",
@@ -107,17 +107,17 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/osean/1108237420831272484.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 0.75
+                "aspectRatio": 1.5
         },
         {
                 "src": "/images/osean/1108237420831272491.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 1.5
+                "aspectRatio": 0.75
         },
         {
                 "src": "/images/osean/1108237420831565540.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 0.75
+                "aspectRatio": 1.5
         }
 ]
     },
@@ -128,254 +128,24 @@ export const portfolioData: PortfolioData = {
       essay: "Intimate and expressive portraiture capturing human emotion and character. This series emphasizes subtle lighting and raw authenticity.",
       images: [
         {
-                "src": "/images/portrait/0505276dcaa53a08facc7774d01224f7.jpg",
+                "src": "/images/portrait/20210424-DSC00003-Enhanced-NR.jpg",
                 "placeholder": "#202020",
                 "aspectRatio": 1.5
         },
         {
-                "src": "/images/portrait/0521e357d66b2383561c0675d5e39831.png",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/0742c8a7a057634bf6e15c3f920ece9b.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/0fb42351c4ddf68288e31b205d3661ef.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/0ff1699a8f2d4b4298150e87f8abbe6f.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/1560ffb7fb7c892fe2e556bb14dcfcc9.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/17b910e23b73b5e9608dbbb08585ed46.jpg",
+                "src": "/images/portrait/20210424-DSC09772-Enhanced-NR.jpg",
                 "placeholder": "#202020",
                 "aspectRatio": 0.75
         },
         {
-                "src": "/images/portrait/1e6a901307699ad320f51c23476caa8f.jpg",
+                "src": "/images/portrait/20260517-Untitled-1.jpg",
                 "placeholder": "#202020",
                 "aspectRatio": 0.75
         },
         {
-                "src": "/images/portrait/1f3ca4b3733096e73496f6ba6df06665.jpg",
+                "src": "/images/portrait/20260715-ChatGPT Image Jul 16, 2026, 03_15_58 AM.jpg",
                 "placeholder": "#202020",
                 "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/223ddb17a4716a361675880cb406286a.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/2a5e64e87aa8f5acba8e9f6733b3f9df.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/2eebdd95fad3c95e2378ddfb332c1796.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/2fdd71418999c348a9ba5f698315ddc8.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/354c3c84ead2f818f5222faa847fd2e7.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/39a3f185f0ff7aac3394205293ee9155.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/3f36e517cfa1d319e95f479d6a89b278.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/41ef8a2a64b251f4bd5655b8a64376b5.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/44a316057b3da071a0962231c3f1cf00.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/4518e79209edb580ad7676ed82ae172c.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/4b4f61477f147001132575ca58b15fe1.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/4e1cc37a477587a67d7a68d2cab74287.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/5629cfa3503164ef7b2231f05c3d42aa.png",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/571a172ee377a1abbfe23819edb2f770.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/5dd3f5417fd5ace9d56a64804e663c5a.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/60d428a7dc86c34b87c515683a92d593.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/622f518fb930d3f07d13236b3e4be7de.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/78578be83ec5b4a75c6a0d473a72ff35.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/7863fe0ef22283400dba3ef637ed3fc1.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/7ebcf5e6aa1fd132658fa1bf8e55e39e.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/9e51f4bc45ac15d0e4a64663089349c4.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/9f9f2bf61cf0cf65b87fc03654add163.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/a0a85ad28ac6542f780ba84d8e7fb797.png",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/a2554a6ee470358c1acbcbf1f17f2154.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/a98557f9a4619dd044cc941765e4ae0d.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/c07b3e465dc8a2c2f27cbc3109ee02aa.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/c6135c893b744abfb0d307afd71ffe98.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/ce21f7fcaca5b02024b169626243c03d.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/cfcd2dc6fa191eeea5fb5917a5c75896.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/d156b49840ccac7858044fb6a8258309.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/d671df67526faf05919114264e0ebf7a.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/daad936cfa07edc836426085ae74943b.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/db6dea115e2693044b4f2a702fc368b9.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/de735cc6b580c663047a900080880059.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/e78d673b773022f6b38ef61090804cb9.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/eafd15dd1d76e5f825283e227ec8e4c5.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/f4f2cdc6030baf089b24a844ca702537.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/fa5a183b8aefa06299c64bb4efed34b8.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 0.75
-        },
-        {
-                "src": "/images/portrait/fad39d00376672e4ed6d89c15b55e911.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/faeaddc83780bbde8df24d9b52fa7a49.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
-        },
-        {
-                "src": "/images/portrait/fb9bbef0d9f948f2f884d1574350c9ed.jpg",
-                "placeholder": "#202020",
-                "aspectRatio": 1.5
         }
 ]
     },
@@ -398,7 +168,7 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/white-moonlight/1ad84b9ab4a1e2ab17c7aab37fcff0a5.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 0.75
+                "aspectRatio": 1.5
         },
         {
                 "src": "/images/white-moonlight/1b2e945ffa23f7894ab00477d215a186.jpg",
@@ -408,7 +178,7 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/white-moonlight/1fe9747ba4bdd57114872a81f3e0148f.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 1.5
+                "aspectRatio": 0.75
         },
         {
                 "src": "/images/white-moonlight/3ca47f896b0f0bf998ee7e31cce0c75e.webp",
@@ -418,7 +188,7 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/white-moonlight/3eb002f7a2c129e37447f1056f87481d.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 1.5
+                "aspectRatio": 0.75
         },
         {
                 "src": "/images/white-moonlight/510a21f0b8a190b95a94a17a5e151873.jpg",
@@ -443,7 +213,7 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/white-moonlight/852e934d99aa22fd07e507ea13a54b4b.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 0.75
+                "aspectRatio": 1.5
         },
         {
                 "src": "/images/white-moonlight/aee685e268f0d1b816edbf72d1916fe7.jpg",
@@ -483,12 +253,12 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/white-moonlight/db39ef4bf3bdbc56802825100be51a73.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 0.75
+                "aspectRatio": 1.5
         },
         {
                 "src": "/images/white-moonlight/e5f1a7274a4a92c40e5ee63007939936.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 0.75
+                "aspectRatio": 1.5
         },
         {
                 "src": "/images/white-moonlight/e7acb42b11bfe6be32a1c2d9d3027c04.jpg",
@@ -508,7 +278,7 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/white-moonlight/ea9d5559580b93384c2943de28dc0aee.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 1.5
+                "aspectRatio": 0.75
         },
         {
                 "src": "/images/white-moonlight/ee78f827d13e75a6d511d4e55762deed.jpg",
@@ -518,105 +288,9 @@ export const portfolioData: PortfolioData = {
         {
                 "src": "/images/white-moonlight/f71be5629ec46e487f8404d46ad3440c.jpg",
                 "placeholder": "#202020",
-                "aspectRatio": 1.5
+                "aspectRatio": 0.75
         }
 ]
-    },
-    {
-      id: "mysterious-light",
-      title: "MYSTERIOUS LIGHT",
-      year: "2026",
-      essay: "A collection exploring the magic of dramatic, moody lighting. Each frame captures the interplay of shadow and light, revealing hidden depths and emotions within the subject.",
-      images: [
-        {
-          "src": "/images/mysterious-light/1108237420830224868.jpg",
-          "placeholder": "#1a1a2e",
-          "aspectRatio": 0.75
-        },
-        {
-          "src": "/images/mysterious-light/1108237420830224942.jpg",
-          "placeholder": "#2d2d2d",
-          "aspectRatio": 1.0
-        },
-        {
-          "src": "/images/mysterious-light/1108237420830224975_Mirror shoot.jpg",
-          "placeholder": "#1c1c1c",
-          "aspectRatio": 0.75
-        },
-        {
-          "src": "/images/mysterious-light/1108237420830224985.jpg",
-          "placeholder": "#0d0d0d",
-          "aspectRatio": 0.75
-        },
-        {
-          "src": "/images/mysterious-light/1108237420831273309.jpg",
-          "placeholder": "#3a2a1a",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/mysterious-light/1108237420833509391.jpg",
-          "placeholder": "#1a1a1a",
-          "aspectRatio": 1.25
-        },
-        {
-          "src": "/images/mysterious-light/1108237420833509872.jpg",
-          "placeholder": "#2a1a0a",
-          "aspectRatio": 0.75
-        },
-        {
-          "src": "/images/mysterious-light/1108237420833509936.jpg",
-          "placeholder": "#1e1e2e",
-          "aspectRatio": 1.5
-        }
-      ]
-    },
-    {
-      id: "men-studio",
-      title: "MEN STUDIO",
-      year: "2026",
-      essay: "Bold, confident studio portraits of men — raw masculinity meets refined artistry. High-contrast lighting and intentional composition bring out the character and depth of each subject.",
-      images: [
-        {
-          "src": "/images/men-studio/1108237420831272991.jpg",
-          "placeholder": "#1a1a1a",
-          "aspectRatio": 0.75
-        },
-        {
-          "src": "/images/men-studio/1108237420831273170.jpg",
-          "placeholder": "#0a0a0a",
-          "aspectRatio": 0.8
-        },
-        {
-          "src": "/images/men-studio/1108237420831273174.jpg",
-          "placeholder": "#2a2a2a",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/men-studio/1108237420831273267.jpg",
-          "placeholder": "#1e1e1e",
-          "aspectRatio": 1.33
-        },
-        {
-          "src": "/images/men-studio/1108237420831400716.jpg",
-          "placeholder": "#252525",
-          "aspectRatio": 0.75
-        },
-        {
-          "src": "/images/men-studio/1108237420832607239.jpg",
-          "placeholder": "#1a0a0a",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/men-studio/1108237420833506865.jpg",
-          "placeholder": "#2a1a1a",
-          "aspectRatio": 0.75
-        },
-        {
-          "src": "/images/men-studio/1108237420833509415.jpg",
-          "placeholder": "#0d0d0d",
-          "aspectRatio": 0.75
-        }
-      ]
     },
     {
           "id": "grass",
@@ -632,7 +306,7 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/0521e357d66b2383561c0675d5e39831.png",
                       "placeholder": "#304020",
-                      "aspectRatio": 0.75
+                      "aspectRatio": 1.5
                 },
                 {
                       "src": "/images/grass/0742c8a7a057634bf6e15c3f920ece9b.jpg",
@@ -647,12 +321,12 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/0ff1699a8f2d4b4298150e87f8abbe6f.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 0.75
+                      "aspectRatio": 1.5
                 },
                 {
                       "src": "/images/grass/1560ffb7fb7c892fe2e556bb14dcfcc9.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/17b910e23b73b5e9608dbbb08585ed46.jpg",
@@ -667,22 +341,22 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/1f3ca4b3733096e73496f6ba6df06665.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/223ddb17a4716a361675880cb406286a.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/2a5e64e87aa8f5acba8e9f6733b3f9df.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/2eebdd95fad3c95e2378ddfb332c1796.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/2fdd71418999c348a9ba5f698315ddc8.jpg",
@@ -692,12 +366,12 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/354c3c84ead2f818f5222faa847fd2e7.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/39a3f185f0ff7aac3394205293ee9155.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 0.75
+                      "aspectRatio": 1.5
                 },
                 {
                       "src": "/images/grass/3f36e517cfa1d319e95f479d6a89b278.jpg",
@@ -712,7 +386,7 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/44a316057b3da071a0962231c3f1cf00.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/4518e79209edb580ad7676ed82ae172c.jpg",
@@ -727,7 +401,7 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/4e1cc37a477587a67d7a68d2cab74287.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 0.75
+                      "aspectRatio": 1.5
                 },
                 {
                       "src": "/images/grass/5629cfa3503164ef7b2231f05c3d42aa.png",
@@ -737,7 +411,7 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/571a172ee377a1abbfe23819edb2f770.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/5dd3f5417fd5ace9d56a64804e663c5a.jpg",
@@ -752,12 +426,12 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/622f518fb930d3f07d13236b3e4be7de.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 0.75
+                      "aspectRatio": 1.5
                 },
                 {
                       "src": "/images/grass/78578be83ec5b4a75c6a0d473a72ff35.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/7863fe0ef22283400dba3ef637ed3fc1.jpg",
@@ -777,7 +451,7 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/9f9f2bf61cf0cf65b87fc03654add163.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/a0a85ad28ac6542f780ba84d8e7fb797.png",
@@ -787,27 +461,27 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/a2554a6ee470358c1acbcbf1f17f2154.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/a98557f9a4619dd044cc941765e4ae0d.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/c07b3e465dc8a2c2f27cbc3109ee02aa.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 0.75
+                      "aspectRatio": 1.5
                 },
                 {
                       "src": "/images/grass/c6135c893b744abfb0d307afd71ffe98.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/ce21f7fcaca5b02024b169626243c03d.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 0.75
+                      "aspectRatio": 1.5
                 },
                 {
                       "src": "/images/grass/cfcd2dc6fa191eeea5fb5917a5c75896.jpg",
@@ -827,12 +501,12 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/daad936cfa07edc836426085ae74943b.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/db6dea115e2693044b4f2a702fc368b9.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 0.75
+                      "aspectRatio": 1.5
                 },
                 {
                       "src": "/images/grass/de735cc6b580c663047a900080880059.jpg",
@@ -847,7 +521,7 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/eafd15dd1d76e5f825283e227ec8e4c5.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 0.75
+                      "aspectRatio": 1.5
                 },
                 {
                       "src": "/images/grass/f4f2cdc6030baf089b24a844ca702537.jpg",
@@ -862,7 +536,7 @@ export const portfolioData: PortfolioData = {
                 {
                       "src": "/images/grass/fad39d00376672e4ed6d89c15b55e911.jpg",
                       "placeholder": "#304020",
-                      "aspectRatio": 1.5
+                      "aspectRatio": 0.75
                 },
                 {
                       "src": "/images/grass/faeaddc83780bbde8df24d9b52fa7a49.jpg",
