@@ -229,6 +229,53 @@ export function HomeMosaic() {
     }
     window.addEventListener('mousemove', onMouseMove)
 
+    // --- Touch hold + drag để di kính lúp trên mobile ---
+    let touchHoldTimer: ReturnType<typeof setTimeout> | null = null
+    let isDraggingLens = false
+    let touchStartPosX = 0
+    let touchStartPosY = 0
+
+    const onTouchStartLens = (e: TouchEvent) => {
+      if (!e.touches[0]) return
+      touchStartPosX = e.touches[0].clientX
+      touchStartPosY = e.touches[0].clientY
+      isDraggingLens = false
+      if (touchHoldTimer) clearTimeout(touchHoldTimer)
+      touchHoldTimer = setTimeout(() => {
+        isDraggingLens = true
+        lerpState.current.mouseX = touchStartPosX
+        lerpState.current.mouseY = touchStartPosY
+      }, 300)
+    }
+
+    const onTouchMoveLens = (e: TouchEvent) => {
+      if (!e.touches[0]) return
+      const dx = Math.abs(e.touches[0].clientX - touchStartPosX)
+      const dy = Math.abs(e.touches[0].clientY - touchStartPosY)
+      // Nếu di ngón quá sớm (trước 300ms) → hủy, là swipe thường
+      if (!isDraggingLens && (dx > 10 || dy > 10)) {
+        if (touchHoldTimer) clearTimeout(touchHoldTimer)
+        return
+      }
+      if (isDraggingLens) {
+        lerpState.current.mouseX = e.touches[0].clientX
+        lerpState.current.mouseY = e.touches[0].clientY
+      }
+    }
+
+    const onTouchEndLens = () => {
+      if (touchHoldTimer) clearTimeout(touchHoldTimer)
+      isDraggingLens = false
+      // Kính lúp từ từ quay về giữa màn hình
+      lerpState.current.mouseX = window.innerWidth / 2
+      lerpState.current.mouseY = window.innerHeight / 2
+    }
+
+    window.addEventListener('touchstart', onTouchStartLens, { passive: true })
+    window.addEventListener('touchmove', onTouchMoveLens, { passive: true })
+    window.addEventListener('touchend', onTouchEndLens, { passive: true })
+    // --- Kết thúc touch hold + drag ---
+
     const ticker = () => {
       if (isLeavingPageRef.current) return
       const state = lerpState.current
@@ -334,6 +381,10 @@ export function HomeMosaic() {
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('touchstart', onTouchStartLens)
+      window.removeEventListener('touchmove', onTouchMoveLens)
+      window.removeEventListener('touchend', onTouchEndLens)
+      if (touchHoldTimer) clearTimeout(touchHoldTimer)
       cancelAnimationFrame(rafId)
     }
   }, [])
@@ -375,6 +426,10 @@ export function HomeMosaic() {
     let lastScrollTime = 0
     const WHEEL_THROTTLE_MS = 2500
     let autoScrollTimer: ReturnType<typeof setInterval> | null = null
+    let mouseMoveTimer: ReturnType<typeof setTimeout> | null = null
+    let isMouseMoving = false
+    // Phát hiện thiết bị có chuột hay không (desktop vs mobile)
+    const isTouchDevice = () => !window.matchMedia('(pointer: fine)').matches
 
     const changeChapter = (direction: 1 | -1) => {
       const now = Date.now()
@@ -443,9 +498,22 @@ export function HomeMosaic() {
       if (autoScrollTimer) clearInterval(autoScrollTimer)
       autoScrollTimer = setInterval(() => {
         if (!isLeavingPageRef.current && document.visibilityState === 'visible') {
-          changeChapter(1)
+          // Trên desktop: chỉ auto-scroll khi chuột đứng yên
+          // Trên mobile (touch device): luôn auto-scroll
+          if (isTouchDevice() || !isMouseMoving) {
+            changeChapter(1)
+          }
         }
       }, 10000)
+    }
+
+    const handleMouseMove = () => {
+      isMouseMoving = true
+      // Reset sau 2 giây không di chuyển chuột
+      if (mouseMoveTimer) clearTimeout(mouseMoveTimer)
+      mouseMoveTimer = setTimeout(() => {
+        isMouseMoving = false
+      }, 2000)
     }
 
     // Start auto scroll
@@ -482,13 +550,16 @@ export function HomeMosaic() {
     window.addEventListener('wheel', handleWheel, { passive: true })
     window.addEventListener('touchstart', handleTouchStart, { passive: true })
     window.addEventListener('touchend', handleTouchEnd, { passive: true })
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
     
     // Clear timer when leaving page or unmounting
     return () => {
       if (autoScrollTimer) clearInterval(autoScrollTimer)
+      if (mouseMoveTimer) clearTimeout(mouseMoveTimer)
       window.removeEventListener('wheel', handleWheel)
       window.removeEventListener('touchstart', handleTouchStart)
       window.removeEventListener('touchend', handleTouchEnd)
+      window.removeEventListener('mousemove', handleMouseMove)
     }
   }, [activeIndex, setActiveSeriesId])
 
