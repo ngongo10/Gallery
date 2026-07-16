@@ -128,22 +128,22 @@ export const portfolioData: PortfolioData = {
       essay: "Intimate and expressive portraiture capturing human emotion and character. This series emphasizes subtle lighting and raw authenticity.",
       images: [
         {
-                "src": "/images/portrait/20210424-DSC00003-Enhanced-NR.jpg",
+                "src": "/images/portrait/a.jpg",
                 "placeholder": "#202020",
                 "aspectRatio": 1.5
         },
         {
-                "src": "/images/portrait/20210424-DSC09772-Enhanced-NR.jpg",
+                "src": "/images/portrait/b.jpg",
                 "placeholder": "#202020",
                 "aspectRatio": 0.75
         },
         {
-                "src": "/images/portrait/20260517-Untitled-1.jpg",
+                "src": "/images/portrait/c.jpg",
                 "placeholder": "#202020",
                 "aspectRatio": 0.75
         },
         {
-                "src": "/images/portrait/20260715-ChatGPT Image Jul 16, 2026, 03_15_58 AM.jpg",
+                "src": "/images/portrait/d.jpg",
                 "placeholder": "#202020",
                 "aspectRatio": 0.75
         }

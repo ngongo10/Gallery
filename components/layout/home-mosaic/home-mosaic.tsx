@@ -445,7 +445,7 @@ export function HomeMosaic() {
         if (!isLeavingPageRef.current && document.visibilityState === 'visible') {
           changeChapter(1)
         }
-      }, 3000)
+      }, 10000)
     }
 
     // Start auto scroll
