@@ -18,6 +18,26 @@ const SERIES_METADATA = {
     year: '2026',
     essay: 'Ethereal, high-key photography inspired by the concept of White Moonlight. The visual narrative revolves around pure, nostalgic, and dreamy aesthetics.',
   },
+  'grass': {
+    title: 'GRASS',
+    year: '2026',
+    essay: 'Resilient and simple creations of nature. This series captures the quiet, calming, and lush green atmosphere of grass dancing under sunbeams.',
+  },
+  'men-studio': {
+    title: 'MEN STUDIO',
+    year: '2026',
+    essay: 'A series of bold, minimal, and classic men portraits taken inside a controlled studio lighting setup.',
+  },
+  'mysterious-light': {
+    title: 'MYSTERIOUS LIGHT',
+    year: '2026',
+    essay: 'Chasing the dramatic interplay of deep shadows and single sharp beams of light to construct a mysterious visual poetry.',
+  },
+  'Graduation Photography': {
+    title: 'GRADUATION',
+    year: '2026',
+    essay: 'Capturing unforgettable milestones, youthfulness, and hopeful eyes looking forward to the future on graduation day.',
+  },
 };
 
 function slugToTitle(slug) {
