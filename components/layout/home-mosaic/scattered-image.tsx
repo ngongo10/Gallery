@@ -5,6 +5,10 @@ import type { CSSProperties, MouseEventHandler } from 'react'
 import s from './home-mosaic.module.css'
 import cn from 'clsx'
 
+// Cache dominant color theo src — tồn tại trong suốt vòng đời trang
+// Khi quay về home, màu đã tính rồi nên không phải canvas lại
+const dominantColorCache = new Map<string, string>()
+
 function getDominantColor(img: HTMLImageElement): string {
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
@@ -57,6 +61,12 @@ export function ScatteredImage({
   const imgRef = useRef<HTMLImageElement>(null)
 
   useEffect(() => {
+    // Nếu đã cache rồi thì dùng luôn, không tính lại
+    if (dominantColorCache.has(src)) {
+      if (!isMasked) setDominantColor(dominantColorCache.get(src)!)
+      return
+    }
+
     const img = new Image()
     img.crossOrigin = 'Anonymous'
     img.src = src
@@ -64,8 +74,6 @@ export function ScatteredImage({
       if (img.naturalWidth && img.naturalHeight) {
         setRealAspectRatio(img.naturalWidth / img.naturalHeight)
       }
-      // Chỉ tính màu dominant khi browser rảnh (không block frame đầu tiên)
-      // Tránh hàng chục canvas operations chạy đồng loạt khi mới load trang
       if (!isMasked) {
         const runWhenIdle = (cb: () => void) => {
           if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
@@ -76,6 +84,7 @@ export function ScatteredImage({
         }
         runWhenIdle(() => {
           const color = getDominantColor(img)
+          dominantColorCache.set(src, color) // Lưu vào cache
           setDominantColor(color)
         })
       }

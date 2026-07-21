@@ -21,7 +21,15 @@ export default function Page() {
   return (
     <Wrapper lenis={enableLenis}>
       {currentRoute === 'loader' && <Loader />}
-      {currentRoute === 'home' && <HomeMosaic />}
+
+      {/* HomeMosaic luôn ở trong DOM sau khi đã load, chỉ ẩn bằng CSS */}
+      {/* Tránh unmount/remount gây lag khi quay về home */}
+      {currentRoute !== 'loader' && (
+        <div style={{ display: currentRoute === 'home' ? 'block' : 'none' }}>
+          <HomeMosaic />
+        </div>
+      )}
+
       {currentRoute === 'detail' && <SeriesDetail />}
       {currentRoute === 'shop' && <ShopGrid />}
       {currentRoute === 'product' && <ProductDetail />}

@@ -129,6 +129,7 @@ export function HomeMosaic() {
   const activeSeriesId = usePortfolioStore((state) => state.activeSeriesId)
   const setActiveSeriesId = usePortfolioStore((state) => state.setActiveSeriesId)
   const setRoute = usePortfolioStore((state) => state.setRoute)
+  const currentRoute = usePortfolioStore((state) => state.currentRoute)
 
   const activeIndex = portfolioData.series.findIndex((ser) => ser.id === activeSeriesId)
   const activeSeries = portfolioData.series.find(s => s.id === activeSeriesId)
@@ -194,6 +195,8 @@ export function HomeMosaic() {
 
   const isTransitioningRef = useRef(false)
   const isLeavingPageRef = useRef(false)
+  // RAF tự dừng khi home bị ẩn (route khác), tiết kiệm CPU
+  const isHomeVisibleRef = useRef(true)
   const activeSeriesIdRef = useRef(activeSeriesId)
   const currentChapterRef = useRef(activeIndex >= 0 ? activeIndex : 0)
   
@@ -220,6 +223,11 @@ export function HomeMosaic() {
     camX: 0,
     camY: 0,
   })
+
+  // Sync isHomeVisibleRef theo currentRoute — không cần re-render
+  useEffect(() => {
+    isHomeVisibleRef.current = currentRoute === 'home'
+  }, [currentRoute])
 
   // Setup GSAP Ticker for Lerp Parallax and Cursor Mask
   useEffect(() => {
@@ -375,7 +383,10 @@ export function HomeMosaic() {
     let rafId: number
     let startDelayTimer: ReturnType<typeof setTimeout> | null = null
     const tick = () => {
-      ticker()
+      // Tạm dừng RAF khi home bị ẩn — tiết kiệm CPU khi ở route khác
+      if (isHomeVisibleRef.current) {
+        ticker()
+      }
       rafId = requestAnimationFrame(tick)
     }
 
