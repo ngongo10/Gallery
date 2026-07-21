@@ -61,12 +61,23 @@ export function ScatteredImage({
     img.crossOrigin = 'Anonymous'
     img.src = src
     img.onload = () => {
-      if (!isMasked) {
-        const color = getDominantColor(img)
-        setDominantColor(color)
-      }
       if (img.naturalWidth && img.naturalHeight) {
         setRealAspectRatio(img.naturalWidth / img.naturalHeight)
+      }
+      // Chỉ tính màu dominant khi browser rảnh (không block frame đầu tiên)
+      // Tránh hàng chục canvas operations chạy đồng loạt khi mới load trang
+      if (!isMasked) {
+        const runWhenIdle = (cb: () => void) => {
+          if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+            window.requestIdleCallback(cb, { timeout: 2000 })
+          } else {
+            setTimeout(cb, 300)
+          }
+        }
+        runWhenIdle(() => {
+          const color = getDominantColor(img)
+          setDominantColor(color)
+        })
       }
     }
   }, [src, isMasked])
@@ -96,6 +107,7 @@ export function ScatteredImage({
             ref={imgRef}
             src={src} 
             alt="" 
+            decoding="async"
             className={cn(s.image, loaded && s.loaded, s.colorImg)} 
             onLoad={() => setLoaded(true)}
           />

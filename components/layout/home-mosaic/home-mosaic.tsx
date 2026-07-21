@@ -373,11 +373,30 @@ export function HomeMosaic() {
     }
 
     let rafId: number
+    let startDelayTimer: ReturnType<typeof setTimeout> | null = null
     const tick = () => {
       ticker()
       rafId = requestAnimationFrame(tick)
     }
-    rafId = requestAnimationFrame(tick)
+
+    // Trì hoãn RAF loop cho đến khi browser xử lý xong hydration + decode ảnh
+    // Tránh jank 5-10fps ở frame đầu tiên khi mới load trang
+    const startLoop = () => {
+      // Double RAF: đảm bảo layout đã commit xong trước frame đầu tiên
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          rafId = requestAnimationFrame(tick)
+        })
+      })
+    }
+
+    if (document.readyState === 'complete') {
+      startDelayTimer = setTimeout(startLoop, 100)
+    } else {
+      window.addEventListener('load', () => {
+        startDelayTimer = setTimeout(startLoop, 100)
+      }, { once: true })
+    }
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove)
@@ -385,6 +404,7 @@ export function HomeMosaic() {
       window.removeEventListener('touchmove', onTouchMoveLens)
       window.removeEventListener('touchend', onTouchEndLens)
       if (touchHoldTimer) clearTimeout(touchHoldTimer)
+      if (startDelayTimer) clearTimeout(startDelayTimer)
       cancelAnimationFrame(rafId)
     }
   }, [])
