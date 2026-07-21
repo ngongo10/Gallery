@@ -18,20 +18,44 @@ export function MenuOverlay() {
     const el = overlayRef.current
     if (!el) return
 
+    // Tập hợp tất cả animated items
+    const items = el.querySelectorAll(`.${s.navItem}, .${s.subNavItem}, .${s.languageSelector}`)
+
     if (menuOpen) {
+      // --- MỞ MENU ---
       gsap.set(el, { display: 'flex' })
       gsap.fromTo(
         el,
         { clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)' },
         { clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', duration: 0.7, ease: 'power4.inOut' }
       )
+      // Items xuất hiện stagger sau overlay
+      gsap.fromTo(
+        items,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', stagger: 0.06, delay: 0.35 }
+      )
     } else {
-      gsap.to(el, {
-        clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)',
-        duration: 0.6,
-        ease: 'power4.inOut',
+      // --- ĐÓNG MENU (ngược lại) ---
+      // Items biến mất trước (stagger ngược từ dưới lên)
+      gsap.to(items, {
+        opacity: 0,
+        y: -16,
+        duration: 0.3,
+        ease: 'power2.in',
+        stagger: { each: 0.04, from: 'end' },
         onComplete: () => {
-          gsap.set(el, { display: 'none' })
+          // Overlay trượt lên
+          gsap.to(el, {
+            clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)',
+            duration: 0.55,
+            ease: 'power4.inOut',
+            onComplete: () => {
+              gsap.set(el, { display: 'none' })
+              // Reset items về trạng thái ban đầu cho lần mở tiếp theo
+              gsap.set(items, { opacity: 0, y: 24 })
+            }
+          })
         }
       })
     }
