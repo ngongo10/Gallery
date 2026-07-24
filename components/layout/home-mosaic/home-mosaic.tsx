@@ -241,6 +241,22 @@ export function HomeMosaic() {
         })
       }
 
+      if (baseCameraRef.current) {
+        gsap.killTweensOf(baseCameraRef.current)
+        gsap.set(baseCameraRef.current, {
+          y: 0,
+          opacity: 1
+        })
+      }
+
+      if (maskedCameraRef.current) {
+        gsap.killTweensOf(maskedCameraRef.current)
+        gsap.set(maskedCameraRef.current, {
+          y: 0,
+          opacity: 1
+        })
+      }
+
       const baseWrappers = baseImagesRef.current.filter(Boolean)
       const maskWrappers = maskedImagesRef.current.filter(Boolean)
       const allWrappers = [...baseWrappers, ...maskWrappers]
