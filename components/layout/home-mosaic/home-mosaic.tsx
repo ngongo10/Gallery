@@ -650,58 +650,43 @@ export function HomeMosaic() {
     if (allWrappers.length > 0) {
       gsap.killTweensOf(allWrappers)
 
-      // Thu nhỏ nhẹ kính lúp mượt mà
+      // Thu nhỏ mượt mà kính lúp
       gsap.to(maskSizeRef.current, {
         size: 0,
-        duration: 0.6,
+        duration: 0.5,
         ease: 'power2.inOut'
       })
 
-      // Tiêu đề mờ dần thong thả ở trung tâm
+      // Tiêu đề trôi nhẹ xuống và mờ dần
       if (titleRef.current) {
         gsap.to(titleRef.current, {
           opacity: 0,
-          scale: 0.92,
+          y: 40,
           filter: 'blur(10px)',
-          duration: 0.8,
-          ease: 'power2.out'
+          duration: 0.7,
+          ease: 'power2.in'
         })
       }
 
-      const screenCenterX = window.innerWidth / 2
-      const screenCenterY = window.innerHeight / 2
+      // Tọa độ ĐIỂM HÚT ở CHÍNH GIỮA CẠNH DƯỚI màn hình (Bottom-Center Vacuum)
+      const bottomDrainY = window.innerHeight / 2 + 150
 
-      // Animate từng ảnh dạt ra xa từ ĐÚNG TỌA ĐỘ THỰC TẾ TỨC THỜI của nó trên màn hình
+      // Animate từng ảnh bị hút xoáy thu nhỏ về chính giữa cạnh đáy dưới
       allWrappers.forEach((el, i) => {
         if (!el) return
         
-        // Lấy tọa độ màn hình thực tế hiện tại của ảnh (kể cả khi đang trôi dở)
+        // Lấy vị trí màn hình thực tế hiện tại của từng ảnh
         const rect = el.getBoundingClientRect()
-        const imgCenterX = rect.left + rect.width / 2
-        const imgCenterY = rect.top + rect.height / 2
-
-        // Vector hướng từ tâm màn hình đến vị trí thực tế của ảnh
-        const dx = imgCenterX - screenCenterX
-        const dy = imgCenterY - screenCenterY
-        let angle = Math.atan2(dy, dx)
-        
-        // Nếu ảnh ở đúng tâm, chọn góc ngẫu nhiên
-        if (Math.abs(dx) < 5 && Math.abs(dy) < 5) {
-          angle = (i / allWrappers.length) * Math.PI * 2
-        }
-
-        // Khoảng cách dạt ra xa xung quanh theo bán kính (700px ~ 1100px)
-        const burstDistance = 700 + Math.random() * 400
-        const targetX = Math.cos(angle) * burstDistance
-        const targetY = Math.sin(angle) * burstDistance
+        const imgCenterX = rect.left + rect.width / 2 - window.innerWidth / 2
 
         gsap.to(el, {
-          x: `+=${targetX}`,
-          y: `+=${targetY}`,
-          scale: 1.12,          // Phóng nhẹ thong thả khi dạt ra xung quanh
-          opacity: 0,           // Mờ dần mượt mà
-          duration: 1.4,        // Thời gian kéo dài 1.4s khoan thai
-          ease: 'power2.out',   // Giảm tốc mượt êm
+          x: imgCenterX * 0.2, // Thu hẹp dần về trục giữa khi trượt xuống
+          y: bottomDrainY,     // Hút thẳng xuống chính giữa cạnh dưới màn hình
+          scale: 0.1,          // Thu nhỏ lại như hạt bụi bị hút vào khe đáy
+          opacity: 0,          // Mờ dần biến mất hẳn
+          duration: 1.1,       // Độ mượt 1.1s
+          delay: (i % 8) * 0.04, // Nhịp hút đuôi nhau tự nhiên
+          ease: 'power3.in',   // Gia tốc lực hút tăng dần xuống đáy
           onComplete: () => {
             if (i === 0) {
               setRoute('detail')
