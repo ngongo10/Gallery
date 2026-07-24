@@ -236,6 +236,8 @@ export function HomeMosaic() {
       gsap.killTweensOf(transitionStateRef.current)
       gsap.killTweensOf(lerpState.current)
       gsap.killTweensOf(maskSizeRef.current)
+      gsap.killTweensOf(cameraZRef.current)
+      layoutPxRef.current.forEach((px) => { if (px) gsap.killTweensOf(px) })
 
       // 1. Reset cờ transition
       isLeavingPageRef.current = false
@@ -246,11 +248,11 @@ export function HomeMosaic() {
         gsap.set(titleRef.current, { opacity: 1, filter: 'blur(0px)', y: 0 })
       }
 
-      // 3. Reset transitionStateRef (opacity bị set = 0 khi UFO)
+      // 3. Reset transitionStateRef (opacity = 0 sau UFO)
       const ts = transitionStateRef.current
       ts.tx = 0; ts.ty = 0; ts.scale = 1; ts.opacity = 1
 
-      // 4. Reset camera containers style trực tiếp
+      // 4. Reset camera containers
       if (baseCameraRef.current) {
         baseCameraRef.current.style.opacity = '1'
         baseCameraRef.current.style.transform = ''
@@ -260,7 +262,7 @@ export function HomeMosaic() {
         maskedCameraRef.current.style.transform = ''
       }
 
-      // 5. Reset lerpState mouse về giữa màn hình (lerpState.mouseY bị kéo xuống vh+500)
+      // 5. Reset lerpState (mouseY bị kéo xuống vh+500 sau UFO)
       lerpState.current.mouseX = window.innerWidth / 2
       lerpState.current.mouseY = window.innerHeight / 2
       lerpState.current.maskX = window.innerWidth / 2
@@ -268,35 +270,48 @@ export function HomeMosaic() {
       lerpState.current.camX = 0
       lerpState.current.camY = 0
 
-      // 6. Restore layoutPxRef x/y từ TUNNEL_LAYOUT gốc (UFO tween đã làm lệch chúng)
-      //    Kill tất cả tweens trên từng px object trước
-      layoutPxRef.current.forEach((px) => {
-        if (px) gsap.killTweensOf(px)
-      })
+      // 6. Restore layoutPxRef: x, y TỪ TUNNEL_LAYOUT gốc + reset currentCamZ
       const w = window.innerWidth
       const h = window.innerHeight
       const isDesktop = w > 800
+      const currentZ = cameraZRef.current.z
       TUNNEL_LAYOUT.forEach((layout, i) => {
         const px = layoutPxRef.current[i]
         if (!px) return
         px.x = ((layout.x * (isDesktop ? 1.0 : 0.6)) / 100) * w
         px.y = ((layout.y * (isDesktop ? 1.0 : 0.6)) / 100) * h
+        px.currentCamZ = currentZ   // ← quan trọng: reset currentCamZ về đúng vị trí
         px.frozenRelativeZ = undefined
       })
 
-      // 7. Reset image wrappers
-      const baseWrappers = baseImagesRef.current.filter(Boolean)
-      const maskWrappers = maskedImagesRef.current.filter(Boolean)
-      const allWrappers = [...baseWrappers, ...maskWrappers]
+      // 7. Reset image wrappers về visible
+      const allWrappers = [
+        ...baseImagesRef.current.filter(Boolean),
+        ...maskedImagesRef.current.filter(Boolean)
+      ]
       if (allWrappers.length > 0) {
         gsap.killTweensOf(allWrappers)
-        gsap.set(allWrappers, { scale: 1, x: 0, y: 0, z: 0, opacity: 1, visibility: 'visible' })
+        gsap.set(allWrappers, { clearProps: 'all' })
       }
 
-      // 8. Kính lúp mở lại
+      // 8. Kính lúp
       maskSizeRef.current.size = 450
+
+      // 9. Chạy lại intro Z-tunnel animation (giống lúc load lần đầu)
+      const targetZ = currentZ
+      const startZ = targetZ - CHAPTER_Z_SPACING * 1.0
+      cameraZRef.current.z = startZ
+      layoutPxRef.current.forEach((px) => { if (px) px.currentCamZ = startZ })
+
+      gsap.to(cameraZRef.current, {
+        z: targetZ,
+        duration: 1.2,
+        ease: 'power2.out',
+        delay: 0.05   // nhỏ để RAF kịp khởi động lại
+      })
     }
   }, [currentRoute])
+
 
   // Setup GSAP Ticker for Lerp Parallax and Cursor Mask
   useEffect(() => {
