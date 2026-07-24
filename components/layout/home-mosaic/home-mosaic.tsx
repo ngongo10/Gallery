@@ -247,15 +247,16 @@ export function HomeMosaic() {
       // Reset transition state ref khi về Home
       const ts = transitionStateRef.current
       ts.tx = 0; ts.ty = 0; ts.scale = 1; ts.opacity = 1
-      // Cũng clear bất kỳ tween nào đang chạy trên transitionStateRef
       gsap.killTweensOf(ts)
 
+      // Reset opacity trực tiếp trên style (vì transition set opacity = 0 trực tiếp)
+      if (baseCameraRef.current) {
+        baseCameraRef.current.style.opacity = '1'
+        baseCameraRef.current.style.transform = ''
+      }
       if (maskedCameraRef.current) {
-        gsap.killTweensOf(maskedCameraRef.current)
-        gsap.set(maskedCameraRef.current, {
-          y: 0,
-          opacity: 1
-        })
+        maskedCameraRef.current.style.opacity = '1'
+        maskedCameraRef.current.style.transform = ''
       }
 
       const baseWrappers = baseImagesRef.current.filter(Boolean)
@@ -663,10 +664,10 @@ export function HomeMosaic() {
   const handleTransitionOut = () => {
     isLeavingPageRef.current = true
 
-    // 1. Tắt & thu nhỏ kính lúp ngay lập tức trong 0.2s
+    // 1. Tắt & thu nhỏ kính lúp
     gsap.to(maskSizeRef.current, {
       size: 0,
-      duration: 0.2,
+      duration: 0.25,
       ease: 'power2.inOut'
     })
 
@@ -676,50 +677,117 @@ export function HomeMosaic() {
         opacity: 0,
         y: 20,
         filter: 'blur(8px)',
-        duration: 0.3
+        duration: 0.25
       })
     }
 
-    // 2. Kịch bản Animation Chuẩn qua transitionStateRef (KHÔNG ghi đè style trực tiếp)
-    // RAF ticker sẽ đọc transitionStateRef và kết hợp vào transform mỗi frame
-    const ts = transitionStateRef.current
-    // Reset về trạng thái hiện tại
-    ts.tx = 0; ts.ty = 0; ts.scale = 1; ts.opacity = 1
+    const vw = window.innerWidth
+    const vh = window.innerHeight
 
+    // 2. Chụp snapshot vị trí màn hình của từng ảnh đang visible
+    type Snapshot = { rect: DOMRect; imgSrc: string }
+    const snapshots: Snapshot[] = []
+
+    baseImagesRef.current.forEach((el) => {
+      if (!el) return
+      if (el.style.visibility === 'hidden') return
+      if (parseFloat(el.style.opacity || '1') < 0.05) return
+      const rect = el.getBoundingClientRect()
+      if (rect.width < 10 || rect.height < 10) return
+      // Chỉ lấy ảnh nằm trong viewport (hoặc gần viewport)
+      if (rect.right < -100 || rect.left > vw + 100) return
+      if (rect.bottom < -100 || rect.top > vh + 100) return
+      const img = el.querySelector('img')
+      snapshots.push({ rect, imgSrc: img?.src ?? '' })
+    })
+
+    // Ẩn bản gốc ngay (để không nhìn thấy cả 2)
+    if (baseCameraRef.current) {
+      baseCameraRef.current.style.opacity = '0'
+    }
+    if (maskedCameraRef.current) {
+      maskedCameraRef.current.style.opacity = '0'
+    }
+
+    if (snapshots.length === 0) {
+      setRoute('detail')
+      return
+    }
+
+    // 3. Tạo overlay elements trên document.body tại đúng vị trí màn hình
+    //    (Ngoài 3D perspective container → position: fixed hoạt động đúng)
+    const overlays: HTMLDivElement[] = []
+
+    snapshots.forEach(({ rect, imgSrc }) => {
+      const div = document.createElement('div')
+      div.style.cssText = `
+        position: fixed;
+        left: ${rect.left}px;
+        top: ${rect.top}px;
+        width: ${rect.width}px;
+        height: ${rect.height}px;
+        overflow: hidden;
+        z-index: 9998;
+        pointer-events: none;
+        transform-origin: center center;
+        will-change: transform, opacity;
+      `
+      if (imgSrc) {
+        const img = document.createElement('img')
+        img.src = imgSrc
+        img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; display: block;'
+        div.appendChild(img)
+      }
+      document.body.appendChild(div)
+      overlays.push(div)
+    })
+
+    // 4. GSAP Timeline — 4 nhịp diễn ra trong ~2 giây
     const tl = gsap.timeline({
       onComplete: () => {
+        // Dọn dẹp overlays
+        overlays.forEach((o) => o.remove())
         setRoute('detail')
       }
     })
 
-    // Nhịp 1: Thu kéo parallax về chính giữa (camX/camY về 0) trong 0.35s
-    // Animate camX/camY về 0 qua lerpState để neutralize parallax
-    tl.to(lerpState.current, {
-      mouseX: window.innerWidth / 2,
-      mouseY: window.innerHeight / 2,
+    // ── Nhịp 1 (0.6s): Chậm rãi từng ảnh thu về chính giữa khung hình ──
+    overlays.forEach((overlay, i) => {
+      const rect = snapshots[i]!.rect
+      const imgCenterX = rect.left + rect.width / 2
+      const imgCenterY = rect.top + rect.height / 2
+      const deltaX = vw / 2 - imgCenterX
+      const deltaY = vh / 2 - imgCenterY
+
+      tl.to(overlay, {
+        x: deltaX,
+        y: deltaY,
+        duration: 0.6,
+        ease: 'power2.out'
+      }, 0) // tất cả chạy đồng thời từ t=0
+    })
+
+    // ── Nhịp 2 (0.35s): Phóng to nhanh — vừa với cỡ gallery ──
+    tl.to(overlays, {
+      scale: 6,
       duration: 0.35,
       ease: 'power2.out'
-    })
-    // Nhịp 2: Phóng to ra nhanh (0.2s)
-    .to(ts, {
-      scale: 1.35,
-      duration: 0.2,
-      ease: 'power2.out'
-    })
-    // Nhịp 3: Từ từ nẩy thu nhỏ lại 1 chút (0.25s)
-    .to(ts, {
-      scale: 1.12,
-      duration: 0.25,
+    }, 0.6)
+
+    // ── Nhịp 3 (0.3s): Từ từ thu nhỏ lại nhẹ (nẩy back) ──
+    tl.to(overlays, {
+      scale: 4.8,
+      duration: 0.3,
       ease: 'sine.inOut'
-    })
-    // Nhịp 4: Kéo xuống nhanh và mờ dần (0.2s)
-    .to(ts, {
-      ty: window.innerHeight * 0.7,
-      scale: 0.9,
+    }, 0.95)
+
+    // ── Nhịp 4 (0.35s): Nhanh — kéo xuống nhẹ nhàng và mờ dần ──
+    tl.to(overlays, {
+      y: `+=${vh * 0.55}`,
       opacity: 0,
-      duration: 0.2,
+      duration: 0.35,
       ease: 'power2.in'
-    })
+    }, 1.25)
   }
 
   const handleImageClick = () => {
