@@ -207,7 +207,7 @@ export function SeriesDetail() {
         </div>
       </div>
 
-      {/* Right Scroll Indicator Rail (Guillaume Tomasi Style) */}
+      {/* Right Thumbnail Rail & Dot Indicator (Guillaume Tomasi Design) */}
       <div className={s.thumbnailRail}>
         {series.images.map((photo, i) => {
           const isActive = i === activePhotoIndex
@@ -221,18 +221,14 @@ export function SeriesDetail() {
               onMouseLeave={() => setCursorType('default')}
               aria-label={`Jump to photo ${i + 1}`}
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={photo.src}
+                alt={`${series.title} thumbnail ${i + 1}`}
+                className={s.thumbnail}
+              />
+              {/* Chấm tròn đen/trắng nẩy bên cạnh bức ảnh đang active */}
               {isActive && <div className={s.activeDot} />}
-              <div className={s.indexTick} />
-              
-              {/* Tooltip preview nhỏ nổi lên khi hover */}
-              <div className={s.previewTooltip}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photo.src}
-                  alt={`${series.title} preview ${i + 1}`}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </div>
             </button>
           )
         })}

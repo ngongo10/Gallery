@@ -84,34 +84,25 @@
 
 /* ── Thumbnail Rail ── */
 
-/* ── Right Scroll Indicator Rail (Guillaume Tomasi Style) ── */
+/* ── Right Thumbnail Rail & Dot Indicator (Guillaume Tomasi Design) ── */
 .thumbnailRail {
   position: fixed;
-  right: 28px;
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 14px;
+  align-items: flex-end;
+  gap: 10px;
   z-index: 9999;
-  padding: 16px 8px;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(4px);
-  border-radius: 20px;
+  max-height: 85vh;
+  overflow-y: auto;
+  scrollbar-width: none; /* Ẩn thanh cuộn trình duyệt */
+  padding-right: 20px;
 }
 
-/* Đường trục dọc mảnh đằng sau */
-.thumbnailRail::before {
-  content: '';
-  position: absolute;
-  top: 16px;
-  bottom: 16px;
-  left: 50%;
-  width: 1px;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateX(-50%);
-  z-index: -1;
+.thumbnailRail::-webkit-scrollbar {
+  display: none;
 }
 
 @media (max-width: 800px) {
@@ -122,72 +113,48 @@
 
 .thumbnailWrapper {
   position: relative;
-  width: 24px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 50px;
+  height: 38px;
   cursor: pointer;
   border: none;
   background: transparent;
   padding: 0;
   margin: 0;
   outline: none;
+  opacity: 0.35;
+  filter: grayscale(40%) blur(0.5px);
+  transition: opacity 0.35s ease, filter 0.35s ease, transform 0.35s ease;
 }
 
-/* Vạch chỉ báo nhỏ mặc định */
-.indexTick {
-  width: 10px;
-  height: 2px;
-  background-color: rgba(255, 255, 255, 0.5);
+.thumbnailWrapper:hover {
+  opacity: 0.85;
+  filter: grayscale(0%) blur(0px);
+}
+
+.isActive {
+  opacity: 1 !important;
+  filter: grayscale(0%) blur(0px) !important;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 1px;
-  transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-.thumbnailWrapper:hover .indexTick {
-  width: 14px;
-  background-color: #ffffff;
-}
-
-.isActive .indexTick {
-  width: 18px;
-  height: 2px;
-  background-color: #ffffff;
-}
-
-/* Chấm active điểm nhấn tròn nổi bật */
+/* Chấm tròn đen/trắng trượt nẩy bên cạnh bức ảnh đang active */
 .activeDot {
   position: absolute;
-  right: 28px;
+  right: -16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 5px;
-  height: 5px;
-  background-color: #ffffff;
+  width: 6px;
+  height: 6px;
+  background-color: var(--theme-color, #ffffff);
   border-radius: 50%;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-  transition: all 0.3s ease;
-}
-
-/* Tooltip preview nhỏ nổi lên khi hover vạch bên phải */
-.previewTooltip {
-  position: absolute;
-  right: 36px;
-  top: 50%;
-  transform: translateY(-50%) translateX(10px);
-  width: 60px;
-  height: 40px;
-  border-radius: 2px;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.thumbnailWrapper:hover .previewTooltip {
-  opacity: 1;
-  transform: translateY(-50%) translateX(0);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+  transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 /* ── Bottom UI ── */
