@@ -210,7 +210,7 @@ export function HomeMosaic() {
   const baseImagesRef = useRef<(HTMLDivElement | null)[]>([])
   const maskedImagesRef = useRef<(HTMLDivElement | null)[]>([])
 
-  const layoutPxRef = useRef<{ x: number; y: number; z: number; width: number; currentCamZ?: number }[]>([])
+  const layoutPxRef = useRef<{ x: number; y: number; z: number; width: number; currentCamZ?: number; frozenRelativeZ?: number }[]>([])
   const cameraZRef = useRef({ z: activeIndex >= 0 ? activeIndex * CHAPTER_Z_SPACING : 0 })
   const maskSizeRef = useRef({ size: 450 })
 
@@ -382,8 +382,9 @@ export function HomeMosaic() {
         maskedCameraRef.current.style.opacity = String(ts.opacity)
       }
 
-      // 4. Update Images Z - chỉ khi không đang transition
+      // 4. Update image positions
       if (!isLeaving) {
+        // Normal mode: full depth calculation
         const targetCamZ = cameraZRef.current.z
         const LOOP_DEPTH = portfolioData.series.length * CHAPTER_Z_SPACING
 
@@ -427,6 +428,22 @@ export function HomeMosaic() {
             maskedImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
             maskedImagesRef.current[i]!.style.pointerEvents = isVisible ? 'auto' : 'none'
             maskedImagesRef.current[i]!.style.cursor = isVisible ? 'pointer' : 'default'
+          }
+        })
+      } else {
+        // UFO transition mode: apply animated px.x/px.y positions, keep images visible
+        TUNNEL_LAYOUT.forEach((_layout, i) => {
+          const px = layoutPxRef.current[i]
+          if (!px) return
+          const frozenZ = px.frozenRelativeZ ?? 0
+          const imgTransform = `translate3d(${px.x}px, ${px.y}px, ${frozenZ}px) translate(-50%, -50%)`
+          if (baseImagesRef.current[i]) {
+            baseImagesRef.current[i]!.style.transform = imgTransform
+            baseImagesRef.current[i]!.style.visibility = 'visible'
+          }
+          if (maskedImagesRef.current[i]) {
+            maskedImagesRef.current[i]!.style.transform = imgTransform
+            maskedImagesRef.current[i]!.style.visibility = 'visible'
           }
         })
       }
@@ -664,141 +681,65 @@ export function HomeMosaic() {
   const handleTransitionOut = () => {
     // Tránh double-trigger
     if (isLeavingPageRef.current) return
-    isLeavingPageRef.current = true
 
     const vw = window.innerWidth
     const vh = window.innerHeight
 
-    // 1. Tắt & thu nhỏ kính lúp
-    gsap.to(maskSizeRef.current, { size: 0, duration: 0.25, ease: 'power2.inOut' })
-
-    // Tiêu đề mờ dần
+    // 1. Đóng kính lúp + mờ tiêu đề
+    gsap.to(maskSizeRef.current, { size: 0, duration: 0.3, ease: 'power2.inOut' })
     if (titleRef.current) {
-      gsap.to(titleRef.current, { opacity: 0, y: 20, filter: 'blur(8px)', duration: 0.25 })
+      gsap.to(titleRef.current, { opacity: 0, y: 30, duration: 0.3, ease: 'power2.in' })
     }
 
-    // 2. Tính vị trí màn hình của từng ảnh từ layoutPxRef + camera offset
-    //    Không dùng getBoundingClientRect (bị ảnh hưởng bởi 3D perspective + clip mask)
-    const camX = lerpState.current.camX
-    const camY = lerpState.current.camY
-    const cameraZ = cameraZRef.current.z
+    // 2. Lưu frozenRelativeZ cho từng ảnh trước khi isLeaving = true
+    //    để UFO branch trong ticker có thể dùng
+    const targetCamZ = cameraZRef.current.z
     const LOOP_DEPTH = portfolioData.series.length * CHAPTER_Z_SPACING
-
-    type Snapshot = { screenX: number; screenY: number; width: number; height: number; imgSrc: string }
-    const snapshots: Snapshot[] = []
-
-    ALL_IMAGES.forEach((img, i) => {
-      const layout = TUNNEL_LAYOUT[i]!
-      const px = layoutPxRef.current[i]
+    layoutPxRef.current.forEach((px, i) => {
       if (!px) return
-
-      // Tính relativeZ giống ticker
+      const layout = TUNNEL_LAYOUT[i]!
       const baseChapterZ = -(layout.seriesIndex * CHAPTER_Z_SPACING)
-      const offset = Math.round((-cameraZ - baseChapterZ) / LOOP_DEPTH) * LOOP_DEPTH
+      const offset = Math.round((-targetCamZ - baseChapterZ) / LOOP_DEPTH) * LOOP_DEPTH
       const absoluteZ = baseChapterZ + offset
-      const relativeZ = absoluteZ + (px.currentCamZ ?? cameraZ)
-
-      // Chỉ lấy ảnh gần camera (visible range)
-      if (relativeZ < -3500 || relativeZ > 1500) return
-
-      // Vị trí ảnh trên màn hình (trung tâm ảnh)
-      // Ảnh được đặt tại px.x, px.y trong không gian camera
-      // Camera container offset: camX, camY
-      // Viewport center: vw/2, vh/2
-      const screenCenterX = vw / 2 + camX + px.x
-      const screenCenterY = vh / 2 + camY + px.y
-
-      // Chỉ lấy ảnh nằm trong hoặc gần viewport
-      if (screenCenterX < -300 || screenCenterX > vw + 300) return
-      if (screenCenterY < -300 || screenCenterY > vh + 300) return
-
-      // Tính kích thước: px.width là chiều rộng tính bằng pixel (từ layoutPxRef)
-      const w = px.width
-      const h = w / (img.aspectRatio || 1.5)
-
-      snapshots.push({
-        screenX: screenCenterX - w / 2,
-        screenY: screenCenterY - h / 2,
-        width: w,
-        height: h,
-        imgSrc: img.src
-      })
+      px.frozenRelativeZ = absoluteZ + (px.currentCamZ ?? targetCamZ)
     })
 
-    // Ẩn camera containers ngay
-    if (baseCameraRef.current) baseCameraRef.current.style.opacity = '0'
-    if (maskedCameraRef.current) maskedCameraRef.current.style.opacity = '0'
+    // 3. Bật cờ transition — RAF ticker chuyển sang UFO branch
+    isLeavingPageRef.current = true
 
-    if (snapshots.length === 0) {
-      // Fallback nếu không tính được vị trí
-      setRoute('detail')
-      return
-    }
-
-    // 3. Tạo overlay divs trên document.body tại đúng vị trí màn hình
-    const overlays: HTMLDivElement[] = []
-
-    snapshots.forEach(({ screenX, screenY, width, height, imgSrc }) => {
-      const div = document.createElement('div')
-      div.style.cssText = [
-        'position:fixed',
-        `left:${screenX}px`,
-        `top:${screenY}px`,
-        `width:${width}px`,
-        `height:${height}px`,
-        'overflow:hidden',
-        'z-index:9998',
-        'pointer-events:none',
-        'transform-origin:center center',
-        'will-change:transform,opacity',
-        'background:#1a1a1a',
-      ].join(';')
-
-      const imgEl = document.createElement('img')
-      imgEl.src = imgSrc
-      imgEl.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block'
-      div.appendChild(imgEl)
-      document.body.appendChild(div)
-      overlays.push(div)
-    })
-
-    // 4. GSAP Timeline — 4 nhịp, tổng ~2s
+    // 4. GSAP Timeline UFO Suction Effect
     const tl = gsap.timeline({
-      onComplete: () => {
-        overlays.forEach((o) => o.remove())
-        setRoute('detail')
-      }
+      onComplete: () => setRoute('detail')
     })
 
-    // ── Nhịp 1 (0.65s): Từng ảnh chậm rãi thu về chính giữa ──
-    overlays.forEach((overlay, i) => {
-      const snap = snapshots[i]!
-      const imgCenterX = snap.screenX + snap.width / 2
-      const imgCenterY = snap.screenY + snap.height / 2
-      const deltaX = vw / 2 - imgCenterX
-      const deltaY = vh / 2 - imgCenterY
-
-      tl.to(overlay, {
-        x: deltaX,
-        y: deltaY,
-        duration: 0.65,
-        ease: 'power2.out'
-      }, 0)
-    })
-
-    // ── Nhịp 2 (0.35s): Phóng to nhanh ──
-    tl.to(overlays, { scale: 7, duration: 0.35, ease: 'power2.out' }, 0.65)
-
-    // ── Nhịp 3 (0.3s): Nẩy thu nhỏ lại một chút ──
-    tl.to(overlays, { scale: 5.5, duration: 0.3, ease: 'sine.inOut' }, 1.0)
-
-    // ── Nhịp 4 (0.35s): Kéo xuống nhẹ + mờ dần ──
-    tl.to(overlays, {
-      y: `+=${vh * 0.6}`,
-      opacity: 0,
-      duration: 0.35,
+    // Camera pan xuống đáy màn hình (lerp mouse → below viewport)
+    tl.to(lerpState.current, {
+      mouseX: vw / 2,
+      mouseY: vh + 500,
+      duration: 0.9,
       ease: 'power2.in'
-    }, 1.3)
+    }, 0)
+
+    // Từng ảnh: thu về trung tâm X, hút xuống đáy Y
+    // Stagger nhẹ dựa vào khoảng cách từ tâm màn hình
+    layoutPxRef.current.forEach((px) => {
+      if (!px) return
+      const distFromCenter = Math.abs(px.x) / (vw * 0.5)
+      const stagger = distFromCenter * 0.15  // ảnh xa trung tâm → delay nhẹ hơn
+      tl.to(px, {
+        x: 0,
+        y: px.y + vh * 2.0,
+        duration: 0.75,
+        ease: 'power3.in'
+      }, stagger)
+    })
+
+    // Fade toàn bộ camera ra
+    tl.to(transitionStateRef.current, {
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.in'
+    }, 0.5)
   }
 
   const handleImageClick = () => {
