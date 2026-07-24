@@ -576,15 +576,26 @@ export function HomeMosaic() {
 
     const runIntroAnimation = () => {
       const targetZ = cameraZRef.current.z
-      // Bắt đầu từ 2 chapters phía sau → lao vào mạnh
-      const startZ = targetZ - CHAPTER_Z_SPACING * 2
+      // Đặt vị trí xuất phát lùi xa trong đường hầm 3D (3000px)
+      const startZ = targetZ - 3000
       cameraZRef.current.z = startZ
-      layoutPxRef.current.forEach((px) => { if (px) px.currentCamZ = startZ })
 
+      // Reset tức thì currentCamZ để hiệu ứng lao đường hầm mượt mà
+      layoutPxRef.current.forEach((px) => {
+        if (px) px.currentCamZ = startZ
+      })
+
+      // GSAP animate cameraZRef.current từ startZ về targetZ (3D Tunnel Fly-In Effect)
       gsap.to(cameraZRef.current, {
         z: targetZ,
-        duration: 2.0,
+        duration: 2.2,
         ease: 'power3.out',
+        onUpdate: () => {
+          // Ép currentCamZ của các ảnh bám theo cameraZRef để tạo cảm giác bay vào thật mượt
+          layoutPxRef.current.forEach((px) => {
+            if (px) px.currentCamZ = cameraZRef.current.z
+          })
+        }
       })
     }
 
