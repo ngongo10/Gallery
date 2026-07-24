@@ -662,167 +662,143 @@ export function HomeMosaic() {
   }, [activeIndex, setActiveSeriesId])
 
   const handleTransitionOut = () => {
+    // Tránh double-trigger
+    if (isLeavingPageRef.current) return
     isLeavingPageRef.current = true
-
-    // 1. Tắt & thu nhỏ kính lúp
-    gsap.to(maskSizeRef.current, {
-      size: 0,
-      duration: 0.25,
-      ease: 'power2.inOut'
-    })
-
-    // Tiêu đề mờ dần nhanh
-    if (titleRef.current) {
-      gsap.to(titleRef.current, {
-        opacity: 0,
-        y: 20,
-        filter: 'blur(8px)',
-        duration: 0.25
-      })
-    }
 
     const vw = window.innerWidth
     const vh = window.innerHeight
 
-    // Force-show tất cả ảnh trong base layer để getBoundingClientRect hoạt động đúng
-    // RAF có thể đã set visibility:hidden cho một số ảnh nên cần unhide trước khi đo
-    baseImagesRef.current.forEach((el) => {
-      if (!el) return
-      el.style.visibility = 'visible'
-      el.style.opacity = '1'
-    })
-    maskedImagesRef.current.forEach((el) => {
-      if (!el) return
-      el.style.visibility = 'visible'
-      el.style.opacity = '1'
-    })
+    // 1. Tắt & thu nhỏ kính lúp
+    gsap.to(maskSizeRef.current, { size: 0, duration: 0.25, ease: 'power2.inOut' })
 
-    // 2. Chụp snapshot vị trí màn hình của từng ảnh đang visible
-    //    Dùng maskedImagesRef vì chỉ masked layer mới có <img> thực
-    type Snapshot = { rect: DOMRect; imgSrc: string; bgColor: string }
+    // Tiêu đề mờ dần
+    if (titleRef.current) {
+      gsap.to(titleRef.current, { opacity: 0, y: 20, filter: 'blur(8px)', duration: 0.25 })
+    }
+
+    // 2. Tính vị trí màn hình của từng ảnh từ layoutPxRef + camera offset
+    //    Không dùng getBoundingClientRect (bị ảnh hưởng bởi 3D perspective + clip mask)
+    const camX = lerpState.current.camX
+    const camY = lerpState.current.camY
+    const cameraZ = cameraZRef.current.z
+    const LOOP_DEPTH = portfolioData.series.length * CHAPTER_Z_SPACING
+
+    type Snapshot = { screenX: number; screenY: number; width: number; height: number; imgSrc: string }
     const snapshots: Snapshot[] = []
 
-    maskedImagesRef.current.forEach((el, i) => {
-      if (!el) return
-      const rect = el.getBoundingClientRect()
-      // Bỏ qua ảnh quá nhỏ hoặc hoàn toàn ngoài viewport
-      if (rect.width < 5) return
-      if (rect.right < -200 || rect.left > vw + 200) return
-      if (rect.bottom < -200 || rect.top > vh + 200) return
+    ALL_IMAGES.forEach((img, i) => {
+      const layout = TUNNEL_LAYOUT[i]!
+      const px = layoutPxRef.current[i]
+      if (!px) return
 
-      // Lấy src từ <img> trong masked layer
-      const imgEl = el.querySelector('img')
-      const imgSrc = imgEl?.src ?? ALL_IMAGES[i]?.src ?? ''
-      
-      // Lấy bgColor từ base layer tương ứng
-      const baseEl = baseImagesRef.current[i]
-      const placeholderEl = baseEl?.querySelector('[style*="background"]') as HTMLElement | null
-      const bgColor = placeholderEl?.style.backgroundColor ?? '#111'
+      // Tính relativeZ giống ticker
+      const baseChapterZ = -(layout.seriesIndex * CHAPTER_Z_SPACING)
+      const offset = Math.round((-cameraZ - baseChapterZ) / LOOP_DEPTH) * LOOP_DEPTH
+      const absoluteZ = baseChapterZ + offset
+      const relativeZ = absoluteZ + (px.currentCamZ ?? cameraZ)
 
-      snapshots.push({ rect, imgSrc, bgColor })
+      // Chỉ lấy ảnh gần camera (visible range)
+      if (relativeZ < -3500 || relativeZ > 1500) return
+
+      // Vị trí ảnh trên màn hình (trung tâm ảnh)
+      // Ảnh được đặt tại px.x, px.y trong không gian camera
+      // Camera container offset: camX, camY
+      // Viewport center: vw/2, vh/2
+      const screenCenterX = vw / 2 + camX + px.x
+      const screenCenterY = vh / 2 + camY + px.y
+
+      // Chỉ lấy ảnh nằm trong hoặc gần viewport
+      if (screenCenterX < -300 || screenCenterX > vw + 300) return
+      if (screenCenterY < -300 || screenCenterY > vh + 300) return
+
+      // Tính kích thước: px.width là chiều rộng tính bằng pixel (từ layoutPxRef)
+      const w = px.width
+      const h = w / (img.aspectRatio || 1.5)
+
+      snapshots.push({
+        screenX: screenCenterX - w / 2,
+        screenY: screenCenterY - h / 2,
+        width: w,
+        height: h,
+        imgSrc: img.src
+      })
     })
 
-    // Nếu không có ảnh visible → dùng fallback: lấy tất cả base images
-    if (snapshots.length === 0) {
-      baseImagesRef.current.forEach((el, i) => {
-        if (!el) return
-        const rect = el.getBoundingClientRect()
-        if (rect.width < 5) return
-        if (rect.right < -200 || rect.left > vw + 200) return
-        if (rect.bottom < -200 || rect.top > vh + 200) return
-        const imgSrc = ALL_IMAGES[i]?.src ?? ''
-        snapshots.push({ rect, imgSrc, bgColor: '#111' })
-      })
-    }
-
-    // Ẩn bản gốc ngay (để không nhìn thấy cả 2)
-    if (baseCameraRef.current) {
-      baseCameraRef.current.style.opacity = '0'
-    }
-    if (maskedCameraRef.current) {
-      maskedCameraRef.current.style.opacity = '0'
-    }
+    // Ẩn camera containers ngay
+    if (baseCameraRef.current) baseCameraRef.current.style.opacity = '0'
+    if (maskedCameraRef.current) maskedCameraRef.current.style.opacity = '0'
 
     if (snapshots.length === 0) {
+      // Fallback nếu không tính được vị trí
       setRoute('detail')
       return
     }
 
-    // 3. Tạo overlay elements trên document.body tại đúng vị trí màn hình
-    //    (Ngoài 3D perspective container → position: fixed hoạt động đúng)
+    // 3. Tạo overlay divs trên document.body tại đúng vị trí màn hình
     const overlays: HTMLDivElement[] = []
 
-    snapshots.forEach(({ rect, imgSrc, bgColor }) => {
+    snapshots.forEach(({ screenX, screenY, width, height, imgSrc }) => {
       const div = document.createElement('div')
-      div.style.cssText = `
-        position: fixed;
-        left: ${rect.left}px;
-        top: ${rect.top}px;
-        width: ${rect.width}px;
-        height: ${rect.height}px;
-        overflow: hidden;
-        z-index: 9998;
-        pointer-events: none;
-        transform-origin: center center;
-        will-change: transform, opacity;
-        background-color: ${bgColor};
-      `
-      if (imgSrc) {
-        const img = document.createElement('img')
-        img.src = imgSrc
-        img.style.cssText = 'position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;'
-        div.appendChild(img)
-      }
+      div.style.cssText = [
+        'position:fixed',
+        `left:${screenX}px`,
+        `top:${screenY}px`,
+        `width:${width}px`,
+        `height:${height}px`,
+        'overflow:hidden',
+        'z-index:9998',
+        'pointer-events:none',
+        'transform-origin:center center',
+        'will-change:transform,opacity',
+        'background:#1a1a1a',
+      ].join(';')
+
+      const imgEl = document.createElement('img')
+      imgEl.src = imgSrc
+      imgEl.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block'
+      div.appendChild(imgEl)
       document.body.appendChild(div)
       overlays.push(div)
     })
 
-    // 4. GSAP Timeline — 4 nhịp diễn ra trong ~2 giây
+    // 4. GSAP Timeline — 4 nhịp, tổng ~2s
     const tl = gsap.timeline({
       onComplete: () => {
-        // Dọn dẹp overlays
         overlays.forEach((o) => o.remove())
         setRoute('detail')
       }
     })
 
-    // ── Nhịp 1 (0.6s): Chậm rãi từng ảnh thu về chính giữa khung hình ──
+    // ── Nhịp 1 (0.65s): Từng ảnh chậm rãi thu về chính giữa ──
     overlays.forEach((overlay, i) => {
-      const rect = snapshots[i]!.rect
-      const imgCenterX = rect.left + rect.width / 2
-      const imgCenterY = rect.top + rect.height / 2
+      const snap = snapshots[i]!
+      const imgCenterX = snap.screenX + snap.width / 2
+      const imgCenterY = snap.screenY + snap.height / 2
       const deltaX = vw / 2 - imgCenterX
       const deltaY = vh / 2 - imgCenterY
 
       tl.to(overlay, {
         x: deltaX,
         y: deltaY,
-        duration: 0.6,
+        duration: 0.65,
         ease: 'power2.out'
-      }, 0) // tất cả chạy đồng thời từ t=0
+      }, 0)
     })
 
-    // ── Nhịp 2 (0.35s): Phóng to nhanh — vừa với cỡ gallery ──
-    tl.to(overlays, {
-      scale: 6,
-      duration: 0.35,
-      ease: 'power2.out'
-    }, 0.6)
+    // ── Nhịp 2 (0.35s): Phóng to nhanh ──
+    tl.to(overlays, { scale: 7, duration: 0.35, ease: 'power2.out' }, 0.65)
 
-    // ── Nhịp 3 (0.3s): Từ từ thu nhỏ lại nhẹ (nẩy back) ──
-    tl.to(overlays, {
-      scale: 4.8,
-      duration: 0.3,
-      ease: 'sine.inOut'
-    }, 0.95)
+    // ── Nhịp 3 (0.3s): Nẩy thu nhỏ lại một chút ──
+    tl.to(overlays, { scale: 5.5, duration: 0.3, ease: 'sine.inOut' }, 1.0)
 
-    // ── Nhịp 4 (0.35s): Nhanh — kéo xuống nhẹ nhàng và mờ dần ──
+    // ── Nhịp 4 (0.35s): Kéo xuống nhẹ + mờ dần ──
     tl.to(overlays, {
-      y: `+=${vh * 0.55}`,
+      y: `+=${vh * 0.6}`,
       opacity: 0,
       duration: 0.35,
       ease: 'power2.in'
-    }, 1.25)
+    }, 1.3)
   }
 
   const handleImageClick = () => {
