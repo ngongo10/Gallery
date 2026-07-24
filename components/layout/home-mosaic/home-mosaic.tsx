@@ -232,24 +232,25 @@ export function HomeMosaic() {
     isHomeVisibleRef.current = currentRoute === 'home'
 
     if (currentRoute === 'home') {
-      // 1. Phục hồi hoàn toàn trạng thái hiển thị khi quay về Home
+      // Kill tất cả tween đang chạy
+      gsap.killTweensOf(transitionStateRef.current)
+      gsap.killTweensOf(lerpState.current)
+      gsap.killTweensOf(maskSizeRef.current)
+
+      // 1. Reset cờ transition
       isLeavingPageRef.current = false
 
+      // 2. Reset title
       if (titleRef.current) {
         gsap.killTweensOf(titleRef.current)
-        gsap.set(titleRef.current, {
-          opacity: 1,
-          filter: 'blur(0px)',
-          y: 0
-        })
+        gsap.set(titleRef.current, { opacity: 1, filter: 'blur(0px)', y: 0 })
       }
 
-      // Reset transition state ref khi về Home
+      // 3. Reset transitionStateRef (opacity bị set = 0 khi UFO)
       const ts = transitionStateRef.current
       ts.tx = 0; ts.ty = 0; ts.scale = 1; ts.opacity = 1
-      gsap.killTweensOf(ts)
 
-      // Reset opacity trực tiếp trên style (vì transition set opacity = 0 trực tiếp)
+      // 4. Reset camera containers style trực tiếp
       if (baseCameraRef.current) {
         baseCameraRef.current.style.opacity = '1'
         baseCameraRef.current.style.transform = ''
@@ -259,21 +260,40 @@ export function HomeMosaic() {
         maskedCameraRef.current.style.transform = ''
       }
 
+      // 5. Reset lerpState mouse về giữa màn hình (lerpState.mouseY bị kéo xuống vh+500)
+      lerpState.current.mouseX = window.innerWidth / 2
+      lerpState.current.mouseY = window.innerHeight / 2
+      lerpState.current.maskX = window.innerWidth / 2
+      lerpState.current.maskY = window.innerHeight / 2
+      lerpState.current.camX = 0
+      lerpState.current.camY = 0
+
+      // 6. Restore layoutPxRef x/y từ TUNNEL_LAYOUT gốc (UFO tween đã làm lệch chúng)
+      //    Kill tất cả tweens trên từng px object trước
+      layoutPxRef.current.forEach((px) => {
+        if (px) gsap.killTweensOf(px)
+      })
+      const w = window.innerWidth
+      const h = window.innerHeight
+      const isDesktop = w > 800
+      TUNNEL_LAYOUT.forEach((layout, i) => {
+        const px = layoutPxRef.current[i]
+        if (!px) return
+        px.x = ((layout.x * (isDesktop ? 1.0 : 0.6)) / 100) * w
+        px.y = ((layout.y * (isDesktop ? 1.0 : 0.6)) / 100) * h
+        px.frozenRelativeZ = undefined
+      })
+
+      // 7. Reset image wrappers
       const baseWrappers = baseImagesRef.current.filter(Boolean)
       const maskWrappers = maskedImagesRef.current.filter(Boolean)
       const allWrappers = [...baseWrappers, ...maskWrappers]
       if (allWrappers.length > 0) {
         gsap.killTweensOf(allWrappers)
-        gsap.set(allWrappers, {
-          scale: 1,
-          x: 0,
-          y: 0,
-          z: 0,
-          opacity: 1
-        })
+        gsap.set(allWrappers, { scale: 1, x: 0, y: 0, z: 0, opacity: 1, visibility: 'visible' })
       }
 
-      // Đảm bảo kính lúp luôn mở ở kích thước chuẩn
+      // 8. Kính lúp mở lại
       maskSizeRef.current.size = 450
     }
   }, [currentRoute])
