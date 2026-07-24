@@ -244,7 +244,9 @@ export function HomeMosaic() {
       if (baseCameraRef.current) {
         gsap.killTweensOf(baseCameraRef.current)
         gsap.set(baseCameraRef.current, {
+          x: 0,
           y: 0,
+          scale: 1,
           opacity: 1
         })
       }
@@ -659,37 +661,58 @@ export function HomeMosaic() {
   const handleTransitionOut = () => {
     isLeavingPageRef.current = true
 
-    // 1. Thu nhỏ mượt nhẹ kính lúp
+    // 1. Tắt & thu nhỏ kính lúp ngay lập tức trong 0.2s
     gsap.to(maskSizeRef.current, {
       size: 0,
-      duration: 0.45,
+      duration: 0.2,
       ease: 'power2.inOut'
     })
 
-    // 2. Tiêu đề mờ dần nhẹ
+    // Tiêu đề mờ dần nhanh
     if (titleRef.current) {
       gsap.to(titleRef.current, {
         opacity: 0,
-        y: 40,
-        filter: 'blur(10px)',
-        duration: 0.5,
-        ease: 'power2.in'
+        y: 20,
+        filter: 'blur(8px)',
+        duration: 0.3
       })
     }
 
-    // 3. AN TOÀN 100%: Kéo trượt nguyên khối khung Camera cha xuống mép đáy dưới.
-    // Tuyệt đối không can thiệp x/y của từng bức ảnh -> Không bao giờ bị gom về tâm!
-    const targetDistance = window.innerHeight + 300
-
-    if (baseCameraRef.current) {
-      gsap.to(baseCameraRef.current, {
-        y: targetDistance,
-        opacity: 0,
-        duration: 0.75,
-        ease: 'power3.in',
+    // 2. Kịch bản Animation Chuẩn (Tổng 1.0 giây)
+    const container = baseCameraRef.current
+    if (container) {
+      const tl = gsap.timeline({
         onComplete: () => {
           setRoute('detail')
         }
+      })
+
+      // Nhịp 1: Chậm rãi thu kéo các ảnh về chính giữa khung hình (0.35s)
+      tl.to(container, {
+        x: 0,
+        y: 0,
+        duration: 0.35,
+        ease: 'power2.out'
+      })
+      // Nhịp 2: Phóng to ra nhanh (0.2s)
+      .to(container, {
+        scale: 1.3,
+        duration: 0.2,
+        ease: 'power2.out'
+      })
+      // Nhịp 3: Từ từ thu nhỏ lại 1 chút nhịp nhàng (0.25s)
+      .to(container, {
+        scale: 1.1,
+        duration: 0.25,
+        ease: 'sine.inOut'
+      })
+      // Nhịp 4: Nhanh chóng kéo lướt nhẹ nhàng xuống phía dưới và mờ dần (0.2s)
+      .to(container, {
+        y: window.innerHeight * 0.7,
+        scale: 0.9,
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.in'
       })
     } else {
       setRoute('detail')
