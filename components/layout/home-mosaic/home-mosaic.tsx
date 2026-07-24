@@ -643,57 +643,37 @@ export function HomeMosaic() {
   const handleTransitionOut = () => {
     isLeavingPageRef.current = true
 
-    const baseWrappers = baseImagesRef.current.filter(Boolean)
-    const maskWrappers = maskedImagesRef.current.filter(Boolean)
-    const allWrappers = [...baseWrappers, ...maskWrappers]
+    // 1. Thu nhỏ mượt nhẹ kính lúp
+    gsap.to(maskSizeRef.current, {
+      size: 0,
+      duration: 0.45,
+      ease: 'power2.inOut'
+    })
 
-    if (allWrappers.length > 0) {
-      gsap.killTweensOf(allWrappers)
-
-      // Thu nhỏ nhẹ kính lúp
-      gsap.to(maskSizeRef.current, {
-        size: 0,
-        duration: 0.45,
-        ease: 'power2.inOut'
+    // 2. Tiêu đề mờ dần nhẹ
+    if (titleRef.current) {
+      gsap.to(titleRef.current, {
+        opacity: 0,
+        y: 40,
+        filter: 'blur(10px)',
+        duration: 0.5,
+        ease: 'power2.in'
       })
+    }
 
-      // Tiêu đề trượt tuột nhẹ xuống dưới và mờ dần
-      if (titleRef.current) {
-        gsap.to(titleRef.current, {
-          opacity: 0,
-          y: 60,
-          filter: 'blur(10px)',
-          duration: 0.6,
-          ease: 'power2.in'
-        })
-      }
+    // 3. AN TOÀN 100%: Kéo trượt nguyên khối khung Camera cha xuống mép đáy dưới.
+    // Tuyệt đối không can thiệp x/y của từng bức ảnh -> Không bao giờ bị gom về tâm!
+    const targetDistance = window.innerHeight + 300
 
-      // HIỆU ỨNG MACOS GENIE EFFECT: Ảnh ở trục ngang X nào giữ nguyên trục X đó, trượt kéo dẹp vút tuột xuống mép đáy dưới
-      allWrappers.forEach((el, i) => {
-        if (!el) return
-        
-        // Lấy tọa độ thực tế hiện tại
-        const rect = el.getBoundingClientRect()
-        const currentY = rect.top
-        const distanceToBottom = window.innerHeight - currentY + 150
-
-        gsap.to(el, {
-          y: `+=${distanceToBottom}`, // Trượt tuột thẳng xuống vượt qua mép đáy dưới
-          scaleY: 0.2,                 // Dẹp dải dọc giống hiệu ứng Genie macOS
-          scaleX: 0.85,                // Giữ dáng ngang thanh thoát
-          opacity: 0,                  // Mờ dần tự nhiên
-          duration: 0.8,               // Độ mượt 0.8s
-          stagger: {
-            amount: 0.2,
-            from: 'start'              // Nhịp lướt tuột từ trên xuống dưới
-          },
-          ease: 'power3.in',           // Gia tốc rơi tuột xuống đáy siêu mượt
-          onComplete: () => {
-            if (i === 0) {
-              setRoute('detail')
-            }
-          }
-        })
+    if (baseCameraRef.current) {
+      gsap.to(baseCameraRef.current, {
+        y: targetDistance,
+        opacity: 0,
+        duration: 0.75,
+        ease: 'power3.in',
+        onComplete: () => {
+          setRoute('detail')
+        }
       })
     } else {
       setRoute('detail')
