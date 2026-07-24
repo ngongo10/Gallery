@@ -38,25 +38,25 @@ export function MenuOverlay() {
       )
     } else {
       // --- ĐÓNG MENU (NGƯỢC LẠI HOÀN TOÀN 100%) ---
-      // 1. Nội dung chữ trôi ngược biến mất trước (Stagger từ dưới lên)
+      // 1. Chữ thu biến mất ngược từ dưới lên
       gsap.to(items, {
         opacity: 0,
-        y: -16,
-        duration: 0.25,
+        y: -24,
+        duration: 0.3,
         ease: 'power2.in',
-        stagger: { each: 0.035, from: 'end' },
+        stagger: { each: 0.03, from: 'end' }
+      })
+
+      // 2. Màn hình đen thu cuộn ngược lên đỉnh trên cùng đồng thời (lệch nhẹ 0.08s)
+      gsap.to(el, {
+        clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)',
+        duration: 0.55,
+        delay: 0.08,
+        ease: 'power3.inOut',
         onComplete: () => {
-          // 2. SAU KHI chữ đã biến mất -> Màn trướng mới rút cuộn ngược lên đỉnh trên cùng
-          gsap.to(el, {
-            clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)',
-            duration: 0.5,
-            ease: 'power3.inOut',
-            onComplete: () => {
-              gsap.set(el, { display: 'none' })
-              // Reset sẵn trạng thái chữ cho lần mở tiếp theo
-              gsap.set(items, { opacity: 0, y: 24 })
-            }
-          })
+          gsap.set(el, { display: 'none' })
+          // Reset sẵn trạng thái cho lần mở tiếp theo
+          gsap.set(items, { opacity: 0, y: 24 })
         }
       })
     }
