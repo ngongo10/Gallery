@@ -214,6 +214,9 @@ export function HomeMosaic() {
   const cameraZRef = useRef({ z: activeIndex >= 0 ? activeIndex * CHAPTER_Z_SPACING : 0 })
   const maskSizeRef = useRef({ size: 450 })
 
+  // Transition animation state — RAF ticker đọc từ đây, GSAP animate vào đây
+  const transitionStateRef = useRef({ tx: 0, ty: 0, scale: 1, opacity: 1 })
+
   // Lerp state
   const lerpState = useRef({
     mouseX: typeof window !== 'undefined' ? window.innerWidth / 2 : 0,
@@ -241,15 +244,11 @@ export function HomeMosaic() {
         })
       }
 
-      if (baseCameraRef.current) {
-        gsap.killTweensOf(baseCameraRef.current)
-        gsap.set(baseCameraRef.current, {
-          x: 0,
-          y: 0,
-          scale: 1,
-          opacity: 1
-        })
-      }
+      // Reset transition state ref khi về Home
+      const ts = transitionStateRef.current
+      ts.tx = 0; ts.ty = 0; ts.scale = 1; ts.opacity = 1
+      // Cũng clear bất kỳ tween nào đang chạy trên transitionStateRef
+      gsap.killTweensOf(ts)
 
       if (maskedCameraRef.current) {
         gsap.killTweensOf(maskedCameraRef.current)
@@ -334,7 +333,9 @@ export function HomeMosaic() {
     // --- Kết thúc touch hold + drag ---
 
     const ticker = () => {
-      if (isLeavingPageRef.current) return
+      // Khi đang transition: vẫn cần chạy ticker để render GSAP animation
+      // Chỉ skip phần scroll depth update
+      const isLeaving = isLeavingPageRef.current
       const state = lerpState.current
       const cw = window.innerWidth / 2
       const ch = window.innerHeight / 2
@@ -360,73 +361,74 @@ export function HomeMosaic() {
       }
 
       // 2. Parallax camera (moves opposite to mouse)
-      // Giảm hệ số xuống 0.4 để camera không bị trôi ra quá xa ngoài lề vùng ảnh (tránh tạo vùng trắng vô cực)
       const targetCamX = (cw - state.mouseX) * 0.4
       const targetCamY = (ch - state.mouseY) * 0.4
       
       state.camX += (targetCamX - state.camX) * 0.08
       state.camY += (targetCamY - state.camY) * 0.08
 
-      // 3. Apply Camera transform (Parallax only)
-      const transform = `translate3d(${state.camX}px, ${state.camY}px, 0px)`
-      if (baseCameraRef.current) baseCameraRef.current.style.transform = transform
-      if (maskedCameraRef.current) maskedCameraRef.current.style.transform = transform
+      // 3. Apply Camera transform: parallax + transition offset kết hợp
+      const ts = transitionStateRef.current
+      const finalX = state.camX + ts.tx
+      const finalY = state.camY + ts.ty
+      const transform = `translate3d(${finalX}px, ${finalY}px, 0px) scale(${ts.scale})`
+      if (baseCameraRef.current) {
+        baseCameraRef.current.style.transform = transform
+        baseCameraRef.current.style.opacity = String(ts.opacity)
+      }
+      if (maskedCameraRef.current) {
+        maskedCameraRef.current.style.transform = transform
+        maskedCameraRef.current.style.opacity = String(ts.opacity)
+      }
 
-      // 4. Update Images Z for infinite wrap using depth fade-out math
-      const targetCamZ = cameraZRef.current.z
-      const LOOP_DEPTH = portfolioData.series.length * CHAPTER_Z_SPACING
+      // 4. Update Images Z - chỉ khi không đang transition
+      if (!isLeaving) {
+        const targetCamZ = cameraZRef.current.z
+        const LOOP_DEPTH = portfolioData.series.length * CHAPTER_Z_SPACING
 
-      TUNNEL_LAYOUT.forEach((layout, i) => {
-        const px = layoutPxRef.current[i]
-        if (!px) return
+        TUNNEL_LAYOUT.forEach((layout, i) => {
+          const px = layoutPxRef.current[i]
+          if (!px) return
 
-        // Calculate offset so the chapter only wraps when it is far behind/ahead of the camera
-        const baseChapterZ = -(layout.seriesIndex * CHAPTER_Z_SPACING)
-        const offset = Math.round((-targetCamZ - baseChapterZ) / LOOP_DEPTH) * LOOP_DEPTH
-        const absoluteZ = baseChapterZ + offset
-        
-        // Smoothly interpolate this image's personal camera Z towards the global target camera Z
-        if (px.currentCamZ === undefined) px.currentCamZ = targetCamZ;
-        px.currentCamZ += (targetCamZ - px.currentCamZ) * (layout.lagSpeed || 0.1);
+          const baseChapterZ = -(layout.seriesIndex * CHAPTER_Z_SPACING)
+          const offset = Math.round((-targetCamZ - baseChapterZ) / LOOP_DEPTH) * LOOP_DEPTH
+          const absoluteZ = baseChapterZ + offset
+          
+          if (px.currentCamZ === undefined) px.currentCamZ = targetCamZ;
+          px.currentCamZ += (targetCamZ - px.currentCamZ) * (layout.lagSpeed || 0.1);
 
-        // Z position relative to the camera
-        const relativeZ = absoluteZ + px.currentCamZ
-        
-        // - Opacity is 0 when far away (relativeZ < -3500)
-        // - Fades in from -3500 to -2000 (opacity 0 -> 1)
-        // - Stays 1 from -2000 to 500
-        // - Fades out from 500 to 1500 (opacity 1 -> 0)
-        let depthOpacity = 0
-        if (relativeZ >= -3500 && relativeZ <= 1500) {
-          if (relativeZ < -2000) {
-            depthOpacity = (relativeZ - (-3500)) / 1500
-          } else if (relativeZ > 500) {
-            depthOpacity = (1500 - relativeZ) / 1000
-          } else {
-            depthOpacity = 1
+          const relativeZ = absoluteZ + px.currentCamZ
+          
+          let depthOpacity = 0
+          if (relativeZ >= -3500 && relativeZ <= 1500) {
+            if (relativeZ < -2000) {
+              depthOpacity = (relativeZ - (-3500)) / 1500
+            } else if (relativeZ > 500) {
+              depthOpacity = (1500 - relativeZ) / 1000
+            } else {
+              depthOpacity = 1
+            }
           }
-        }
 
-        const isVisible = depthOpacity > 0
-
-        // Fully hardware accelerated translate3d avoiding expensive calc()
-        const imgTransform = `translate3d(${px.x}px, ${px.y}px, ${relativeZ}px) translate(-50%, -50%)`
-        
-        if (baseImagesRef.current[i]) {
-          baseImagesRef.current[i]!.style.transform = imgTransform
-          baseImagesRef.current[i]!.style.opacity = String(depthOpacity)
-          baseImagesRef.current[i]!.style.pointerEvents = isVisible ? 'auto' : 'none'
-          baseImagesRef.current[i]!.style.cursor = isVisible ? 'pointer' : 'default'
-          baseImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
-        }
-        if (maskedImagesRef.current[i]) {
-          maskedImagesRef.current[i]!.style.transform = imgTransform
-          maskedImagesRef.current[i]!.style.opacity = isVisible ? String(depthOpacity) : '0'
-          maskedImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
-          maskedImagesRef.current[i]!.style.pointerEvents = isVisible ? 'auto' : 'none'
-          maskedImagesRef.current[i]!.style.cursor = isVisible ? 'pointer' : 'default'
-        }
-      })
+          const isVisible = depthOpacity > 0
+          const imgTransform = `translate3d(${px.x}px, ${px.y}px, ${relativeZ}px) translate(-50%, -50%)`
+          
+          if (baseImagesRef.current[i]) {
+            baseImagesRef.current[i]!.style.transform = imgTransform
+            baseImagesRef.current[i]!.style.opacity = String(depthOpacity)
+            baseImagesRef.current[i]!.style.pointerEvents = isVisible ? 'auto' : 'none'
+            baseImagesRef.current[i]!.style.cursor = isVisible ? 'pointer' : 'default'
+            baseImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
+          }
+          if (maskedImagesRef.current[i]) {
+            maskedImagesRef.current[i]!.style.transform = imgTransform
+            maskedImagesRef.current[i]!.style.opacity = isVisible ? String(depthOpacity) : '0'
+            maskedImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
+            maskedImagesRef.current[i]!.style.pointerEvents = isVisible ? 'auto' : 'none'
+            maskedImagesRef.current[i]!.style.cursor = isVisible ? 'pointer' : 'default'
+          }
+        })
+      }
     }
 
     let rafId: number
@@ -678,45 +680,46 @@ export function HomeMosaic() {
       })
     }
 
-    // 2. Kịch bản Animation Chuẩn (Tổng 1.0 giây)
-    const container = baseCameraRef.current
-    if (container) {
-      const tl = gsap.timeline({
-        onComplete: () => {
-          setRoute('detail')
-        }
-      })
+    // 2. Kịch bản Animation Chuẩn qua transitionStateRef (KHÔNG ghi đè style trực tiếp)
+    // RAF ticker sẽ đọc transitionStateRef và kết hợp vào transform mỗi frame
+    const ts = transitionStateRef.current
+    // Reset về trạng thái hiện tại
+    ts.tx = 0; ts.ty = 0; ts.scale = 1; ts.opacity = 1
 
-      // Nhịp 1: Chậm rãi thu kéo các ảnh về chính giữa khung hình (0.35s)
-      tl.to(container, {
-        x: 0,
-        y: 0,
-        duration: 0.35,
-        ease: 'power2.out'
-      })
-      // Nhịp 2: Phóng to ra nhanh (0.2s)
-      .to(container, {
-        scale: 1.3,
-        duration: 0.2,
-        ease: 'power2.out'
-      })
-      // Nhịp 3: Từ từ thu nhỏ lại 1 chút nhịp nhàng (0.25s)
-      .to(container, {
-        scale: 1.1,
-        duration: 0.25,
-        ease: 'sine.inOut'
-      })
-      // Nhịp 4: Nhanh chóng kéo lướt nhẹ nhàng xuống phía dưới và mờ dần (0.2s)
-      .to(container, {
-        y: window.innerHeight * 0.7,
-        scale: 0.9,
-        opacity: 0,
-        duration: 0.2,
-        ease: 'power2.in'
-      })
-    } else {
-      setRoute('detail')
-    }
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setRoute('detail')
+      }
+    })
+
+    // Nhịp 1: Thu kéo parallax về chính giữa (camX/camY về 0) trong 0.35s
+    // Animate camX/camY về 0 qua lerpState để neutralize parallax
+    tl.to(lerpState.current, {
+      mouseX: window.innerWidth / 2,
+      mouseY: window.innerHeight / 2,
+      duration: 0.35,
+      ease: 'power2.out'
+    })
+    // Nhịp 2: Phóng to ra nhanh (0.2s)
+    .to(ts, {
+      scale: 1.35,
+      duration: 0.2,
+      ease: 'power2.out'
+    })
+    // Nhịp 3: Từ từ nẩy thu nhỏ lại 1 chút (0.25s)
+    .to(ts, {
+      scale: 1.12,
+      duration: 0.25,
+      ease: 'sine.inOut'
+    })
+    // Nhịp 4: Kéo xuống nhanh và mờ dần (0.2s)
+    .to(ts, {
+      ty: window.innerHeight * 0.7,
+      scale: 0.9,
+      opacity: 0,
+      duration: 0.2,
+      ease: 'power2.in'
+    })
   }
 
   const handleImageClick = () => {
