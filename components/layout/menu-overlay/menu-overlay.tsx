@@ -18,22 +18,45 @@ export function MenuOverlay() {
     const el = overlayRef.current
     if (!el) return
 
+    // Tập hợp tất cả các thẻ nội dung chữ bên trong Menu
+    const items = el.querySelectorAll(`.${s.navItem}, .${s.subNavItem}, .${s.languageSelector}`)
+
     if (menuOpen) {
-      // --- MỞ MENU: Xổ trướng từ trên xuống ---
+      // --- MỞ MENU ---
+      // 1. Màn trướng xổ xuống từ trên
       gsap.set(el, { display: 'flex' })
       gsap.fromTo(
         el,
         { clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)' },
         { clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', duration: 0.6, ease: 'power3.inOut' }
       )
+      // 2. Nội dung chữ từ dưới trôi nẩy lên hiện ra (Stagger từ trên xuống)
+      gsap.fromTo(
+        items,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out', stagger: 0.05, delay: 0.3 }
+      )
     } else {
-      // --- ĐÓNG MENU: Rút cuộn ngược từ dưới lên trên ---
-      gsap.to(el, {
-        clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)',
-        duration: 0.5,
-        ease: 'power3.inOut',
+      // --- ĐÓNG MENU (NGƯỢC LẠI HOÀN TOÀN 100%) ---
+      // 1. Nội dung chữ trôi ngược biến mất trước (Stagger từ dưới lên)
+      gsap.to(items, {
+        opacity: 0,
+        y: -16,
+        duration: 0.25,
+        ease: 'power2.in',
+        stagger: { each: 0.035, from: 'end' },
         onComplete: () => {
-          gsap.set(el, { display: 'none' })
+          // 2. SAU KHI chữ đã biến mất -> Màn trướng mới rút cuộn ngược lên đỉnh trên cùng
+          gsap.to(el, {
+            clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)',
+            duration: 0.5,
+            ease: 'power3.inOut',
+            onComplete: () => {
+              gsap.set(el, { display: 'none' })
+              // Reset sẵn trạng thái chữ cho lần mở tiếp theo
+              gsap.set(items, { opacity: 0, y: 24 })
+            }
+          })
         }
       })
     }
