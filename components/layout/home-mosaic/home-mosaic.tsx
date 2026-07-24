@@ -479,24 +479,25 @@ export function HomeMosaic() {
       
       const targetZ = currentChapterRef.current * CHAPTER_Z_SPACING
 
-      gsap.to(maskSizeRef.current, {
-        size: 0,
-        duration: 0.4,
-        ease: 'power2.in',
+      // Di chuyển camera NGAY LẬP TỨC song song với hiệu ứng mask để loại bỏ độ trễ gây khựng
+      gsap.to(cameraZRef.current, {
+        z: targetZ,
+        duration: 1.4,
+        ease: 'power3.inOut',
         onComplete: () => {
-          gsap.to(cameraZRef.current, {
-            z: targetZ,
-            duration: 1.5,
-            ease: 'power3.inOut',
-            onComplete: () => {
-              isTransitioningRef.current = false
-              gsap.to(maskSizeRef.current, {
-                size: 450,
-                duration: 0.8,
-                ease: 'back.out(1.2)'
-              })
-            }
-          })
+          isTransitioningRef.current = false
+        }
+      })
+
+      // Hiệu ứng bóp nháy mask nhanh để tạo điểm nhấn thị giác mượt hơn
+      gsap.to(maskSizeRef.current, {
+        size: 150,
+        duration: 0.3,
+        ease: 'power2.in',
+        yoyo: true,
+        repeat: 1,
+        onRepeat: () => {
+          maskSizeRef.current.size = 450
         }
       })
 
@@ -504,7 +505,7 @@ export function HomeMosaic() {
         gsap.to(titleRef.current, {
           opacity: 0,
           y: -20,
-          duration: 0.4,
+          duration: 0.3,
           onComplete: () => {
             if (nextSeries) {
               activeSeriesIdRef.current = nextSeries.id
@@ -515,7 +516,7 @@ export function HomeMosaic() {
               gsap.fromTo(
                 titleRef.current,
                 { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.1 }
+                { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }
               )
             }
           }
