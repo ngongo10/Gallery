@@ -217,6 +217,10 @@ export function HomeMosaic() {
   // Transition animation state — RAF ticker đọc từ đây, GSAP animate vào đây
   const transitionStateRef = useRef({ tx: 0, ty: 0, scale: 1, opacity: 1 })
 
+  // Sync RAF start với intro animation
+  const rafStartedRef = useRef(false)
+  const introCallbackRef = useRef<(() => void) | null>(null)
+
   // Lerp state
   const lerpState = useRef({
     mouseX: typeof window !== 'undefined' ? window.innerWidth / 2 : 0,
@@ -501,6 +505,12 @@ export function HomeMosaic() {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           rafId = requestAnimationFrame(tick)
+          // RAF đã thực sự chạy → đánh dấu ready và gọi intro nếu đang chờ
+          rafStartedRef.current = true
+          if (introCallbackRef.current) {
+            introCallbackRef.current()
+            introCallbackRef.current = null
+          }
         })
       })
     }
@@ -556,56 +566,50 @@ export function HomeMosaic() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // ── Preload images → Auto intro Z-tunnel animation ──
+  // ── Preload images → queue intro Z-tunnel animation ──
+  // onAllLoaded chạy khi preload xong; nếu RAF chưa sẵn, lưu vào queue
   useEffect(() => {
-    // Khởi tạo mouse về giữa màn hình ngay lập tức
-    // Đảm bảo ảnh hiện ngay mà không cần di chuyển chuột
     lerpState.current.mouseX = window.innerWidth / 2
     lerpState.current.mouseY = window.innerHeight / 2
     lerpState.current.maskX = window.innerWidth / 2
     lerpState.current.maskY = window.innerHeight / 2
 
-    // Lấy danh sách src unique cần preload (chỉ ảnh của chapter hiện tại + lân cận)
-    // Preload toàn bộ sẽ quá nặng — chỉ lấy ảnh trong visible Z range
-    const srcToLoad = Array.from(
-      new Set(ALL_IMAGES.map((img) => img.src))
-    ).slice(0, 30) // Giới hạn 30 ảnh đầu để không block quá lâu
-
-    let loadedCount = 0
-    const total = srcToLoad.length
-
-    const onAllLoaded = () => {
-      // Tất cả ảnh đã decode xong → chạy intro animation
-      // Animate cameraZ từ xa lao vào vị trí hiện tại
+    const runIntroAnimation = () => {
       const targetZ = cameraZRef.current.z
-      // Bắt đầu từ xa hơn một chapter để tạo "fly into tunnel" effect
-      const startZ = targetZ - CHAPTER_Z_SPACING * 1.2
-
+      // Bắt đầu từ 2 chapters phía sau → lao vào mạnh
+      const startZ = targetZ - CHAPTER_Z_SPACING * 2
       cameraZRef.current.z = startZ
+      layoutPxRef.current.forEach((px) => { if (px) px.currentCamZ = startZ })
 
-      // Cập nhật tất cả currentCamZ của từng ảnh theo startZ
-      layoutPxRef.current.forEach((px) => {
-        if (px) px.currentCamZ = startZ
-      })
-
-      // Animate Z lao về targetZ trong 1.4s — đây là intro tunnel effect
       gsap.to(cameraZRef.current, {
         z: targetZ,
-        duration: 1.4,
-        ease: 'power2.out',
+        duration: 2.0,
+        ease: 'power3.out',
       })
     }
 
-    if (total === 0) {
-      onAllLoaded()
-      return
+    const onAllLoaded = () => {
+      if (rafStartedRef.current) {
+        // RAF đã chạy → trigger ngay
+        runIntroAnimation()
+      } else {
+        // RAF chưa sẵn → queue lại
+        introCallbackRef.current = runIntroAnimation
+      }
     }
 
+    const srcToLoad = Array.from(
+      new Set(ALL_IMAGES.map((img) => img.src))
+    ).slice(0, 30)
+
+    if (srcToLoad.length === 0) { onAllLoaded(); return }
+
+    let loadedCount = 0
     srcToLoad.forEach((src) => {
       const img = new window.Image()
       img.onload = img.onerror = () => {
         loadedCount++
-        if (loadedCount >= total) onAllLoaded()
+        if (loadedCount >= srcToLoad.length) onAllLoaded()
       }
       img.src = src
     })
