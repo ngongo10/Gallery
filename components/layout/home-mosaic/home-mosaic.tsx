@@ -684,22 +684,56 @@ export function HomeMosaic() {
     const vw = window.innerWidth
     const vh = window.innerHeight
 
-    // 2. Chụp snapshot vị trí màn hình của từng ảnh đang visible
-    type Snapshot = { rect: DOMRect; imgSrc: string }
-    const snapshots: Snapshot[] = []
-
+    // Force-show tất cả ảnh trong base layer để getBoundingClientRect hoạt động đúng
+    // RAF có thể đã set visibility:hidden cho một số ảnh nên cần unhide trước khi đo
     baseImagesRef.current.forEach((el) => {
       if (!el) return
-      if (el.style.visibility === 'hidden') return
-      if (parseFloat(el.style.opacity || '1') < 0.05) return
-      const rect = el.getBoundingClientRect()
-      if (rect.width < 10 || rect.height < 10) return
-      // Chỉ lấy ảnh nằm trong viewport (hoặc gần viewport)
-      if (rect.right < -100 || rect.left > vw + 100) return
-      if (rect.bottom < -100 || rect.top > vh + 100) return
-      const img = el.querySelector('img')
-      snapshots.push({ rect, imgSrc: img?.src ?? '' })
+      el.style.visibility = 'visible'
+      el.style.opacity = '1'
     })
+    maskedImagesRef.current.forEach((el) => {
+      if (!el) return
+      el.style.visibility = 'visible'
+      el.style.opacity = '1'
+    })
+
+    // 2. Chụp snapshot vị trí màn hình của từng ảnh đang visible
+    //    Dùng maskedImagesRef vì chỉ masked layer mới có <img> thực
+    type Snapshot = { rect: DOMRect; imgSrc: string; bgColor: string }
+    const snapshots: Snapshot[] = []
+
+    maskedImagesRef.current.forEach((el, i) => {
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      // Bỏ qua ảnh quá nhỏ hoặc hoàn toàn ngoài viewport
+      if (rect.width < 5) return
+      if (rect.right < -200 || rect.left > vw + 200) return
+      if (rect.bottom < -200 || rect.top > vh + 200) return
+
+      // Lấy src từ <img> trong masked layer
+      const imgEl = el.querySelector('img')
+      const imgSrc = imgEl?.src ?? ALL_IMAGES[i]?.src ?? ''
+      
+      // Lấy bgColor từ base layer tương ứng
+      const baseEl = baseImagesRef.current[i]
+      const placeholderEl = baseEl?.querySelector('[style*="background"]') as HTMLElement | null
+      const bgColor = placeholderEl?.style.backgroundColor ?? '#111'
+
+      snapshots.push({ rect, imgSrc, bgColor })
+    })
+
+    // Nếu không có ảnh visible → dùng fallback: lấy tất cả base images
+    if (snapshots.length === 0) {
+      baseImagesRef.current.forEach((el, i) => {
+        if (!el) return
+        const rect = el.getBoundingClientRect()
+        if (rect.width < 5) return
+        if (rect.right < -200 || rect.left > vw + 200) return
+        if (rect.bottom < -200 || rect.top > vh + 200) return
+        const imgSrc = ALL_IMAGES[i]?.src ?? ''
+        snapshots.push({ rect, imgSrc, bgColor: '#111' })
+      })
+    }
 
     // Ẩn bản gốc ngay (để không nhìn thấy cả 2)
     if (baseCameraRef.current) {
@@ -718,7 +752,7 @@ export function HomeMosaic() {
     //    (Ngoài 3D perspective container → position: fixed hoạt động đúng)
     const overlays: HTMLDivElement[] = []
 
-    snapshots.forEach(({ rect, imgSrc }) => {
+    snapshots.forEach(({ rect, imgSrc, bgColor }) => {
       const div = document.createElement('div')
       div.style.cssText = `
         position: fixed;
@@ -731,11 +765,12 @@ export function HomeMosaic() {
         pointer-events: none;
         transform-origin: center center;
         will-change: transform, opacity;
+        background-color: ${bgColor};
       `
       if (imgSrc) {
         const img = document.createElement('img')
         img.src = imgSrc
-        img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; display: block;'
+        img.style.cssText = 'position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;'
         div.appendChild(img)
       }
       document.body.appendChild(div)
