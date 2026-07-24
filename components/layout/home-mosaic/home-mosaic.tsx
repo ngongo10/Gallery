@@ -644,24 +644,20 @@ export function HomeMosaic() {
     isLeavingPageRef.current = true
     const baseWrappers = baseImagesRef.current.filter(Boolean)
     const maskWrappers = maskedImagesRef.current.filter(Boolean)
+    const allWrappers = [...baseWrappers, ...maskWrappers]
 
-    gsap.killTweensOf([baseWrappers, maskWrappers])
+    gsap.killTweensOf(allWrappers)
 
-    // Calculate dynamic coordinates to collapse exactly to top-center of viewport
-    const targetY = -window.innerHeight / 2 - 150
-
-    gsap.to([baseWrappers, maskWrappers], {
-      scale: 0,
-      x: 0,        // Snap to center X
-      y: targetY,  // Snap to top center Y
-      z: -1000,    // Snap depth back
-      opacity: 0,
-      duration: 0.8,
+    // Các bức ảnh ở đúng tọa độ tự nhiên hiện tại của nó, đồng loạt lướt thẳng lên trên và mờ dần
+    gsap.to(allWrappers, {
+      y: `-=${window.innerHeight * 0.8}`, // Trượt vút thẳng lên trên từ vị trí hiện tại
+      opacity: 0,                           // Mờ dần thanh thoát
+      duration: 0.7,
       stagger: {
         amount: 0.25,
-        from: 'center'
+        from: 'random'                     // Nhịp lướt ngẫu nhiên tự nhiên
       },
-      ease: 'back.in(1.6)',
+      ease: 'power3.in',
       onComplete: () => {
         setRoute('detail')
       }
