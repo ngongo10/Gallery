@@ -642,40 +642,7 @@ export function HomeMosaic() {
 
   const handleTransitionOut = () => {
     isLeavingPageRef.current = true
-    const baseWrappers = baseImagesRef.current.filter(Boolean)
-    const maskWrappers = maskedImagesRef.current.filter(Boolean)
-    const allWrappers = [...baseWrappers, ...maskWrappers]
-
-    gsap.killTweensOf(allWrappers)
-
-    // Tọa độ đỉnh trên cùng vượt ra ngoài mép trên màn hình
-    const topDestinationY = -window.innerHeight / 2 - 300
-
-    // Các bức ảnh từ vị trí rải rác hiện tại đồng loạt lướt thẳng đứng thu lên đỉnh trên cùng màn hình
-    gsap.to(allWrappers, {
-      y: topDestinationY,   // Thu bay hẳn vút lên đỉnh trên cùng màn hình
-      scale: 0.2,            // Thu nhỏ nhẹ khi lên tới đỉnh
-      opacity: 0,            // Mờ dần tự nhiên
-      duration: 0.85,
-      stagger: {
-        amount: 0.25,
-        from: 'center'       // Nhịp lướt từ tâm lan rộng ra
-      },
-      ease: 'power3.in',     // Gia tốc lướt thẳng đứng cực mượt
-      onComplete: () => {
-        setRoute('detail')
-      }
-    })
-
-    if (titleRef.current) {
-      gsap.to(titleRef.current, {
-        opacity: 0,
-        y: -50,
-        filter: 'blur(10px)',
-        duration: 0.6,
-        ease: 'power2.in'
-      })
-    }
+    setRoute('detail')
   }
 
   const handleImageClick = () => {
