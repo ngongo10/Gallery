@@ -541,6 +541,62 @@ export function HomeMosaic() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  // ── Preload images → Auto intro Z-tunnel animation ──
+  useEffect(() => {
+    // Khởi tạo mouse về giữa màn hình ngay lập tức
+    // Đảm bảo ảnh hiện ngay mà không cần di chuyển chuột
+    lerpState.current.mouseX = window.innerWidth / 2
+    lerpState.current.mouseY = window.innerHeight / 2
+    lerpState.current.maskX = window.innerWidth / 2
+    lerpState.current.maskY = window.innerHeight / 2
+
+    // Lấy danh sách src unique cần preload (chỉ ảnh của chapter hiện tại + lân cận)
+    // Preload toàn bộ sẽ quá nặng — chỉ lấy ảnh trong visible Z range
+    const srcToLoad = Array.from(
+      new Set(ALL_IMAGES.map((img) => img.src))
+    ).slice(0, 30) // Giới hạn 30 ảnh đầu để không block quá lâu
+
+    let loadedCount = 0
+    const total = srcToLoad.length
+
+    const onAllLoaded = () => {
+      // Tất cả ảnh đã decode xong → chạy intro animation
+      // Animate cameraZ từ xa lao vào vị trí hiện tại
+      const targetZ = cameraZRef.current.z
+      // Bắt đầu từ xa hơn một chapter để tạo "fly into tunnel" effect
+      const startZ = targetZ - CHAPTER_Z_SPACING * 1.2
+
+      cameraZRef.current.z = startZ
+
+      // Cập nhật tất cả currentCamZ của từng ảnh theo startZ
+      layoutPxRef.current.forEach((px) => {
+        if (px) px.currentCamZ = startZ
+      })
+
+      // Animate Z lao về targetZ trong 1.4s — đây là intro tunnel effect
+      gsap.to(cameraZRef.current, {
+        z: targetZ,
+        duration: 1.4,
+        ease: 'power2.out',
+      })
+    }
+
+    if (total === 0) {
+      onAllLoaded()
+      return
+    }
+
+    srcToLoad.forEach((src) => {
+      const img = new window.Image()
+      img.onload = img.onerror = () => {
+        loadedCount++
+        if (loadedCount >= total) onAllLoaded()
+      }
+      img.src = src
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Handle Scrolling, Swiping, and Auto-Scroll
   useEffect(() => {
     let lastScrollTime = 0

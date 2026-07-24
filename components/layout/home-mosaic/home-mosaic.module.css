@@ -66,8 +66,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  animation: gridEntrance 1.6s cubic-bezier(0.25, 1, 0.5, 1) both;
-  animation-delay: var(--entrance-delay, 0s);
+  /* Opacity/visibility controlled by RAF ticker — no CSS animation to avoid conflict */
 }
 
 .image {
