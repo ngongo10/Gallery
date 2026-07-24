@@ -464,48 +464,58 @@ export function HomeMosaic() {
 
     const changeChapter = (direction: 1 | -1) => {
       const now = Date.now()
+      // Tăng khoảng cách giữa các lần nhận cuộn chuột để đảm bảo animation chạy xong khoan thai
       if (now - lastScrollTime < WHEEL_THROTTLE_MS) return
       lastScrollTime = now
 
       if (isTransitioningRef.current) return
+      isTransitioningRef.current = true
 
       currentChapterRef.current += direction
       
       const wrappedIndex = (((currentChapterRef.current % portfolioData.series.length) + portfolioData.series.length) % portfolioData.series.length)
       const nextSeries = portfolioData.series[wrappedIndex]
-      if (!nextSeries) return
-
-      isTransitioningRef.current = true
+      if (!nextSeries) {
+        isTransitioningRef.current = false
+        return
+      }
       
       const targetZ = currentChapterRef.current * CHAPTER_Z_SPACING
 
-      // Di chuyển camera NGAY LẬP TỨC song song với hiệu ứng mask để loại bỏ độ trễ gây khựng
-      gsap.to(cameraZRef.current, {
-        z: targetZ,
-        duration: 1.4,
-        ease: 'power3.inOut',
+      // Chuỗi GSAP Timeline chạy TUẦN TỰ LẦN LƯỢT (Sequence)
+      const tl = gsap.timeline({
         onComplete: () => {
           isTransitioningRef.current = false
         }
       })
 
-      // Hiệu ứng bóp nháy mask nhanh để tạo điểm nhấn thị giác mượt hơn
-      gsap.to(maskSizeRef.current, {
-        size: 150,
-        duration: 0.3,
-        ease: 'power2.in',
-        yoyo: true,
-        repeat: 1,
-        onRepeat: () => {
-          maskSizeRef.current.size = 450
-        }
+      // 1. Thu nhỏ ô vuông kính lúp trước
+      tl.to(maskSizeRef.current, {
+        size: 0,
+        duration: 0.45,
+        ease: 'power2.inOut'
       })
 
+      // 2. SAU KHI thu xong -> Camera mới nhẹ nhàng lướt sang Chapter mới
+      tl.to(cameraZRef.current, {
+        z: targetZ,
+        duration: 1.6,
+        ease: 'power3.inOut'
+      })
+
+      // 3. SAU KHI camera dừng -> Nở kính lúp trở lại mượt mà
+      tl.to(maskSizeRef.current, {
+        size: 450,
+        duration: 0.75,
+        ease: 'power2.out'
+      })
+
+      // Đổi tiêu đề chữ chạy song song nhịp nhàng với camera
       if (titleRef.current) {
         gsap.to(titleRef.current, {
           opacity: 0,
           y: -20,
-          duration: 0.3,
+          duration: 0.35,
           onComplete: () => {
             if (nextSeries) {
               activeSeriesIdRef.current = nextSeries.id
@@ -516,7 +526,7 @@ export function HomeMosaic() {
               gsap.fromTo(
                 titleRef.current,
                 { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }
+                { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.2 }
               )
             }
           }
