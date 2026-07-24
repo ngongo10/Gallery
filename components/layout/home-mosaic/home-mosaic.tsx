@@ -650,47 +650,58 @@ export function HomeMosaic() {
     if (allWrappers.length > 0) {
       gsap.killTweensOf(allWrappers)
 
-      // Thu nhỏ nhẹ kính lúp
+      // Thu nhỏ nhẹ kính lúp mượt mà
       gsap.to(maskSizeRef.current, {
         size: 0,
-        duration: 0.4,
+        duration: 0.6,
         ease: 'power2.inOut'
       })
 
-      // Tiêu đề mờ dần nhẹ ở trung tâm
+      // Tiêu đề mờ dần thong thả ở trung tâm
       if (titleRef.current) {
         gsap.to(titleRef.current, {
           opacity: 0,
-          scale: 0.9,
-          filter: 'blur(8px)',
-          duration: 0.5,
+          scale: 0.92,
+          filter: 'blur(10px)',
+          duration: 0.8,
           ease: 'power2.out'
         })
       }
 
-      // Animate từng ảnh dạt ra xa xung quanh 4 phía theo bán kính từ trung tâm
+      const screenCenterX = window.innerWidth / 2
+      const screenCenterY = window.innerHeight / 2
+
+      // Animate từng ảnh dạt ra xa từ ĐÚNG TỌA ĐỘ THỰC TẾ TỨC THỜI của nó trên màn hình
       allWrappers.forEach((el, i) => {
         if (!el) return
-        const layout = TUNNEL_LAYOUT[i % TUNNEL_LAYOUT.length]!
-        const px = layoutPxRef.current[i % layoutPxRef.current.length]!
+        
+        // Lấy tọa độ màn hình thực tế hiện tại của ảnh (kể cả khi đang trôi dở)
+        const rect = el.getBoundingClientRect()
+        const imgCenterX = rect.left + rect.width / 2
+        const imgCenterY = rect.top + rect.height / 2
 
-        // Tính góc vector hướng từ tâm ra vị trí của ảnh
-        const xPos = px ? px.x : layout.x
-        const yPos = px ? px.y : layout.y
-        const angle = Math.atan2(yPos, xPos)
+        // Vector hướng từ tâm màn hình đến vị trí thực tế của ảnh
+        const dx = imgCenterX - screenCenterX
+        const dy = imgCenterY - screenCenterY
+        let angle = Math.atan2(dy, dx)
+        
+        // Nếu ảnh ở đúng tâm, chọn góc ngẫu nhiên
+        if (Math.abs(dx) < 5 && Math.abs(dy) < 5) {
+          angle = (i / allWrappers.length) * Math.PI * 2
+        }
 
-        // Khoảng cách dạt ra xa xung quanh theo bán kính (800px ~ 1200px)
-        const burstDistance = 900 + Math.random() * 300
+        // Khoảng cách dạt ra xa xung quanh theo bán kính (700px ~ 1100px)
+        const burstDistance = 700 + Math.random() * 400
         const targetX = Math.cos(angle) * burstDistance
         const targetY = Math.sin(angle) * burstDistance
 
         gsap.to(el, {
           x: `+=${targetX}`,
           y: `+=${targetY}`,
-          scale: 1.15,        // Phóng nhẹ khi dạt ra xung quanh
-          opacity: 0,         // Mờ dần tự nhiên
-          duration: 0.75,
-          ease: 'power3.out', // Đẩy dạt ra mượt mà
+          scale: 1.12,          // Phóng nhẹ thong thả khi dạt ra xung quanh
+          opacity: 0,           // Mờ dần mượt mà
+          duration: 1.4,        // Thời gian kéo dài 1.4s khoan thai
+          ease: 'power2.out',   // Giảm tốc mượt êm
           onComplete: () => {
             if (i === 0) {
               setRoute('detail')
