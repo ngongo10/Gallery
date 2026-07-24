@@ -777,64 +777,39 @@ export function HomeMosaic() {
     // Tránh double-trigger
     if (isLeavingPageRef.current) return
 
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-
     // 1. Đóng kính lúp + mờ tiêu đề
     gsap.to(maskSizeRef.current, { size: 0, duration: 0.3, ease: 'power2.inOut' })
     if (titleRef.current) {
       gsap.to(titleRef.current, { opacity: 0, y: 30, duration: 0.3, ease: 'power2.in' })
     }
 
-    // 2. Lưu frozenRelativeZ cho từng ảnh trước khi isLeaving = true
-    //    để UFO branch trong ticker có thể dùng
-    const targetCamZ = cameraZRef.current.z
-    const LOOP_DEPTH = portfolioData.series.length * CHAPTER_Z_SPACING
-    layoutPxRef.current.forEach((px, i) => {
-      if (!px) return
-      const layout = TUNNEL_LAYOUT[i]!
-      const baseChapterZ = -(layout.seriesIndex * CHAPTER_Z_SPACING)
-      const offset = Math.round((-targetCamZ - baseChapterZ) / LOOP_DEPTH) * LOOP_DEPTH
-      const absoluteZ = baseChapterZ + offset
-      px.frozenRelativeZ = absoluteZ + (px.currentCamZ ?? targetCamZ)
-    })
-
-    // 3. Bật cờ transition — RAF ticker chuyển sang UFO branch
+    // 2. Bật cờ transition
     isLeavingPageRef.current = true
 
-    // 4. GSAP Timeline UFO Suction Effect
+    // 3. GSAP Timeline Suction & Drop Down: animate camera position/scale qua transitionStateRef
+    // Tuyệt đối không mutate layoutPxRef.x/y để khi back về Home không bị lệch vị trí!
     const tl = gsap.timeline({
       onComplete: () => setRoute('detail')
     })
 
-    // Camera pan xuống đáy màn hình (lerp mouse → below viewport)
-    tl.to(lerpState.current, {
-      mouseX: vw / 2,
-      mouseY: vh + 500,
-      duration: 0.9,
-      ease: 'power2.in'
+    const ts = transitionStateRef.current
+    const vh = window.innerHeight
+
+    // Camera lùi nhẹ & trượt xuống dưới màn hình + mờ dần
+    tl.to(ts, {
+      ty: vh * 1.2,
+      scale: 0.85,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power3.in'
     }, 0)
 
-    // Từng ảnh: thu về trung tâm X, hút xuống đáy Y
-    // Stagger nhẹ dựa vào khoảng cách từ tâm màn hình
-    layoutPxRef.current.forEach((px) => {
-      if (!px) return
-      const distFromCenter = Math.abs(px.x) / (vw * 0.5)
-      const stagger = distFromCenter * 0.15  // ảnh xa trung tâm → delay nhẹ hơn
-      tl.to(px, {
-        x: 0,
-        y: px.y + vh * 2.0,
-        duration: 0.75,
-        ease: 'power3.in'
-      }, stagger)
-    })
-
-    // Fade toàn bộ camera ra
-    tl.to(transitionStateRef.current, {
-      opacity: 0,
-      duration: 0.5,
-      ease: 'power2.in'
-    }, 0.5)
+    // CameraZ lùi sâu vào đường hầm khi biến mất
+    tl.to(cameraZRef.current, {
+      z: cameraZRef.current.z - 1500,
+      duration: 0.8,
+      ease: 'power3.in'
+    }, 0)
   }
 
   const handleImageClick = () => {
