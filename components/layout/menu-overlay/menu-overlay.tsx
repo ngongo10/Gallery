@@ -22,41 +22,38 @@ export function MenuOverlay() {
     const items = el.querySelectorAll(`.${s.navItem}, .${s.subNavItem}, .${s.languageSelector}`)
 
     if (menuOpen) {
-      // --- MỞ MENU ---
-      // 1. Màn trướng xổ xuống từ trên
+      // --- MỞ MENU: Tấm rèm đen trượt từ trên xuống ---
       gsap.set(el, { display: 'flex' })
       gsap.fromTo(
         el,
-        { clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)' },
-        { clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', duration: 0.6, ease: 'power3.inOut' }
+        { yPercent: -100 },
+        { yPercent: 0, duration: 0.6, ease: 'power3.inOut' }
       )
-      // 2. Nội dung chữ từ dưới trôi nẩy lên hiện ra (Stagger từ trên xuống)
+      // Chữ trôi nẩy ra sau rèm đen
       gsap.fromTo(
         items,
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out', stagger: 0.05, delay: 0.3 }
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out', stagger: 0.05, delay: 0.25 }
       )
     } else {
-      // --- ĐÓNG MENU (NGƯỢC LẠI HOÀN TOÀN 100%) ---
-      // 1. Chữ thu biến mất ngược từ dưới lên
+      // --- ĐÓNG MENU: Kéo nguyên tấm rèm đen + chữ trượt vút ngược lên đỉnh trên ---
       gsap.to(items, {
         opacity: 0,
-        y: -24,
-        duration: 0.3,
+        y: -30,
+        duration: 0.25,
         ease: 'power2.in',
         stagger: { each: 0.03, from: 'end' }
       })
 
-      // 2. Màn hình đen thu cuộn ngược lên đỉnh trên cùng đồng thời (lệch nhẹ 0.08s)
+      // Tấm rèm đen trượt kéo vút ngược lên đỉnh trên
       gsap.to(el, {
-        clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)',
+        yPercent: -100,
         duration: 0.55,
-        delay: 0.08,
+        delay: 0.05,
         ease: 'power3.inOut',
         onComplete: () => {
           gsap.set(el, { display: 'none' })
-          // Reset sẵn trạng thái cho lần mở tiếp theo
-          gsap.set(items, { opacity: 0, y: 24 })
+          gsap.set(items, { opacity: 0, y: 30 })
         }
       })
     }
