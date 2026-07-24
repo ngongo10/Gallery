@@ -225,8 +225,34 @@ export function HomeMosaic() {
   })
 
   // Sync isHomeVisibleRef theo currentRoute — không cần re-render
+  const hasIntroFlownRef = useRef(false)
   useEffect(() => {
     isHomeVisibleRef.current = currentRoute === 'home'
+
+    // Khi vừa mở trang Home từ Loading (chỉ chạy 1 lần đầu sau khi hết Loading)
+    if (currentRoute === 'home' && !hasIntroFlownRef.current) {
+      hasIntroFlownRef.current = true
+      const targetZ = currentChapterRef.current * CHAPTER_Z_SPACING
+      
+      // Khởi tạo camera ở khoảng cách xa (-2200px)
+      cameraZRef.current.z = targetZ - 2200
+      maskSizeRef.current.size = 0
+
+      // Hiệu ứng cuộn vút từ xa vào vị trí chuẩn nhịp nhàng
+      gsap.to(cameraZRef.current, {
+        z: targetZ,
+        duration: 1.8,
+        ease: 'power3.out',
+        delay: 0.1
+      })
+
+      gsap.to(maskSizeRef.current, {
+        size: 450,
+        duration: 1.2,
+        ease: 'power2.out',
+        delay: 0.4
+      })
+    }
   }, [currentRoute])
 
   // Setup GSAP Ticker for Lerp Parallax and Cursor Mask
@@ -562,6 +588,8 @@ export function HomeMosaic() {
     resetAutoScroll()
 
     const handleWheel = (e: WheelEvent) => {
+      // KHÓA CUỘN: Chỉ xử lý cuộn đổi Album khi đang thực sự ở trang Home
+      if (!isHomeVisibleRef.current) return
       if (Math.abs(e.deltaY) <= 30) return
       const direction = e.deltaY > 0 ? 1 : -1
       changeChapter(direction)
@@ -571,12 +599,14 @@ export function HomeMosaic() {
     let touchStartX = 0
     
     const handleTouchStart = (e: TouchEvent) => {
+      if (!isHomeVisibleRef.current) return
       if (e.touches && e.touches[0]) {
         touchStartX = e.touches[0].clientX
       }
     }
 
     const handleTouchEnd = (e: TouchEvent) => {
+      if (!isHomeVisibleRef.current) return
       if (e.changedTouches && e.changedTouches[0]) {
         const touchEndX = e.changedTouches[0].clientX
         const dx = touchEndX - touchStartX
