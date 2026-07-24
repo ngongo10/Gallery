@@ -650,43 +650,44 @@ export function HomeMosaic() {
     if (allWrappers.length > 0) {
       gsap.killTweensOf(allWrappers)
 
-      // Thu nhỏ mượt mà kính lúp
+      // Thu nhỏ nhẹ kính lúp
       gsap.to(maskSizeRef.current, {
         size: 0,
-        duration: 0.5,
+        duration: 0.45,
         ease: 'power2.inOut'
       })
 
-      // Tiêu đề trôi nhẹ xuống và mờ dần
+      // Tiêu đề trượt tuột nhẹ xuống dưới và mờ dần
       if (titleRef.current) {
         gsap.to(titleRef.current, {
           opacity: 0,
-          y: 40,
+          y: 60,
           filter: 'blur(10px)',
-          duration: 0.7,
+          duration: 0.6,
           ease: 'power2.in'
         })
       }
 
-      // Tọa độ ĐIỂM HÚT ở CHÍNH GIỮA CẠNH DƯỚI màn hình (Bottom-Center Vacuum)
-      const bottomDrainY = window.innerHeight / 2 + 150
-
-      // Animate từng ảnh bị hút xoáy thu nhỏ về chính giữa cạnh đáy dưới
+      // HIỆU ỨNG MACOS GENIE EFFECT: Ảnh ở trục ngang X nào giữ nguyên trục X đó, trượt kéo dẹp vút tuột xuống mép đáy dưới
       allWrappers.forEach((el, i) => {
         if (!el) return
         
-        // Lấy vị trí màn hình thực tế hiện tại của từng ảnh
+        // Lấy tọa độ thực tế hiện tại
         const rect = el.getBoundingClientRect()
-        const imgCenterX = rect.left + rect.width / 2 - window.innerWidth / 2
+        const currentY = rect.top
+        const distanceToBottom = window.innerHeight - currentY + 150
 
         gsap.to(el, {
-          x: imgCenterX * 0.2, // Thu hẹp dần về trục giữa khi trượt xuống
-          y: bottomDrainY,     // Hút thẳng xuống chính giữa cạnh dưới màn hình
-          scale: 0.1,          // Thu nhỏ lại như hạt bụi bị hút vào khe đáy
-          opacity: 0,          // Mờ dần biến mất hẳn
-          duration: 1.1,       // Độ mượt 1.1s
-          delay: (i % 8) * 0.04, // Nhịp hút đuôi nhau tự nhiên
-          ease: 'power3.in',   // Gia tốc lực hút tăng dần xuống đáy
+          y: `+=${distanceToBottom}`, // Trượt tuột thẳng xuống vượt qua mép đáy dưới
+          scaleY: 0.2,                 // Dẹp dải dọc giống hiệu ứng Genie macOS
+          scaleX: 0.85,                // Giữ dáng ngang thanh thoát
+          opacity: 0,                  // Mờ dần tự nhiên
+          duration: 0.8,               // Độ mượt 0.8s
+          stagger: {
+            amount: 0.2,
+            from: 'start'              // Nhịp lướt tuột từ trên xuống dưới
+          },
+          ease: 'power3.in',           // Gia tốc rơi tuột xuống đáy siêu mượt
           onComplete: () => {
             if (i === 0) {
               setRoute('detail')
