@@ -642,7 +642,65 @@ export function HomeMosaic() {
 
   const handleTransitionOut = () => {
     isLeavingPageRef.current = true
-    setRoute('detail')
+
+    const baseWrappers = baseImagesRef.current.filter(Boolean)
+    const maskWrappers = maskedImagesRef.current.filter(Boolean)
+    const allWrappers = [...baseWrappers, ...maskWrappers]
+
+    if (allWrappers.length > 0) {
+      gsap.killTweensOf(allWrappers)
+
+      // Thu nhỏ nhẹ kính lúp
+      gsap.to(maskSizeRef.current, {
+        size: 0,
+        duration: 0.4,
+        ease: 'power2.inOut'
+      })
+
+      // Tiêu đề mờ dần nhẹ ở trung tâm
+      if (titleRef.current) {
+        gsap.to(titleRef.current, {
+          opacity: 0,
+          scale: 0.9,
+          filter: 'blur(8px)',
+          duration: 0.5,
+          ease: 'power2.out'
+        })
+      }
+
+      // Animate từng ảnh dạt ra xa xung quanh 4 phía theo bán kính từ trung tâm
+      allWrappers.forEach((el, i) => {
+        if (!el) return
+        const layout = TUNNEL_LAYOUT[i % TUNNEL_LAYOUT.length]!
+        const px = layoutPxRef.current[i % layoutPxRef.current.length]!
+
+        // Tính góc vector hướng từ tâm ra vị trí của ảnh
+        const xPos = px ? px.x : layout.x
+        const yPos = px ? px.y : layout.y
+        const angle = Math.atan2(yPos, xPos)
+
+        // Khoảng cách dạt ra xa xung quanh theo bán kính (800px ~ 1200px)
+        const burstDistance = 900 + Math.random() * 300
+        const targetX = Math.cos(angle) * burstDistance
+        const targetY = Math.sin(angle) * burstDistance
+
+        gsap.to(el, {
+          x: `+=${targetX}`,
+          y: `+=${targetY}`,
+          scale: 1.15,        // Phóng nhẹ khi dạt ra xung quanh
+          opacity: 0,         // Mờ dần tự nhiên
+          duration: 0.75,
+          ease: 'power3.out', // Đẩy dạt ra mượt mà
+          onComplete: () => {
+            if (i === 0) {
+              setRoute('detail')
+            }
+          }
+        })
+      })
+    } else {
+      setRoute('detail')
+    }
   }
 
   const handleImageClick = () => {
