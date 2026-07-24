@@ -225,33 +225,38 @@ export function HomeMosaic() {
   })
 
   // Sync isHomeVisibleRef theo currentRoute — không cần re-render
-  const hasIntroFlownRef = useRef(false)
   useEffect(() => {
     isHomeVisibleRef.current = currentRoute === 'home'
 
-    // Khi vừa mở trang Home từ Loading (chỉ chạy 1 lần đầu sau khi hết Loading)
-    if (currentRoute === 'home' && !hasIntroFlownRef.current) {
-      hasIntroFlownRef.current = true
-      const targetZ = currentChapterRef.current * CHAPTER_Z_SPACING
-      
-      // Khởi tạo camera ở khoảng cách xa (-2200px)
-      cameraZRef.current.z = targetZ - 2200
-      maskSizeRef.current.size = 0
+    if (currentRoute === 'home') {
+      // 1. Phục hồi hoàn toàn trạng thái hiển thị khi quay về Home
+      isLeavingPageRef.current = false
 
-      // Hiệu ứng cuộn vút từ xa vào vị trí chuẩn nhịp nhàng
-      gsap.to(cameraZRef.current, {
-        z: targetZ,
-        duration: 1.8,
-        ease: 'power3.out',
-        delay: 0.1
-      })
+      if (titleRef.current) {
+        gsap.killTweensOf(titleRef.current)
+        gsap.set(titleRef.current, {
+          opacity: 1,
+          filter: 'blur(0px)',
+          y: 0
+        })
+      }
 
-      gsap.to(maskSizeRef.current, {
-        size: 450,
-        duration: 1.2,
-        ease: 'power2.out',
-        delay: 0.4
-      })
+      const baseWrappers = baseImagesRef.current.filter(Boolean)
+      const maskWrappers = maskedImagesRef.current.filter(Boolean)
+      const allWrappers = [...baseWrappers, ...maskWrappers]
+      if (allWrappers.length > 0) {
+        gsap.killTweensOf(allWrappers)
+        gsap.set(allWrappers, {
+          scale: 1,
+          x: 0,
+          y: 0,
+          z: 0,
+          opacity: 1
+        })
+      }
+
+      // Đảm bảo kính lúp luôn mở ở kích thước chuẩn
+      maskSizeRef.current.size = 450
     }
   }, [currentRoute])
 
