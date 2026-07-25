@@ -319,11 +319,11 @@ export function HomeMosaic() {
       }
 
       // ─── HIỆU ỨNG NGƯỢC: camera bay lên từ dưới trở về ───
-      // Sau khi hiệu ứng "hút xuống" (ty: vh*1.2, opacity:0, scale:0.85),
-      // ta bắt đầu animation ngược: từ dưới màn hình bay lên vị trí ban đầu
+      // Container dùng visibility:hidden (không phải display:none) nên GSAP animate được ngay.
+      // RAF ticker cũng chạy bình thường vì isHomeVisibleRef=true.
       const ts = transitionStateRef.current
       const vh = window.innerHeight
-      ts.ty = vh * 1.2   // đặt tại vị trí "dưới màn hình"
+      ts.ty = vh * 1.2
       ts.scale = 0.85
       ts.opacity = 0
 
@@ -332,8 +332,7 @@ export function HomeMosaic() {
         scale: 1,
         opacity: 1,
         duration: 0.7,
-        ease: 'power3.out',
-        delay: 0.05
+        ease: 'power3.out'
       })
     }
   }, [currentRoute])

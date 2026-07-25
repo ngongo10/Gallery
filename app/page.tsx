@@ -23,9 +23,14 @@ export default function Page() {
       {currentRoute === 'loader' && <Loader />}
 
       {/* HomeMosaic luôn ở trong DOM sau khi đã load, chỉ ẩn bằng CSS */}
-      {/* Tránh unmount/remount gây lag khi quay về home */}
+      {/* Dùng visibility thay display:none để RAF/GSAP vẫn animate khi ở route khác */}
       {currentRoute !== 'loader' && (
-        <div style={{ display: currentRoute === 'home' ? 'block' : 'none' }}>
+        <div style={{
+          visibility: currentRoute === 'home' ? 'visible' : 'hidden',
+          pointerEvents: currentRoute === 'home' ? 'auto' : 'none',
+          position: 'fixed',
+          inset: 0
+        }}>
           <HomeMosaic />
         </div>
       )}
