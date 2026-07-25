@@ -274,21 +274,25 @@ export function HomeMosaic() {
       lerpState.current.camX = 0
       lerpState.current.camY = 0
 
-      // 6. Restore layoutPxRef: x, y TỪ TUNNEL_LAYOUT gốc + reset currentCamZ
+      // 6. Restore layoutPxRef theo kích thước màn hình hiện tại
       const w = window.innerWidth
       const h = window.innerHeight
       const isDesktop = w > 800
-      const currentZ = cameraZRef.current.z
+      const spreadMultiplierX = isDesktop ? 1.0 : 0.6
+      const spreadMultiplierY = isDesktop ? 1.0 : 0.6
+      const targetZ = cameraZRef.current.z
+
       TUNNEL_LAYOUT.forEach((layout, i) => {
         const px = layoutPxRef.current[i]
         if (!px) return
-        px.x = ((layout.x * (isDesktop ? 1.0 : 0.6)) / 100) * w
-        px.y = ((layout.y * (isDesktop ? 1.0 : 0.6)) / 100) * h
-        px.currentCamZ = currentZ   // ← quan trọng: reset currentCamZ về đúng vị trí
+        px.x = ((layout.x * spreadMultiplierX) / 100) * w
+        px.y = ((layout.y * spreadMultiplierY) / 100) * h
+        px.width = (layout.width / 100) * w
+        px.currentCamZ = targetZ
         px.frozenRelativeZ = undefined
       })
 
-      // 7. Reset image wrappers về visible
+      // 7. Reset image wrappers
       const allWrappers = [
         ...baseImagesRef.current.filter(Boolean),
         ...maskedImagesRef.current.filter(Boolean)
@@ -298,20 +302,25 @@ export function HomeMosaic() {
         gsap.set(allWrappers, { clearProps: 'all' })
       }
 
-      // 8. Kính lúp
+      // 8. Kính lúp mở lại
       maskSizeRef.current.size = 450
 
-      // 9. Chạy lại intro Z-tunnel animation (giống lúc load lần đầu)
-      const targetZ = currentZ
-      const startZ = targetZ - CHAPTER_Z_SPACING * 1.0
+      // 9. Intro Fly-in Animation nhẹ nhàng khi back về home (không làm chìm ảnh)
+      const startZ = targetZ - 1200
       cameraZRef.current.z = startZ
-      layoutPxRef.current.forEach((px) => { if (px) px.currentCamZ = startZ })
+      layoutPxRef.current.forEach((px) => {
+        if (px) px.currentCamZ = startZ
+      })
 
       gsap.to(cameraZRef.current, {
         z: targetZ,
         duration: 1.2,
         ease: 'power2.out',
-        delay: 0.05   // nhỏ để RAF kịp khởi động lại
+        onUpdate: () => {
+          layoutPxRef.current.forEach((px) => {
+            if (px) px.currentCamZ = cameraZRef.current.z
+          })
+        }
       })
     }
   }, [currentRoute])
