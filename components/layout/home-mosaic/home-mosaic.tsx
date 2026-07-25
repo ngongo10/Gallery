@@ -254,40 +254,17 @@ export function HomeMosaic() {
     isHomeVisibleRef.current = currentRoute === 'home'
 
     if (currentRoute === 'home') {
-      // Kill tất cả tween đang chạy trên animation state
+      // Kill tất cả tween đang chạy
       gsap.killTweensOf(transitionStateRef.current)
       gsap.killTweensOf(lerpState.current)
       gsap.killTweensOf(maskSizeRef.current)
       gsap.killTweensOf(cameraZRef.current)
       layoutPxRef.current.forEach((px) => { if (px) gsap.killTweensOf(px) })
 
-      // 1. Khôi phục cờ transition ngay lập tức
+      // Bật cờ ngay để RAF bắt đầu render (cần để animation thấy được)
       isLeavingPageRef.current = false
 
-      // 2. Reset transitionStateRef về vị trí chuẩn 100% (không bị rớt xuống ty > 0)
-      const ts = transitionStateRef.current
-      ts.tx = 0
-      ts.ty = 0
-      ts.scale = 1
-      ts.opacity = 1
-
-      // 3. Reset title mượt mà
-      if (titleRef.current) {
-        gsap.killTweensOf(titleRef.current)
-        gsap.set(titleRef.current, { opacity: 1, y: 0, filter: 'blur(0px)' })
-      }
-
-      // 4. Reset camera containers style
-      if (baseCameraRef.current) {
-        baseCameraRef.current.style.opacity = '1'
-        baseCameraRef.current.style.transform = ''
-      }
-      if (maskedCameraRef.current) {
-        maskedCameraRef.current.style.opacity = '1'
-        maskedCameraRef.current.style.transform = ''
-      }
-
-      // 5. Reset lerpState về chính giữa màn hình
+      // Reset lerpState về chính giữa
       const w = window.innerWidth
       const h = window.innerHeight
       lerpState.current.mouseX = w / 2
@@ -297,14 +274,12 @@ export function HomeMosaic() {
       lerpState.current.camX = 0
       lerpState.current.camY = 0
 
-      // 5. Khôi phục tọa độ layoutPxRef & CameraZ chuẩn xác theo activeIndex
+      // Reset layoutPx & cameraZ
       const isDesktop = w > 800
       const spreadMultiplierX = isDesktop ? 1.0 : 0.6
       const spreadMultiplierY = isDesktop ? 1.0 : 0.6
-      
       const targetZ = currentChapterRef.current * CHAPTER_Z_SPACING
       cameraZRef.current.z = targetZ
-
       TUNNEL_LAYOUT.forEach((layout, i) => {
         const px = layoutPxRef.current[i]
         if (!px) return
@@ -315,33 +290,51 @@ export function HomeMosaic() {
         px.frozenRelativeZ = undefined
       })
 
-      // 7. Reset image wrappers và ép hiển thị lập tức
+      // Tạo fresh layoutPxRef giống hệt resize
+      if (recomputeLayoutRef.current) {
+        recomputeLayoutRef.current()
+      }
+
+      // Reset image wrappers — bắt buộc visible để animation thấy được
       const allWrappers = [
         ...baseImagesRef.current.filter(Boolean),
         ...maskedImagesRef.current.filter(Boolean)
       ]
-      if (allWrappers.length > 0) {
-        gsap.killTweensOf(allWrappers)
-        allWrappers.forEach((el) => {
-          if (el) {
-            el.style.opacity = '1'
-            el.style.visibility = 'visible'
-          }
-        })
-      }
+      gsap.killTweensOf(allWrappers)
+      allWrappers.forEach((el) => {
+        if (el) {
+          el.style.opacity = '1'
+          el.style.visibility = 'visible'
+        }
+      })
 
-      // 8. Đảm bảo kính lúp mở kích thước 450px
+      // Mở kính lúp
       maskSizeRef.current.size = 450
 
-      // 9. Recompute layout giống hệt resize — tạo mới toàn bộ layoutPxRef array (fresh array)
-      // Đây là cách đáng tin cậy nhất: RAF tick tiếp theo đọc fresh data và render đúng ngay.
-      // recomputeLayoutRef được gán bởi useEffect resize (chạy sau). Nếu đã sẵn sàng, gọi ngay.
-      // Fallback: dispatch resize event để trigger cùng đoạn code.
-      if (recomputeLayoutRef.current) {
-        recomputeLayoutRef.current()
-      } else {
-        window.dispatchEvent(new Event('resize'))
+      // Reset title
+      if (titleRef.current) {
+        gsap.killTweensOf(titleRef.current)
+        gsap.set(titleRef.current, { opacity: 0, y: 0 })
+        gsap.to(titleRef.current, { opacity: 1, duration: 0.5, delay: 0.4, ease: 'power2.out' })
       }
+
+      // ─── HIỆU ỨNG NGƯỢC: camera bay lên từ dưới trở về ───
+      // Sau khi hiệu ứng "hút xuống" (ty: vh*1.2, opacity:0, scale:0.85),
+      // ta bắt đầu animation ngược: từ dưới màn hình bay lên vị trí ban đầu
+      const ts = transitionStateRef.current
+      const vh = window.innerHeight
+      ts.ty = vh * 1.2   // đặt tại vị trí "dưới màn hình"
+      ts.scale = 0.85
+      ts.opacity = 0
+
+      gsap.to(ts, {
+        ty: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 0.7,
+        ease: 'power3.out',
+        delay: 0.05
+      })
     }
   }, [currentRoute])
 
