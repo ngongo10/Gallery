@@ -236,34 +236,40 @@ export function HomeMosaic() {
     isHomeVisibleRef.current = currentRoute === 'home'
 
     if (currentRoute === 'home') {
-      // Kill tất cả tween đang chạy
+      // Kill tất cả tween đang chạy trên animation state
       gsap.killTweensOf(transitionStateRef.current)
       gsap.killTweensOf(lerpState.current)
       gsap.killTweensOf(maskSizeRef.current)
       gsap.killTweensOf(cameraZRef.current)
       layoutPxRef.current.forEach((px) => { if (px) gsap.killTweensOf(px) })
 
-      // 1. Reset cờ transition
+      // 1. Khôi phục cờ transition ngay lập tức
       isLeavingPageRef.current = false
 
-      // 2. Reset title với animation hiện mượt
+      // 2. Reset transitionStateRef về vị trí chuẩn 100% (không bị rớt xuống ty > 0)
+      const ts = transitionStateRef.current
+      ts.tx = 0
+      ts.ty = 0
+      ts.scale = 1
+      ts.opacity = 1
+
+      // 3. Reset title mượt mà
       if (titleRef.current) {
         gsap.killTweensOf(titleRef.current)
-        gsap.set(titleRef.current, { opacity: 0, y: -20, filter: 'blur(4px)' })
-        gsap.to(titleRef.current, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' })
+        gsap.set(titleRef.current, { opacity: 1, y: 0, filter: 'blur(0px)' })
       }
 
-      // 3. Reset camera visibility & style
+      // 4. Reset camera containers style
       if (baseCameraRef.current) {
-        baseCameraRef.current.style.display = 'block'
-        baseCameraRef.current.style.visibility = 'visible'
+        baseCameraRef.current.style.opacity = '1'
+        baseCameraRef.current.style.transform = ''
       }
       if (maskedCameraRef.current) {
-        maskedCameraRef.current.style.display = 'block'
-        maskedCameraRef.current.style.visibility = 'visible'
+        maskedCameraRef.current.style.opacity = '1'
+        maskedCameraRef.current.style.transform = ''
       }
 
-      // 4. Reset lerpState về tâm màn hình
+      // 5. Reset lerpState về chính giữa màn hình
       const w = window.innerWidth
       const h = window.innerHeight
       lerpState.current.mouseX = w / 2
@@ -273,7 +279,7 @@ export function HomeMosaic() {
       lerpState.current.camX = 0
       lerpState.current.camY = 0
 
-      // 5. Khôi phục tọa độ layoutPxRef chuẩn xác
+      // 6. Khôi phục ma trận tọa độ layoutPxRef chuẩn xác
       const isDesktop = w > 800
       const spreadMultiplierX = isDesktop ? 1.0 : 0.6
       const spreadMultiplierY = isDesktop ? 1.0 : 0.6
@@ -289,7 +295,7 @@ export function HomeMosaic() {
         px.frozenRelativeZ = undefined
       })
 
-      // 6. Reset image wrappers
+      // 7. Reset image wrappers
       const allWrappers = [
         ...baseImagesRef.current.filter(Boolean),
         ...maskedImagesRef.current.filter(Boolean)
@@ -299,31 +305,8 @@ export function HomeMosaic() {
         gsap.set(allWrappers, { clearProps: 'all' })
       }
 
-      // 7. Kính lúp mở lại
+      // 8. Đảm bảo kính lúp mở kích thước 450px
       maskSizeRef.current.size = 450
-
-      // 8. Chạy animation mượt khi quay lại Home (trượt nhẹ từ trên xuống vị trí gốc)
-      const ts = transitionStateRef.current
-      ts.tx = 0
-      ts.ty = -h * 0.2 // Bắt đầu nhô nhẹ từ trên xuống
-      ts.scale = 0.95
-      ts.opacity = 0
-
-      gsap.to(ts, {
-        ty: 0,
-        scale: 1,
-        opacity: 1,
-        duration: 0.7,
-        ease: 'power2.out'
-      })
-    } else {
-      // Khi sang route khác (ví dụ: detail), ẩn camera hoàn toàn để không lộ ảnh chạy ngầm bên dưới
-      if (baseCameraRef.current) {
-        baseCameraRef.current.style.display = 'none'
-      }
-      if (maskedCameraRef.current) {
-        maskedCameraRef.current.style.display = 'none'
-      }
     }
   }, [currentRoute])
 
