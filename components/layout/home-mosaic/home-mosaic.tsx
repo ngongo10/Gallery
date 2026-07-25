@@ -236,8 +236,8 @@ export function HomeMosaic() {
   // Sync RAF start với intro animation
   const rafStartedRef = useRef(false)
   const introCallbackRef = useRef<(() => void) | null>(null)
-  // Ref để expose hàm ticker ra ngoài useEffect scope
-  const tickerRef = useRef<(() => void) | null>(null)
+  // Ref để share hàm recompute layout giữa các useEffect (resize + reset home)
+  const recomputeLayoutRef = useRef<(() => void) | null>(null)
 
   // Lerp state
   const lerpState = useRef({
@@ -333,52 +333,15 @@ export function HomeMosaic() {
       // 8. Đảm bảo kính lúp mở kích thước 450px
       maskSizeRef.current.size = 450
 
-      // 9. Force render 1 frame: tính lại toàn bộ transform 3D và gán thẳng vào DOM tức thì
-      // Không phụ thuộc RAF loop — đảm bảo ảnh hiện ngay 100% khi back về Home
-      const w2 = window.innerWidth
-      const h2 = window.innerHeight
-      const fTargetCamZ = cameraZRef.current.z
-      const fLoopDepth = portfolioData.series.length * CHAPTER_Z_SPACING
-      const fCamX = 0
-      const fCamY = 0
-      const fTs = transitionStateRef.current
-      const fTransform = `translate3d(${fCamX + fTs.tx}px, ${fCamY + fTs.ty}px, 0px) scale(${fTs.scale})`
-      if (baseCameraRef.current) {
-        baseCameraRef.current.style.transform = fTransform
-        baseCameraRef.current.style.opacity = String(fTs.opacity)
+      // 9. Recompute layout giống hệt resize — tạo mới toàn bộ layoutPxRef array (fresh array)
+      // Đây là cách đáng tin cậy nhất: RAF tick tiếp theo đọc fresh data và render đúng ngay.
+      // recomputeLayoutRef được gán bởi useEffect resize (chạy sau). Nếu đã sẵn sàng, gọi ngay.
+      // Fallback: dispatch resize event để trigger cùng đoạn code.
+      if (recomputeLayoutRef.current) {
+        recomputeLayoutRef.current()
+      } else {
+        window.dispatchEvent(new Event('resize'))
       }
-      if (maskedCameraRef.current) {
-        maskedCameraRef.current.style.transform = fTransform
-        maskedCameraRef.current.style.opacity = String(fTs.opacity)
-      }
-      TUNNEL_LAYOUT.forEach((layout, i) => {
-        const px = layoutPxRef.current[i]
-        if (!px) return
-        const baseChapterZ = -(layout.seriesIndex * CHAPTER_Z_SPACING)
-        const offset = Math.round((-fTargetCamZ - baseChapterZ) / fLoopDepth) * fLoopDepth
-        const absoluteZ = baseChapterZ + offset
-        const relativeZ = absoluteZ + fTargetCamZ
-        let depthOpacity = 0
-        if (relativeZ >= -3500 && relativeZ <= 1500) {
-          if (relativeZ < -2000) depthOpacity = (relativeZ - (-3500)) / 1500
-          else if (relativeZ > 500) depthOpacity = (1500 - relativeZ) / 1000
-          else depthOpacity = 1
-        }
-        const isVisible = depthOpacity > 0
-        const imgTransform = `translate3d(${px.x}px, ${px.y}px, ${relativeZ}px) translate(-50%, -50%)`
-        if (baseImagesRef.current[i]) {
-          baseImagesRef.current[i]!.style.transform = imgTransform
-          baseImagesRef.current[i]!.style.opacity = String(depthOpacity)
-          baseImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
-        }
-        if (maskedImagesRef.current[i]) {
-          maskedImagesRef.current[i]!.style.transform = imgTransform
-          maskedImagesRef.current[i]!.style.opacity = isVisible ? String(depthOpacity) : '0'
-          maskedImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
-        }
-      })
-      void w2
-      void h2
     }
   }, [currentRoute])
 
@@ -610,23 +573,25 @@ export function HomeMosaic() {
       const w = window.innerWidth
       const h = window.innerHeight
       const isDesktop = w > 800
+      const spreadMultiplierX = isDesktop ? 1.0 : 0.6
+      const spreadMultiplierY = isDesktop ? 1.0 : 0.6
+      const currentZ = cameraZRef.current.z
       
       layoutPxRef.current = TUNNEL_LAYOUT.map((layout, i) => {
         const existing = layoutPxRef.current[i]
-        // PC: Giữ nguyên (1.0) vì tọa độ gốc (x,y) đã được nới rộng cực lớn.
-        const spreadMultiplierX = isDesktop ? 1.0 : 0.6;
-        const spreadMultiplierY = isDesktop ? 1.0 : 0.6;
-
         return {
           x: ((layout.x * spreadMultiplierX) / 100) * w,
           y: ((layout.y * spreadMultiplierY) / 100) * h,
           z: layout.z,
           width: (layout.width / 100) * w,
-          currentCamZ: existing && existing.currentCamZ !== undefined ? existing.currentCamZ : cameraZRef.current.z
+          currentCamZ: existing && existing.currentCamZ !== undefined ? existing.currentCamZ : currentZ
         }
       })
     }
     
+    // Expose ra ngoài để useEffect[currentRoute] có thể gọi khi reset home
+    recomputeLayoutRef.current = handleResize
+
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
