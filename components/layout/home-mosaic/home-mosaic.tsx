@@ -305,22 +305,10 @@ export function HomeMosaic() {
       // 8. Kính lúp mở lại
       maskSizeRef.current.size = 450
 
-      // 9. Intro Fly-in Animation nhẹ nhàng khi back về home (không làm chìm ảnh)
-      const startZ = targetZ - 1200
-      cameraZRef.current.z = startZ
+      // 9. Phục hồi trực tiếp vị trí CameraZ chuẩn xác (không làm chìm ảnh)
+      cameraZRef.current.z = targetZ
       layoutPxRef.current.forEach((px) => {
-        if (px) px.currentCamZ = startZ
-      })
-
-      gsap.to(cameraZRef.current, {
-        z: targetZ,
-        duration: 1.2,
-        ease: 'power2.out',
-        onUpdate: () => {
-          layoutPxRef.current.forEach((px) => {
-            if (px) px.currentCamZ = cameraZRef.current.z
-          })
-        }
+        if (px) px.currentCamZ = targetZ
       })
     }
   }, [currentRoute])
