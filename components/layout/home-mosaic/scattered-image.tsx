@@ -61,7 +61,12 @@ export function ScatteredImage({
   const imgRef = useRef<HTMLImageElement>(null)
 
   useEffect(() => {
-    // Nếu đã cache rồi thì dùng luôn, không tính lại
+    // Check nếu ảnh HTML đã complete sẵn trong DOM (từ browser cache)
+    if (imgRef.current?.complete) {
+      setLoaded(true)
+    }
+
+    // Nếu đã cache màu dominant rồi thì dùng luôn
     if (dominantColorCache.has(src)) {
       if (!isMasked) setDominantColor(dominantColorCache.get(src)!)
       return

@@ -77,8 +77,6 @@
   object-fit: contain;
   transition: opacity 0.8s ease, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   will-change: transform, opacity;
-  animation: gridEntrance 1.6s cubic-bezier(0.25, 1, 0.5, 1) both;
-  animation-delay: var(--entrance-delay, 0s);
 }
 
 
