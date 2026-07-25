@@ -210,7 +210,23 @@ export function HomeMosaic() {
   const baseImagesRef = useRef<(HTMLDivElement | null)[]>([])
   const maskedImagesRef = useRef<(HTMLDivElement | null)[]>([])
 
-  const layoutPxRef = useRef<{ x: number; y: number; z: number; width: number; currentCamZ?: number; frozenRelativeZ?: number }[]>([])
+  const layoutPxRef = useRef<{ x: number; y: number; z: number; width: number; currentCamZ?: number; frozenRelativeZ?: number }[]>(
+    typeof window !== 'undefined' ? TUNNEL_LAYOUT.map((layout) => {
+      const w = window.innerWidth
+      const h = window.innerHeight
+      const isDesktop = w > 800
+      const spreadMultiplierX = isDesktop ? 1.0 : 0.6
+      const spreadMultiplierY = isDesktop ? 1.0 : 0.6
+      const initialZ = activeIndex >= 0 ? activeIndex * CHAPTER_Z_SPACING : 0
+      return {
+        x: ((layout.x * spreadMultiplierX) / 100) * w,
+        y: ((layout.y * spreadMultiplierY) / 100) * h,
+        z: layout.z,
+        width: (layout.width / 100) * w,
+        currentCamZ: initialZ
+      }
+    }) : []
+  )
   const cameraZRef = useRef({ z: activeIndex >= 0 ? activeIndex * CHAPTER_Z_SPACING : 0 })
   const maskSizeRef = useRef({ size: 450 })
 
