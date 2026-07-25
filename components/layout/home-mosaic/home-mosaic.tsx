@@ -202,6 +202,7 @@ export function HomeMosaic() {
   
   const baseCameraRef = useRef<HTMLDivElement>(null)
   const maskedCameraRef = useRef<HTMLDivElement>(null)
+  const pageWrapperRef = useRef<HTMLDivElement>(null)
   
   const clipRectRef = useRef<SVGRectElement>(null)
   const glitchCursorRef = useRef<HTMLDivElement>(null)
@@ -261,10 +262,26 @@ export function HomeMosaic() {
       gsap.killTweensOf(cameraZRef.current)
       layoutPxRef.current.forEach((px) => { if (px) gsap.killTweensOf(px) })
 
-      // Bật cờ ngay để RAF bắt đầu render (cần để animation thấy được)
+      // Bật RAF ngay
       isLeavingPageRef.current = false
 
-      // Reset lerpState về chính giữa
+      // ── Hard reset transitionState về 0 ngay lập tức ──
+      // KHÔNG dùng GSAP animate ts — dễ bị xung đột với RAF
+      const ts = transitionStateRef.current
+      ts.tx = 0
+      ts.ty = 0
+      ts.scale = 1
+      ts.opacity = 1
+
+      // Xóa hết inline style của camera containers để tránh state cũ
+      if (baseCameraRef.current) {
+        baseCameraRef.current.style.cssText = ''
+      }
+      if (maskedCameraRef.current) {
+        maskedCameraRef.current.style.cssText = ''
+      }
+
+      // Reset lerpState
       const w = window.innerWidth
       const h = window.innerHeight
       lerpState.current.mouseX = w / 2
@@ -289,13 +306,9 @@ export function HomeMosaic() {
         px.currentCamZ = targetZ
         px.frozenRelativeZ = undefined
       })
+      if (recomputeLayoutRef.current) recomputeLayoutRef.current()
 
-      // Tạo fresh layoutPxRef giống hệt resize
-      if (recomputeLayoutRef.current) {
-        recomputeLayoutRef.current()
-      }
-
-      // Reset image wrappers — bắt buộc visible để animation thấy được
+      // Reset image wrappers
       const allWrappers = [
         ...baseImagesRef.current.filter(Boolean),
         ...maskedImagesRef.current.filter(Boolean)
@@ -303,8 +316,9 @@ export function HomeMosaic() {
       gsap.killTweensOf(allWrappers)
       allWrappers.forEach((el) => {
         if (el) {
-          el.style.opacity = '1'
-          el.style.visibility = 'visible'
+          el.style.opacity = ''
+          el.style.visibility = ''
+          el.style.transform = ''
         }
       })
 
@@ -314,26 +328,20 @@ export function HomeMosaic() {
       // Reset title
       if (titleRef.current) {
         gsap.killTweensOf(titleRef.current)
-        gsap.set(titleRef.current, { opacity: 0, y: 0 })
-        gsap.to(titleRef.current, { opacity: 1, duration: 0.5, delay: 0.4, ease: 'power2.out' })
+        gsap.set(titleRef.current, { opacity: 0 })
+        gsap.to(titleRef.current, { opacity: 1, duration: 0.6, delay: 0.3, ease: 'power2.out' })
       }
 
-      // ─── HIỆU ỨNG NGƯỢC: camera bay lên từ dưới trở về ───
-      // Container dùng visibility:hidden (không phải display:none) nên GSAP animate được ngay.
-      // RAF ticker cũng chạy bình thường vì isHomeVisibleRef=true.
-      const ts = transitionStateRef.current
-      const vh = window.innerHeight
-      ts.ty = vh * 1.2
-      ts.scale = 0.85
-      ts.opacity = 0
-
-      gsap.to(ts, {
-        ty: 0,
-        scale: 1,
-        opacity: 1,
-        duration: 0.7,
-        ease: 'power3.out'
-      })
+      // ── HIỆU ỨNG NGƯỢC: pageWrapper bay lên từ dưới ──
+      // Animate TRỰC TIẾP trên DOM element, không qua transitionStateRef
+      // để tránh xung đột với RAF ticker
+      if (pageWrapperRef.current) {
+        gsap.killTweensOf(pageWrapperRef.current)
+        gsap.fromTo(pageWrapperRef.current,
+          { y: '100vh', opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }
+        )
+      }
     }
   }, [currentRoute])
 
@@ -879,7 +887,7 @@ export function HomeMosaic() {
 
   return (
     <>
-      <div className={s.pageWrapper}>
+      <div ref={pageWrapperRef} className={s.pageWrapper}>
         {/* Base Layer: Solid color placeholders */}
         <div className={cn(s.mosaicPage, s.layerBase)}>
           <div ref={baseCameraRef} className={s.cameraContainer}>
