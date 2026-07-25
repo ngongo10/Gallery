@@ -279,11 +279,13 @@ export function HomeMosaic() {
       lerpState.current.camX = 0
       lerpState.current.camY = 0
 
-      // 6. Khôi phục ma trận tọa độ layoutPxRef chuẩn xác
+      // 5. Khôi phục tọa độ layoutPxRef & CameraZ chuẩn xác theo activeIndex
       const isDesktop = w > 800
       const spreadMultiplierX = isDesktop ? 1.0 : 0.6
       const spreadMultiplierY = isDesktop ? 1.0 : 0.6
-      const targetZ = cameraZRef.current.z
+      
+      const targetZ = currentChapterRef.current * CHAPTER_Z_SPACING
+      cameraZRef.current.z = targetZ
 
       TUNNEL_LAYOUT.forEach((layout, i) => {
         const px = layoutPxRef.current[i]
@@ -805,14 +807,7 @@ export function HomeMosaic() {
       ty: vh * 1.2,
       scale: 0.85,
       opacity: 0,
-      duration: 0.8,
-      ease: 'power3.in'
-    }, 0)
-
-    // CameraZ lùi sâu vào đường hầm khi biến mất
-    tl.to(cameraZRef.current, {
-      z: cameraZRef.current.z - 1500,
-      duration: 0.8,
+      duration: 0.7,
       ease: 'power3.in'
     }, 0)
   }
