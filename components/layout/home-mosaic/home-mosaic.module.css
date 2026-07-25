@@ -46,8 +46,6 @@
   will-change: transform;
   cursor: pointer;
   z-index: 1;
-  opacity: 0;        /* Start hidden — JS RAF sets opacity once positions are calculated */
-  visibility: hidden; /* JS RAF sets visibility once positions are calculated */
 }
 
 @keyframes gridEntrance {

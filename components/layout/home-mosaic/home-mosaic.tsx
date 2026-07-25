@@ -313,18 +313,26 @@ export function HomeMosaic() {
         px.frozenRelativeZ = undefined
       })
 
-      // 7. Reset image wrappers
+      // 7. Reset image wrappers và ép hiển thị lập tức
       const allWrappers = [
         ...baseImagesRef.current.filter(Boolean),
         ...maskedImagesRef.current.filter(Boolean)
       ]
       if (allWrappers.length > 0) {
         gsap.killTweensOf(allWrappers)
-        gsap.set(allWrappers, { clearProps: 'all' })
+        allWrappers.forEach((el) => {
+          if (el) {
+            el.style.opacity = '1'
+            el.style.visibility = 'visible'
+          }
+        })
       }
 
       // 8. Đảm bảo kính lúp mở kích thước 450px
       maskSizeRef.current.size = 450
+
+      // 9. Ép ticker chạy ngay 1 frame đồng bộ để cập nhật toàn bộ vị trí 3D tức thì
+      ticker()
     }
   }, [currentRoute])
 
