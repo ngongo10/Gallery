@@ -43,8 +43,80 @@ export interface PortfolioData {
 
 export const portfolioData: PortfolioData = {
   series: [
-
+    {
+      "id": "summer-mermaid",
+      "title": "SUMMER MERMAID",
+      "year": "2026",
+      "essay": "An ethereal summer series captured under ocean breeze and golden light, embodying the free-spirited grace of a summer mermaid.",
+      "images": [
         {
+          "src": "/images/summer-mermaid/20210505-DSC00834-Enhanced-NR.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00834.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00836.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00837.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00838.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00840.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00841.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00843.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00844.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00845.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00846.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00847.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        },
+        {
+          "src": "/images/summer-mermaid/20210505-DSC00855.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        }
+      ]
+    },
+    {
                 "id": "Graduation Photography",
                 "title": "GRADUATION",
                 "year": "2026",
