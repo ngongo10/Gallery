@@ -339,7 +339,16 @@ export function HomeMosaic() {
         gsap.killTweensOf(pageWrapperRef.current)
         gsap.fromTo(pageWrapperRef.current,
           { y: '100vh', opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }
+          { 
+            y: 0, 
+            opacity: 1, 
+            duration: 0.7, 
+            ease: 'power3.out',
+            onComplete: () => {
+              // Sau khi bay lên xong, kích hoạt resize event để ép khôi phục chuẩn xác toàn bộ layout & khung hình ban đầu
+              window.dispatchEvent(new Event('resize'))
+            }
+          }
         )
       }
     }
