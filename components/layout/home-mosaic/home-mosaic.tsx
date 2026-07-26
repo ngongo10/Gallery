@@ -304,7 +304,7 @@ export function HomeMosaic() {
         px.y = ((layout.y * spreadMultiplierY) / 100) * h
         px.width = (layout.width / 100) * w
         px.currentCamZ = targetZ
-        px.frozenRelativeZ = undefined
+        delete px.frozenRelativeZ
       })
       if (recomputeLayoutRef.current) recomputeLayoutRef.current()
 
