@@ -332,24 +332,27 @@ export function HomeMosaic() {
         gsap.to(titleRef.current, { opacity: 1, duration: 0.6, delay: 0.3, ease: 'power2.out' })
       }
 
-      // ── HIỆU ỨNG NGƯỢC: pageWrapper bay lên từ dưới ──
-      // Animate TRỰC TIẾP trên DOM element, không qua transitionStateRef
-      // để tránh xung đột với RAF ticker
+      // ── HIỆU ỨNG NGƯỢC: pageWrapper bay lên từ dưới CHỈ KHI từ trang detail quay về Home ──
+      const prevRoute = usePortfolioStore.getState().prevRoute
       if (pageWrapperRef.current) {
         gsap.killTweensOf(pageWrapperRef.current)
-        gsap.fromTo(pageWrapperRef.current,
-          { y: '100vh', opacity: 0 },
-          { 
-            y: 0, 
-            opacity: 1, 
-            duration: 0.7, 
-            ease: 'power3.out',
-            onComplete: () => {
-              // Sau khi bay lên xong, kích hoạt resize event để ép khôi phục chuẩn xác toàn bộ layout & khung hình ban đầu
-              window.dispatchEvent(new Event('resize'))
+        if (prevRoute === 'detail') {
+          gsap.fromTo(pageWrapperRef.current,
+            { y: '100vh', opacity: 0 },
+            { 
+              y: 0, 
+              opacity: 1, 
+              duration: 0.7, 
+              ease: 'power3.out',
+              onComplete: () => {
+                window.dispatchEvent(new Event('resize'))
+              }
             }
-          }
-        )
+          )
+        } else {
+          // Lần đầu vào Home từ loader: Đứng yên vị trí chuẩn ngay lập tức, không trượt từ 100vh lên nữa
+          gsap.set(pageWrapperRef.current, { y: 0, opacity: 1 })
+        }
       }
     }
   }, [currentRoute])
