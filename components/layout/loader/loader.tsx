@@ -5,9 +5,34 @@ import { usePortfolioStore } from '@/lib/store/portfolioStore'
 import { portfolioData } from '@/lib/data/portfolioData'
 import s from './loader.module.css'
 
+// Cache màu chủ đạo (dominant color) toàn cục
+export const dominantColorMap = new Map<string, string>()
+
+function extractDominantColor(img: HTMLImageElement): string {
+  try {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return '#262626'
+    canvas.width = 10
+    canvas.height = 10
+    ctx.drawImage(img, 0, 0, 10, 10)
+    const data = ctx.getImageData(0, 0, 10, 10).data
+    let r = 0, g = 0, b = 0, count = 0
+    for (let i = 0; i < data.length; i += 4) {
+      r += data[i] ?? 0
+      g += data[i + 1] ?? 0
+      b += data[i + 2] ?? 0
+      count++
+    }
+    if (count === 0) return '#262626'
+    return `rgb(${Math.round(r / count)}, ${Math.round(g / count)}, ${Math.round(b / count)})`
+  } catch {
+    return '#262626'
+  }
+}
+
 export function Loader() {
   const setRoute = usePortfolioStore((state) => state.setRoute)
-
 
   useEffect(() => {
     const bar = document.getElementById('loader-bar')
@@ -47,9 +72,16 @@ export function Loader() {
       return
     }
 
+    // Preload từng ảnh VÀ tính toán luôn màu chủ đạo (Dominant Color) trong màn hình Loading
     allImages.forEach((src) => {
       const img = new window.Image()
+      img.crossOrigin = 'Anonymous'
       img.onload = img.onerror = () => {
+        // Tính toán màu chủ đạo ngay trong quá trình Loading
+        if (img.naturalWidth && !dominantColorMap.has(src)) {
+          const color = extractDominantColor(img)
+          dominantColorMap.set(src, color)
+        }
         loaded++
         const percent = Math.floor((loaded / total) * 100)
         updateProgress(percent)
