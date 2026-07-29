@@ -44,6 +44,82 @@ export interface PortfolioData {
 export const portfolioData: PortfolioData = {
   series: [
     {
+      "id": "yao-guang-cosplay",
+      "title": "YAO GUANG COSPLAY",
+      "year": "2026",
+      "essay": "A mystical cosplay photography series featuring Yao Guang, blending fantasy aesthetics with dramatic cinematic lighting.",
+      "images": [
+        {
+          "src": "/images/Yao Guang Cosplay/20210505-DSC00709.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/Yao Guang Cosplay/20210505-DSC00711.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        },
+        {
+          "src": "/images/Yao Guang Cosplay/20210505-DSC00926.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/Yao Guang Cosplay/20210505-DSC00937.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        },
+        {
+          "src": "/images/Yao Guang Cosplay/20210505-DSC00939.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/Yao Guang Cosplay/20210505-DSC00947.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        }
+      ]
+    },
+    {
+      "id": "tomoyo-cosplay",
+      "title": "TOMOYO COSPLAY",
+      "year": "2026",
+      "essay": "An elegant and nostalgic cosplay photoshoot capturing the gentle charm and refined essence of Tomoyo.",
+      "images": [
+        {
+          "src": "/images/tomoyo cosplay/20210504-DSC00539.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/tomoyo cosplay/20210504-DSC00542.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        },
+        {
+          "src": "/images/tomoyo cosplay/20210504-DSC00550-Enhanced-NR.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/tomoyo cosplay/20210504-DSC00553.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        },
+        {
+          "src": "/images/tomoyo cosplay/20210504-DSC00554.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 1.5
+        },
+        {
+          "src": "/images/tomoyo cosplay/20210504-DSC00555.jpg",
+          "placeholder": "#202020",
+          "aspectRatio": 0.67
+        }
+      ]
+    },
+    {
       "id": "summer-mermaid",
       "title": "SUMMER MERMAID",
       "year": "2026",
