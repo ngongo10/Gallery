@@ -50,46 +50,25 @@ export function SeriesDetail() {
     }
   }, [series, setActivePhotoIndex])
 
-  // GSAP entrance animation: images fade in from below as they enter viewport
+  // GSAP entrance animation nhẹ nhàng, không dùng y: window.innerHeight gây lag
   useEffect(() => {
     if (!series) return
 
     const elements = imageRefs.current.filter(Boolean) as HTMLDivElement[]
 
-    // Set initial state (higher starting Y offset for other images)
-    gsap.set(elements, { y: 120, opacity: 0 })
+    // Trạng thái ban đầu nhẹ nhàng
+    gsap.set(elements, { y: 40, opacity: 0 })
     
-    // The very first image starts below the screen boundary (y: window.innerHeight)
-    if (elements[0]) {
-      gsap.set(elements[0], { y: window.innerHeight, opacity: 1 })
-    }
+    // Animate xuất hiện các ảnh đầu tiên
+    gsap.to(elements.slice(0, 3), {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: 'power3.out'
+    })
 
-    // Instantly animate the first image to sweep up from the bottom of the screen
-    if (elements[0]) {
-      gsap.to(elements[0], {
-        y: 0,
-        opacity: 1,
-        duration: 1.4,
-        ease: 'power4.out',
-        delay: 0.05
-      })
-    }
-
-    // Stagger the remaining initial visible images (index 1 and 2)
-    const remainingBatch = elements.slice(1, 3)
     const scrollBatch = elements.slice(3)
-
-    if (remainingBatch.length > 0) {
-      gsap.to(remainingBatch, {
-        y: 0,
-        opacity: 1,
-        duration: 1.2,
-        stagger: 0.15,
-        ease: 'power4.out',
-        delay: 0.25,
-      })
-    }
-
     const observers: IntersectionObserver[] = []
 
     scrollBatch.forEach((el) => {

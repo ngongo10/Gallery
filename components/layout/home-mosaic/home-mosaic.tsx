@@ -741,7 +741,8 @@ export function HomeMosaic() {
     const resetAutoScroll = () => {
       if (autoScrollTimer) clearInterval(autoScrollTimer)
       autoScrollTimer = setInterval(() => {
-        if (!isLeavingPageRef.current && document.visibilityState === 'visible') {
+        // QUAN TRỌNG: Chỉ chạy auto-scroll đổi Album khi thực sự ở trang Home
+        if (isHomeVisibleRef.current && !isLeavingPageRef.current && document.visibilityState === 'visible') {
           // Trên desktop: chỉ auto-scroll khi chuột đứng yên
           // Trên mobile (touch device): luôn auto-scroll
           if (isTouchDevice() || !isMouseMoving) {
