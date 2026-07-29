@@ -65,36 +65,7 @@ export function ScatteredImage({
     if (imgRef.current?.complete) {
       setLoaded(true)
     }
-
-    // Nếu đã cache màu dominant rồi thì dùng luôn
-    if (dominantColorCache.has(src)) {
-      if (!isMasked) setDominantColor(dominantColorCache.get(src)!)
-      return
-    }
-
-    const img = new Image()
-    img.crossOrigin = 'Anonymous'
-    img.src = src
-    img.onload = () => {
-      if (img.naturalWidth && img.naturalHeight) {
-        setRealAspectRatio(img.naturalWidth / img.naturalHeight)
-      }
-      if (!isMasked) {
-        const runWhenIdle = (cb: () => void) => {
-          if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-            window.requestIdleCallback(cb, { timeout: 2000 })
-          } else {
-            setTimeout(cb, 300)
-          }
-        }
-        runWhenIdle(() => {
-          const color = getDominantColor(img)
-          dominantColorCache.set(src, color) // Lưu vào cache
-          setDominantColor(color)
-        })
-      }
-    }
-  }, [src, isMasked])
+  }, [src])
 
   return (
     <div 
@@ -109,7 +80,7 @@ export function ScatteredImage({
       {!isMasked && (
         <div 
           className={s.imagePlaceholder} 
-          style={{ backgroundColor: dominantColor, opacity: 1 }} 
+          style={{ backgroundColor: '#262626', opacity: 1 }} 
         />
       )}
       
