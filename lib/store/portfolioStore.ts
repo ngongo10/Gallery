@@ -32,7 +32,7 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
   currentRoute: 'loader',
   prevRoute: null,
   menuOpen: false,
-  activeSeriesId: 'yao-guang-cosplay',
+  activeSeriesId: 'Yao Guang Cosplay',
   activePhotoIndex: 0,
   activeProductId: null,
   infoOpen: false,

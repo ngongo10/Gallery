@@ -43,156 +43,8 @@ export interface PortfolioData {
 
 export const portfolioData: PortfolioData = {
   series: [
-    {
-      "id": "yao-guang-cosplay",
-      "title": "YAO GUANG COSPLAY",
-      "year": "2026",
-      "essay": "A mystical cosplay photography series featuring Yao Guang, blending fantasy aesthetics with dramatic cinematic lighting.",
-      "images": [
+
         {
-          "src": "/images/Yao Guang Cosplay/20210505-DSC00709.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/Yao Guang Cosplay/20210505-DSC00711.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        },
-        {
-          "src": "/images/Yao Guang Cosplay/20210505-DSC00926.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/Yao Guang Cosplay/20210505-DSC00937.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        },
-        {
-          "src": "/images/Yao Guang Cosplay/20210505-DSC00939.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/Yao Guang Cosplay/20210505-DSC00947.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        }
-      ]
-    },
-    {
-      "id": "tomoyo-cosplay",
-      "title": "TOMOYO COSPLAY",
-      "year": "2026",
-      "essay": "An elegant and nostalgic cosplay photoshoot capturing the gentle charm and refined essence of Tomoyo.",
-      "images": [
-        {
-          "src": "/images/tomoyo cosplay/20210504-DSC00539.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/tomoyo cosplay/20210504-DSC00542.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        },
-        {
-          "src": "/images/tomoyo cosplay/20210504-DSC00550-Enhanced-NR.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/tomoyo cosplay/20210504-DSC00553.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        },
-        {
-          "src": "/images/tomoyo cosplay/20210504-DSC00554.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/tomoyo cosplay/20210504-DSC00555.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        }
-      ]
-    },
-    {
-      "id": "summer-mermaid",
-      "title": "SUMMER MERMAID",
-      "year": "2026",
-      "essay": "An ethereal summer series captured under ocean breeze and golden light, embodying the free-spirited grace of a summer mermaid.",
-      "images": [
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00834-Enhanced-NR.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00834.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00836.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00837.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00838.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00840.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00841.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00843.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00844.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00845.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00846.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00847.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 0.67
-        },
-        {
-          "src": "/images/summer-mermaid/20210505-DSC00855.jpg",
-          "placeholder": "#202020",
-          "aspectRatio": 1.5
-        }
-      ]
-    },
-    {
                 "id": "Graduation Photography",
                 "title": "GRADUATION",
                 "year": "2026",
@@ -255,6 +107,44 @@ export const portfolioData: PortfolioData = {
                         },
                         {
                                 "src": "/images/Graduation Photography/1108237420833725188.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        }
+                ]
+        },
+        {
+                "id": "Yao Guang Cosplay",
+                "title": "YAO GUANG COSPLAY",
+                "year": "2026",
+                "essay": "A curated gallery of images from Yao Guang Cosplay.",
+                "images": [
+                        {
+                                "src": "/images/Yao Guang Cosplay/20210505-DSC00709.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/Yao Guang Cosplay/20210505-DSC00711.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/Yao Guang Cosplay/20210505-DSC00926.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/Yao Guang Cosplay/20210505-DSC00937.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/Yao Guang Cosplay/20210505-DSC00939.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/Yao Guang Cosplay/20210505-DSC00947.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         }
@@ -519,102 +409,6 @@ export const portfolioData: PortfolioData = {
                 ]
         },
         {
-                "id": "men-studio",
-                "title": "MEN STUDIO",
-                "year": "2026",
-                "essay": "A series of bold, minimal, and classic men portraits taken inside a controlled studio lighting setup.",
-                "images": [
-                        {
-                                "src": "/images/men-studio/1108237420831272991.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 1.5
-                        },
-                        {
-                                "src": "/images/men-studio/1108237420831273170.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 0.75
-                        },
-                        {
-                                "src": "/images/men-studio/1108237420831273174.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 1.5
-                        },
-                        {
-                                "src": "/images/men-studio/1108237420831273267.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 0.75
-                        },
-                        {
-                                "src": "/images/men-studio/1108237420831400716.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 1.5
-                        },
-                        {
-                                "src": "/images/men-studio/1108237420832607239.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 0.75
-                        },
-                        {
-                                "src": "/images/men-studio/1108237420833506865.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 1.5
-                        },
-                        {
-                                "src": "/images/men-studio/1108237420833509415.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 0.75
-                        }
-                ]
-        },
-        {
-                "id": "mysterious-light",
-                "title": "MYSTERIOUS LIGHT",
-                "year": "2026",
-                "essay": "Chasing the dramatic interplay of deep shadows and single sharp beams of light to construct a mysterious visual poetry.",
-                "images": [
-                        {
-                                "src": "/images/mysterious-light/1108237420830224868.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 1.5
-                        },
-                        {
-                                "src": "/images/mysterious-light/1108237420830224942.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 0.75
-                        },
-                        {
-                                "src": "/images/mysterious-light/1108237420830224975_Mirror shoot.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 1.5
-                        },
-                        {
-                                "src": "/images/mysterious-light/1108237420830224985.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 0.75
-                        },
-                        {
-                                "src": "/images/mysterious-light/1108237420831273309.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 1.5
-                        },
-                        {
-                                "src": "/images/mysterious-light/1108237420833509391.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 0.75
-                        },
-                        {
-                                "src": "/images/mysterious-light/1108237420833509872.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 1.5
-                        },
-                        {
-                                "src": "/images/mysterious-light/1108237420833509936.jpg",
-                                "placeholder": "#202020",
-                                "aspectRatio": 0.75
-                        }
-                ]
-        },
-        {
                 "id": "osean",
                 "title": "OCEAN",
                 "year": "2026",
@@ -699,22 +493,153 @@ export const portfolioData: PortfolioData = {
                 "essay": "Intimate and expressive portraiture capturing human emotion and character. This series emphasizes subtle lighting and raw authenticity.",
                 "images": [
                         {
-                                "src": "/images/portrait/a.jpg",
+                                "src": "/images/portrait/20210504-DSC00550-Enhanced-NR.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/portrait/c.jpg",
+                                "src": "/images/portrait/20210504-DSC00566.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
                         {
-                                "src": "/images/portrait/d.jpg",
+                                "src": "/images/portrait/20210504-DSC00569.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/portrait/shop-portrait.jpg",
+                                "src": "/images/portrait/20210505-DSC00939.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/portrait/20210505-DSC00993.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/portrait/a.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/portrait/c.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/portrait/d.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        }
+                ]
+        },
+        {
+                "id": "summer-mermaid",
+                "title": "SUMMER MERMAID",
+                "year": "2026",
+                "essay": "A curated gallery of images from Summer Mermaid.",
+                "images": [
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00834-Enhanced-NR.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00834.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00836.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00837.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00838.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00840.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00841.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00843.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00844.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00845.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00846.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00847.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/summer-mermaid/20210505-DSC00855.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        }
+                ]
+        },
+        {
+                "id": "tomoyo cosplay",
+                "title": "TOMOYO COSPLAY",
+                "year": "2026",
+                "essay": "A curated gallery of images from Tomoyo Cosplay.",
+                "images": [
+                        {
+                                "src": "/images/tomoyo cosplay/20210504-DSC00539.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/tomoyo cosplay/20210504-DSC00542.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/tomoyo cosplay/20210504-DSC00550-Enhanced-NR.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/tomoyo cosplay/20210504-DSC00553.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 0.75
+                        },
+                        {
+                                "src": "/images/tomoyo cosplay/20210504-DSC00554.jpg",
+                                "placeholder": "#202020",
+                                "aspectRatio": 1.5
+                        },
+                        {
+                                "src": "/images/tomoyo cosplay/20210504-DSC00555.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         }
