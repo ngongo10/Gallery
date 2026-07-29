@@ -602,27 +602,10 @@ export function HomeMosaic() {
     lerpState.current.maskY = window.innerHeight / 2
 
     const runIntroAnimation = () => {
+      // Đặt ngay camera ở vị trí chuẩn, không chạy hiệu ứng lùi xa 3000px gây giật lag
       const targetZ = cameraZRef.current.z
-      // Đặt vị trí xuất phát lùi xa trong đường hầm 3D (3000px)
-      const startZ = targetZ - 3000
-      cameraZRef.current.z = startZ
-
-      // Reset tức thì currentCamZ để hiệu ứng lao đường hầm mượt mà
       layoutPxRef.current.forEach((px) => {
-        if (px) px.currentCamZ = startZ
-      })
-
-      // GSAP animate cameraZRef.current từ startZ về targetZ (3D Tunnel Fly-In Effect)
-      gsap.to(cameraZRef.current, {
-        z: targetZ,
-        duration: 2.2,
-        ease: 'power3.out',
-        onUpdate: () => {
-          // Ép currentCamZ của các ảnh bám theo cameraZRef để tạo cảm giác bay vào thật mượt
-          layoutPxRef.current.forEach((px) => {
-            if (px) px.currentCamZ = cameraZRef.current.z
-          })
-        }
+        if (px) px.currentCamZ = targetZ
       })
     }
 
