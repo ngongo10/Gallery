@@ -51,62 +51,62 @@ export const portfolioData: PortfolioData = {
                 "essay": "Capturing unforgettable milestones, youthfulness, and hopeful eyes looking forward to the future on graduation day.",
                 "images": [
                         {
-                                "src": "/images/Graduation Photography/1108237420833724861.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833724861.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833724863.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833724863.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833724868.png",
+                                "src": "/images/Graduation%20Photography/1108237420833724868.png",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833724875.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833724875.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833724981.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833724981.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833724993.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833724993.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833725004_𝑆𝐴𝑉𝐸 = 𝐹𝐿𝑂𝑊 𝑀𝐸_@𝒉𝒐𝒂𝒏𝒈𝒕𝒉𝒊𝒒𝒖𝒚𝒆𝒏266.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833725004_%F0%9D%91%86%F0%9D%90%B4%F0%9D%91%89%F0%9D%90%B8%20=%20%F0%9D%90%B9%F0%9D%90%BF%F0%9D%91%82%F0%9D%91%8A%20%F0%9D%91%80%F0%9D%90%B8_@%F0%9D%92%89%F0%9D%92%90%F0%9D%92%82%F0%9D%92%8F%F0%9D%92%88%F0%9D%92%95%F0%9D%92%89%F0%9D%92%8A%F0%9D%92%92%F0%9D%92%96%F0%9D%92%9A%F0%9D%92%86%F0%9D%92%8F266.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833725015.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833725015.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833725056.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833725056.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833725109.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833725109.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833725186.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833725186.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/Graduation Photography/1108237420833725188.jpg",
+                                "src": "/images/Graduation%20Photography/1108237420833725188.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         }
@@ -119,32 +119,32 @@ export const portfolioData: PortfolioData = {
                 "essay": "A curated gallery of images from Yao Guang Cosplay.",
                 "images": [
                         {
-                                "src": "/images/Yao Guang Cosplay/20210505-DSC00709.jpg",
+                                "src": "/images/Yao%20Guang%20Cosplay/20210505-DSC00709.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/Yao Guang Cosplay/20210505-DSC00711.jpg",
+                                "src": "/images/Yao%20Guang%20Cosplay/20210505-DSC00711.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
                         {
-                                "src": "/images/Yao Guang Cosplay/20210505-DSC00926.jpg",
+                                "src": "/images/Yao%20Guang%20Cosplay/20210505-DSC00926.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/Yao Guang Cosplay/20210505-DSC00937.jpg",
+                                "src": "/images/Yao%20Guang%20Cosplay/20210505-DSC00937.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
                         {
-                                "src": "/images/Yao Guang Cosplay/20210505-DSC00939.jpg",
+                                "src": "/images/Yao%20Guang%20Cosplay/20210505-DSC00939.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/Yao Guang Cosplay/20210505-DSC00947.jpg",
+                                "src": "/images/Yao%20Guang%20Cosplay/20210505-DSC00947.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         }
@@ -440,7 +440,7 @@ export const portfolioData: PortfolioData = {
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/osean/1108237420831272432_Aquarium pose idea.jpg",
+                                "src": "/images/osean/1108237420831272432_Aquarium%20pose%20idea.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
@@ -460,7 +460,7 @@ export const portfolioData: PortfolioData = {
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/osean/1108237420831272478_🩵.jpg",
+                                "src": "/images/osean/1108237420831272478_%F0%9F%A9%B5.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
@@ -614,32 +614,32 @@ export const portfolioData: PortfolioData = {
                 "essay": "A curated gallery of images from Tomoyo Cosplay.",
                 "images": [
                         {
-                                "src": "/images/tomoyo cosplay/20210504-DSC00539.jpg",
+                                "src": "/images/tomoyo%20cosplay/20210504-DSC00539.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/tomoyo cosplay/20210504-DSC00542.jpg",
+                                "src": "/images/tomoyo%20cosplay/20210504-DSC00542.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
                         {
-                                "src": "/images/tomoyo cosplay/20210504-DSC00550-Enhanced-NR.jpg",
+                                "src": "/images/tomoyo%20cosplay/20210504-DSC00550-Enhanced-NR.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/tomoyo cosplay/20210504-DSC00553.jpg",
+                                "src": "/images/tomoyo%20cosplay/20210504-DSC00553.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         },
                         {
-                                "src": "/images/tomoyo cosplay/20210504-DSC00554.jpg",
+                                "src": "/images/tomoyo%20cosplay/20210504-DSC00554.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 1.5
                         },
                         {
-                                "src": "/images/tomoyo cosplay/20210504-DSC00555.jpg",
+                                "src": "/images/tomoyo%20cosplay/20210504-DSC00555.jpg",
                                 "placeholder": "#202020",
                                 "aspectRatio": 0.75
                         }

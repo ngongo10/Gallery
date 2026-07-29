@@ -75,7 +75,7 @@ function getImages(dirName) {
     .filter((file) => /\.(jpe?g|png|webp)$/i.test(file))
     .sort()
     .map((file, index) => ({
-      src: `/images/${dirName}/${file}`,
+      src: encodeURI(`/images/${dirName}/${file}`),
       placeholder: '#202020',
       aspectRatio: index % 2 === 0 ? 1.5 : 0.75,
     }));
