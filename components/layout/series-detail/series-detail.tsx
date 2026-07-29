@@ -119,24 +119,10 @@ export function SeriesDetail() {
     }
   }, [series])
 
-  // Handle leaving page animation (slide down)
+  // Handle leaving page (chuyển thẳng về home, không chạy animation trượt ảnh)
   useEffect(() => {
     const handleLeave = () => {
-      const elements = imageRefs.current.filter(Boolean) as HTMLDivElement[]
-      gsap.killTweensOf(elements)
-      gsap.to(elements, {
-        y: window.innerHeight,
-        opacity: 0,
-        duration: 1.0,
-        stagger: {
-          amount: 0.3,
-          from: 'start'
-        },
-        ease: 'power4.in',
-        onComplete: () => {
-          setRoute('home')
-        }
-      })
+      setRoute('home')
     }
 
     window.addEventListener('leave-detail-page', handleLeave)

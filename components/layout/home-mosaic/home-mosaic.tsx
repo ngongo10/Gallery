@@ -332,28 +332,12 @@ export function HomeMosaic() {
         gsap.to(titleRef.current, { opacity: 1, duration: 0.6, delay: 0.3, ease: 'power2.out' })
       }
 
-      // ── HIỆU ỨNG NGƯỢC: pageWrapper bay lên từ dưới CHỈ KHI từ trang detail quay về Home ──
-      const prevRoute = usePortfolioStore.getState().prevRoute
+      // Đứng yên vị trí chuẩn ngay lập tức khi về Home, không chạy animation trượt từ 100vh nữa
       if (pageWrapperRef.current) {
         gsap.killTweensOf(pageWrapperRef.current)
-        if (prevRoute === 'detail') {
-          gsap.fromTo(pageWrapperRef.current,
-            { y: '100vh', opacity: 0 },
-            { 
-              y: 0, 
-              opacity: 1, 
-              duration: 0.7, 
-              ease: 'power3.out',
-              onComplete: () => {
-                window.dispatchEvent(new Event('resize'))
-              }
-            }
-          )
-        } else {
-          // Lần đầu vào Home từ loader: Đứng yên vị trí chuẩn ngay lập tức, không trượt từ 100vh lên nữa
-          gsap.set(pageWrapperRef.current, { y: 0, opacity: 1 })
-        }
+        gsap.set(pageWrapperRef.current, { y: 0, opacity: 1 })
       }
+      window.dispatchEvent(new Event('resize'))
     }
   }, [currentRoute])
 
@@ -828,35 +812,8 @@ export function HomeMosaic() {
   }, [activeIndex, setActiveSeriesId])
 
   const handleTransitionOut = () => {
-    // Tránh double-trigger
-    if (isLeavingPageRef.current) return
-
-    // 1. Đóng kính lúp + mờ tiêu đề
-    gsap.to(maskSizeRef.current, { size: 0, duration: 0.3, ease: 'power2.inOut' })
-    if (titleRef.current) {
-      gsap.to(titleRef.current, { opacity: 0, y: 30, duration: 0.3, ease: 'power2.in' })
-    }
-
-    // 2. Bật cờ transition
-    isLeavingPageRef.current = true
-
-    // 3. GSAP Timeline Suction & Drop Down: animate camera position/scale qua transitionStateRef
-    // Tuyệt đối không mutate layoutPxRef.x/y để khi back về Home không bị lệch vị trí!
-    const tl = gsap.timeline({
-      onComplete: () => setRoute('detail')
-    })
-
-    const ts = transitionStateRef.current
-    const vh = window.innerHeight
-
-    // Camera lùi nhẹ & trượt xuống dưới màn hình + mờ dần
-    tl.to(ts, {
-      ty: vh * 1.2,
-      scale: 0.85,
-      opacity: 0,
-      duration: 0.7,
-      ease: 'power3.in'
-    }, 0)
+    // Chuyển trực tiếp sang trang detail, không chạy animation trượt xuống hay ẩn camera
+    setRoute('detail')
   }
 
   const handleImageClick = () => {
