@@ -871,7 +871,7 @@ export function HomeMosaic() {
         <svg style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
           <defs>
             <filter id="soft-blur">
-              <feGaussianBlur stdDeviation="15" />
+              <feGaussianBlur stdDeviation="4" />
             </filter>
             <mask id="cursor-mask">
               <rect width="100%" height="100%" fill="black" />
