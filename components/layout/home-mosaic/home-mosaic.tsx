@@ -796,8 +796,27 @@ export function HomeMosaic() {
   }, [activeIndex, setActiveSeriesId])
 
   const handleTransitionOut = () => {
-    // Chuyển trực tiếp sang trang detail, không chạy animation trượt xuống hay ẩn camera
-    setRoute('detail')
+    if (isLeavingPageRef.current) return
+    isLeavingPageRef.current = true
+
+    // Thu nhỏ nhẹ kính lúp + mờ tiêu đề
+    gsap.to(maskSizeRef.current, { size: 0, duration: 0.25, ease: 'power2.inOut' })
+    if (titleRef.current) {
+      gsap.to(titleRef.current, { opacity: 0, y: 20, duration: 0.25, ease: 'power2.in' })
+    }
+
+    // GSAP animate camera lùi trượt nhẹ cực mượt nhờ GPU layer
+    const ts = transitionStateRef.current
+    gsap.to(ts, {
+      ty: window.innerHeight * 0.8,
+      scale: 0.9,
+      opacity: 0,
+      duration: 0.45,
+      ease: 'power3.in',
+      onComplete: () => {
+        setRoute('detail')
+      }
+    })
   }
 
   const handleImageClick = () => {
