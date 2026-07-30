@@ -31,7 +31,6 @@ export function ScatteredImage({
   style
 }: ScatteredImageProps) {
   const [loaded, setLoaded] = useState(false)
-  const [realAspectRatio, setRealAspectRatio] = useState(aspectRatio)
   const imgRef = useRef<HTMLImageElement>(null)
 
   // Lấy màu chủ đạo đã được tính sẵn 100% trong quá trình Loading
@@ -48,7 +47,7 @@ export function ScatteredImage({
     <div 
       ref={ref}
       className={cn(s.imageWrapper, className)}
-      style={{ ...style, aspectRatio: realAspectRatio }}
+      style={{ ...style, aspectRatio: aspectRatio }}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
