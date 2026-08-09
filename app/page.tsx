@@ -15,22 +15,21 @@ export default function Page() {
   const currentRoute = usePortfolioStore((state) => state.currentRoute)
   const infoOpen = usePortfolioStore((state) => state.infoOpen)
 
+  // Disable Lenis on home (wheel-driven), enable on scrollable content views
   const enableLenis = currentRoute === 'detail' || currentRoute === 'shop' || currentRoute === 'product' || currentRoute === 'about'
 
   return (
     <Wrapper lenis={enableLenis}>
       {currentRoute === 'loader' && <Loader />}
 
-      {/* HomeMosaic: luôn giữ trong DOM sau loader để không mất state.
-          Genie Effect chạy xong TRƯỚC khi setRoute('detail') được gọi,
-          nên visibility:hidden chỉ apply sau khi animation hoàn tất. */}
+      {/* HomeMosaic luôn ở trong DOM sau khi đã load, chỉ ẩn bằng CSS */}
+      {/* Dùng visibility thay display:none để RAF/GSAP vẫn animate khi ở route khác */}
       {currentRoute !== 'loader' && (
         <div style={{
           visibility: currentRoute === 'home' ? 'visible' : 'hidden',
           pointerEvents: currentRoute === 'home' ? 'auto' : 'none',
           position: 'fixed',
-          inset: 0,
-          zIndex: 0,
+          inset: 0
         }}>
           <HomeMosaic />
         </div>
@@ -40,9 +39,11 @@ export default function Page() {
       {currentRoute === 'shop' && <ShopGrid />}
       {currentRoute === 'product' && <ProductDetail />}
       {currentRoute === 'about' && <AboutContact />}
-
+      
+      {/* Overlays render independently of route */}
       {infoOpen && <InfoOverlay />}
       <MenuOverlay />
     </Wrapper>
   )
 }
+
