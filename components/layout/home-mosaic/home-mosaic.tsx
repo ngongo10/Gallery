@@ -121,7 +121,10 @@ const TUNNEL_LAYOUT = ALL_IMAGES.map((img) => {
   const y = (pos.y / VIRTUAL_H) * 100;
   const width = (pos.w / VIRTUAL_W) * 100;
 
-  return { x, y, z, width, seriesIndex, lagSpeed };
+  // Giữ đúng aspect ratio gốc của ảnh (yêu cầu 3)
+  const ar = img.aspectRatio && img.aspectRatio > 0 ? img.aspectRatio : 1.5;
+
+  return { x, y, z, width, ar, seriesIndex, lagSpeed };
 })
 
 
@@ -130,6 +133,7 @@ export function HomeMosaic() {
   const setActiveSeriesId = usePortfolioStore((state) => state.setActiveSeriesId)
   const setRoute = usePortfolioStore((state) => state.setRoute)
   const currentRoute = usePortfolioStore((state) => state.currentRoute)
+  const prevRoute = usePortfolioStore((state) => state.prevRoute)
 
   const activeIndex = portfolioData.series.findIndex((ser) => ser.id === activeSeriesId)
   const activeSeries = portfolioData.series.find(s => s.id === activeSeriesId)
@@ -210,6 +214,7 @@ export function HomeMosaic() {
 
   const baseImagesRef = useRef<(HTMLDivElement | null)[]>([])
   const maskedImagesRef = useRef<(HTMLDivElement | null)[]>([])
+  const lastImageVisibleRef = useRef<boolean[]>(Array(ALL_IMAGES.length).fill(false))
 
   const layoutPxRef = useRef<{ x: number; y: number; z: number; width: number; currentCamZ?: number; frozenRelativeZ?: number }[]>(
     typeof window !== 'undefined' ? TUNNEL_LAYOUT.map((layout) => {
@@ -318,6 +323,7 @@ export function HomeMosaic() {
         if (el) {
           el.style.opacity = ''
           el.style.visibility = ''
+          el.style.display = ''
           el.style.transform = ''
         }
       })
@@ -328,18 +334,30 @@ export function HomeMosaic() {
       // Reset title
       if (titleRef.current) {
         gsap.killTweensOf(titleRef.current)
-        gsap.set(titleRef.current, { opacity: 0 })
-        gsap.to(titleRef.current, { opacity: 1, duration: 0.6, delay: 0.3, ease: 'power2.out' })
+        gsap.set(titleRef.current, { opacity: 0, y: 20 })
+        gsap.to(titleRef.current, { opacity: 0.7, y: 0, duration: 0.8, delay: 0.5, ease: 'power3.out' })
       }
 
-      // Đứng yên vị trí chuẩn ngay lập tức khi về Home, không chạy animation trượt từ 100vh nữa
+      // Đứng yên vị trí chuẩn ngay lập tức khi về Home
       if (pageWrapperRef.current) {
         gsap.killTweensOf(pageWrapperRef.current)
         gsap.set(pageWrapperRef.current, { y: 0, opacity: 1 })
       }
+
+      // YÊU CẦU 1: Khi vừa từ Loader sang Home, bắt đầu từ màn trắng tiến ra như cuộn Z-depth
+      if (prevRoute === 'loader') {
+        const targetZ = currentChapterRef.current * CHAPTER_Z_SPACING
+        cameraZRef.current.z = targetZ - 3500
+        layoutPxRef.current.forEach((px) => {
+          if (px) px.currentCamZ = targetZ - 3500
+        })
+        gsap.to(cameraZRef.current, { z: targetZ, duration: 1.8, ease: 'power3.out' })
+      }
+
       window.dispatchEvent(new Event('resize'))
     }
-  }, [currentRoute])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRoute, prevRoute])
 
 
   // Setup GSAP Ticker for Lerp Parallax and Cursor Mask
@@ -413,11 +431,11 @@ export function HomeMosaic() {
       const rotation = ((state.mouseX / window.innerWidth) - 0.5) * 30
 
       if (clipRectRef.current) {
-        const size = maskSizeRef.current.size;
+        const size = maskSizeRef.current.size
         clipRectRef.current.setAttribute('width', String(size))
         clipRectRef.current.setAttribute('height', String(size))
-        clipRectRef.current.setAttribute('x', String(state.maskX - size/2))
-        clipRectRef.current.setAttribute('y', String(state.maskY - size/2))
+        clipRectRef.current.setAttribute('x', String(state.maskX - size / 2))
+        clipRectRef.current.setAttribute('y', String(state.maskY - size / 2))
         clipRectRef.current.setAttribute('transform', `rotate(${rotation}, ${state.maskX}, ${state.maskY})`)
       }
 
@@ -460,38 +478,49 @@ export function HomeMosaic() {
           const offset = Math.round((-targetCamZ - baseChapterZ) / LOOP_DEPTH) * LOOP_DEPTH
           const absoluteZ = baseChapterZ + offset
           
-          if (px.currentCamZ === undefined) px.currentCamZ = targetCamZ;
-          px.currentCamZ += (targetCamZ - px.currentCamZ) * (layout.lagSpeed || 0.1);
+          if (px.currentCamZ === undefined) px.currentCamZ = targetCamZ
+          px.currentCamZ += (targetCamZ - px.currentCamZ) * (layout.lagSpeed || 0.1)
 
           const relativeZ = absoluteZ + px.currentCamZ
           
           let depthOpacity = 0
-          if (relativeZ >= -3500 && relativeZ <= 1500) {
-            if (relativeZ < -2000) {
-              depthOpacity = (relativeZ - (-3500)) / 1500
-            } else if (relativeZ > 500) {
-              depthOpacity = (1500 - relativeZ) / 1000
+          // Siết chặt vùng hiển thị: Chỉ render các ảnh ở khoảng nhìn thấy rõ (-1800px tới 800px)
+          if (relativeZ >= -1800 && relativeZ <= 800) {
+            if (relativeZ < -1000) {
+              depthOpacity = (relativeZ - (-1800)) / 800
+            } else if (relativeZ > 300) {
+              depthOpacity = (800 - relativeZ) / 500
             } else {
               depthOpacity = 1
             }
           }
 
-          const isVisible = depthOpacity > 0
+          const isVisible = depthOpacity > 0.01
           const imgTransform = `translate3d(${px.x}px, ${px.y}px, ${relativeZ}px) translate(-50%, -50%)`
-          
-          if (baseImagesRef.current[i]) {
-            baseImagesRef.current[i]!.style.transform = imgTransform
-            baseImagesRef.current[i]!.style.opacity = String(depthOpacity)
-            baseImagesRef.current[i]!.style.pointerEvents = isVisible ? 'auto' : 'none'
-            baseImagesRef.current[i]!.style.cursor = isVisible ? 'pointer' : 'default'
-            baseImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
+
+          const baseEl = baseImagesRef.current[i]
+          const maskedEl = maskedImagesRef.current[i]
+
+          if (baseEl) {
+            baseEl.style.transform = imgTransform
+            baseEl.style.opacity = String(depthOpacity)
           }
-          if (maskedImagesRef.current[i]) {
-            maskedImagesRef.current[i]!.style.transform = imgTransform
-            maskedImagesRef.current[i]!.style.opacity = isVisible ? String(depthOpacity) : '0'
-            maskedImagesRef.current[i]!.style.visibility = isVisible ? 'visible' : 'hidden'
-            maskedImagesRef.current[i]!.style.pointerEvents = isVisible ? 'auto' : 'none'
-            maskedImagesRef.current[i]!.style.cursor = isVisible ? 'pointer' : 'default'
+
+          if (maskedEl) {
+            maskedEl.style.transform = imgTransform
+            maskedEl.style.opacity = isVisible ? String(depthOpacity) : '0'
+          }
+
+          if (lastImageVisibleRef.current[i] !== isVisible) {
+            if (baseEl) {
+              baseEl.style.visibility = isVisible ? 'visible' : 'hidden'
+              baseEl.style.display = isVisible ? '' : 'none'
+            }
+            if (maskedEl) {
+              maskedEl.style.visibility = isVisible ? 'visible' : 'hidden'
+              maskedEl.style.display = isVisible ? '' : 'none'
+            }
+            lastImageVisibleRef.current[i] = isVisible
           }
         })
       } else {
@@ -501,13 +530,17 @@ export function HomeMosaic() {
           if (!px) return
           const frozenZ = px.frozenRelativeZ ?? 0
           const imgTransform = `translate3d(${px.x}px, ${px.y}px, ${frozenZ}px) translate(-50%, -50%)`
-          if (baseImagesRef.current[i]) {
-            baseImagesRef.current[i]!.style.transform = imgTransform
-            baseImagesRef.current[i]!.style.visibility = 'visible'
+          const baseEl = baseImagesRef.current[i]
+          const maskedEl = maskedImagesRef.current[i]
+          if (baseEl) {
+            baseEl.style.transform = imgTransform
+            baseEl.style.opacity = '1'
+            baseEl.style.visibility = 'visible'
           }
-          if (maskedImagesRef.current[i]) {
-            maskedImagesRef.current[i]!.style.transform = imgTransform
-            maskedImagesRef.current[i]!.style.visibility = 'visible'
+          if (maskedEl) {
+            maskedEl.style.transform = imgTransform
+            maskedEl.style.opacity = '1'
+            maskedEl.style.visibility = 'visible'
           }
         })
       }
@@ -640,7 +673,7 @@ export function HomeMosaic() {
   // Handle Scrolling, Swiping, and Auto-Scroll
   useEffect(() => {
     let lastScrollTime = 0
-    const WHEEL_THROTTLE_MS = 2500
+    const WHEEL_THROTTLE_MS = 300 // Cuộn nhanh ngay lập tức 300ms
     let autoScrollTimer: ReturnType<typeof setInterval> | null = null
     let mouseMoveTimer: ReturnType<typeof setTimeout> | null = null
     let isMouseMoving = false
@@ -799,24 +832,48 @@ export function HomeMosaic() {
     if (isLeavingPageRef.current) return
     isLeavingPageRef.current = true
 
-    // Thu nhỏ nhẹ kính lúp + mờ tiêu đề
+    // Thu nhỏ kính lúp + ẩn tiêu đề (KHÔNG thay đổi hệ thống kính lúp gốc)
     gsap.to(maskSizeRef.current, { size: 0, duration: 0.25, ease: 'power2.inOut' })
     if (titleRef.current) {
-      gsap.to(titleRef.current, { opacity: 0, y: 20, duration: 0.25, ease: 'power2.in' })
+      gsap.to(titleRef.current, { opacity: 0, y: -20, duration: 0.22, ease: 'power2.in' })
     }
 
-    // GSAP animate camera lùi trượt nhẹ cực mượt nhờ GPU layer
-    const ts = transitionStateRef.current
-    gsap.to(ts, {
-      ty: window.innerHeight * 0.8,
-      scale: 0.9,
-      opacity: 0,
-      duration: 0.45,
-      ease: 'power3.in',
-      onComplete: () => {
-        setRoute('detail')
+    // YÊU CẦU 2: Genie Effect — từng ảnh đơn lẻ hút lần lượt về MIDPOINT OF BOTTOM EDGE
+    type VisibleCard = { el: HTMLDivElement; cx: number; cy: number }
+    const visibleCards: VisibleCard[] = []
+
+    baseImagesRef.current.forEach((el) => {
+      if (el && el.style.visibility !== 'hidden' && parseFloat(el.style.opacity || '0') > 0.05) {
+        const rect = el.getBoundingClientRect()
+        visibleCards.push({ el, cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 })
       }
     })
+
+    if (visibleCards.length === 0) {
+      setRoute('detail')
+      return
+    }
+
+    // Điểm hút: chính giữa mép dưới màn hình
+    const targetX = window.innerWidth / 2
+    const targetY = window.innerHeight
+
+    // Sắp xếp từ xa nhất đến gần điểm hút
+    visibleCards.sort((a, b) =>
+      Math.hypot(b.cx - targetX, b.cy - targetY) - Math.hypot(a.cx - targetX, a.cy - targetY)
+    )
+
+    visibleCards.forEach((card, order) => {
+      const delay = order * 0.06
+      const deltaX = targetX - card.cx
+      const deltaY = targetY - card.cy
+      gsap.timeline()
+        .to(card.el, { scale: 1.08, duration: 0.1, ease: 'power2.out', delay, overwrite: 'auto' })
+        .to(card.el, { x: `+=${deltaX}`, y: `+=${deltaY}`, scale: 0, opacity: 0, duration: 0.4, ease: 'power3.in' })
+    })
+
+    const totalDuration = (visibleCards.length - 1) * 0.06 + 0.55
+    gsap.delayedCall(totalDuration, () => setRoute('detail'))
   }
 
   const handleImageClick = () => {
@@ -830,6 +887,7 @@ export function HomeMosaic() {
   const renderImages = (isMasked: boolean) => {
     return ALL_IMAGES.map((img, i) => {
       const layout = TUNNEL_LAYOUT[i]!
+      const ar = layout.ar && layout.ar > 0 ? layout.ar : 1.5
       return (
         <ScatteredImage
           key={`${img.seriesId}-${i}-${isMasked ? 'mask' : 'base'}`}
@@ -846,6 +904,8 @@ export function HomeMosaic() {
           className={s.imageWrapper}
           style={{
             width: `${layout.width}vw`,
+            // YÊU CẦU 3: height tính từ ar thực → không bị crop hay thừa màu
+            height: `${layout.width / ar}vw`,
             '--entrance-delay': `${(i % 12) * 0.08}s`
           } as React.CSSProperties}
           onClick={handleImageClick}
@@ -860,26 +920,24 @@ export function HomeMosaic() {
   return (
     <>
       <div ref={pageWrapperRef} className={s.pageWrapper}>
-        {/* Base Layer: Solid color placeholders */}
+        <svg style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+          <defs>
+            <filter id="soft-blur">
+              <feGaussianBlur stdDeviation="4" />
+            </filter>
+            <mask id="cursor-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
+              <rect width="100%" height="100%" fill="black" />
+              <rect ref={clipRectRef} width="450" height="450" fill="white" filter="url(#soft-blur)" />
+            </mask>
+          </defs>
+        </svg>
+
         <div className={cn(s.mosaicPage, s.layerBase)}>
           <div ref={baseCameraRef} className={s.cameraContainer}>
             {renderImages(false)}
           </div>
         </div>
 
-        {/* Masked Layer: Full color */}
-        <svg style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-          <defs>
-            <filter id="soft-blur">
-              <feGaussianBlur stdDeviation="4" />
-            </filter>
-            <mask id="cursor-mask">
-              <rect width="100%" height="100%" fill="black" />
-              <rect ref={clipRectRef} width="450" height="450" fill="white" filter="url(#soft-blur)" />
-            </mask>
-          </defs>
-        </svg>
-        
         <div className={cn(s.mosaicPage, s.maskedPage)}>
           <div ref={maskedCameraRef} className={s.cameraContainer}>
             {renderImages(true)}

@@ -1,4 +1,5 @@
 export interface Photo {
+  originalSrc?: string;
   src: string;
   placeholder: string; // HEX color representative of average image color
   aspectRatio: number; // width / height

@@ -45,8 +45,6 @@ export function OptionalFeatures() {
     <>
       {/* GSAP Runtime - always included (lightweight) */}
       <GSAPRuntime />
-      {/* Persistent root WebGL canvas (no-op on non-WebGL devices) */}
-      <LazyWebGLCanvas root />
       {/* Development tools - only in development */}
       {isDevelopment && <OrchestraTools />}
     </>

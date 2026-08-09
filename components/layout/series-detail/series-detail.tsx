@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import { usePortfolioStore } from '@/lib/store/portfolioStore'
@@ -50,16 +50,16 @@ export function SeriesDetail() {
     }
   }, [series, setActivePhotoIndex])
 
-  // GSAP entrance animation nhẹ nhàng, không dùng y: window.innerHeight gây lag
+  // GSAP entrance animation nhß║╣ nh├áng, kh├┤ng d├╣ng y: window.innerHeight g├óy lag
   useEffect(() => {
     if (!series) return
 
     const elements = imageRefs.current.filter(Boolean) as HTMLDivElement[]
 
-    // Trạng thái ban đầu nhẹ nhàng
+    // Trß║íng th├íi ban ─æß║ºu nhß║╣ nh├áng
     gsap.set(elements, { y: 40, opacity: 0 })
     
-    // Animate xuất hiện các ảnh đầu tiên
+    // Animate xuß║Ñt hiß╗çn c├íc ß║únh ─æß║ºu ti├¬n
     gsap.to(elements.slice(0, 3), {
       y: 0,
       opacity: 1,
@@ -98,7 +98,7 @@ export function SeriesDetail() {
     }
   }, [series])
 
-  // Handle leaving page (chuyển thẳng về home, không chạy animation trượt ảnh)
+  // Handle leaving page (chuyß╗ân thß║│ng vß╗ü home, kh├┤ng chß║íy animation tr╞░ß╗út ß║únh)
   useEffect(() => {
     const handleLeave = () => {
       setRoute('home')
@@ -192,7 +192,7 @@ export function SeriesDetail() {
                 alt={`${series.title} thumbnail ${i + 1}`}
                 className={s.thumbnail}
               />
-              {/* Chấm tròn đen/trắng nẩy bên cạnh bức ảnh đang active */}
+              {/* Chß║Ñm tr├▓n ─æen/trß║»ng nß║⌐y b├¬n cß║ính bß╗⌐c ß║únh ─æang active */}
               {isActive && <div className={s.activeDot} />}
             </button>
           )
