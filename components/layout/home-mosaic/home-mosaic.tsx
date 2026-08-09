@@ -828,19 +828,15 @@ export function HomeMosaic() {
     type VisibleCard = { el: HTMLDivElement; cx: number; cy: number }
     const visibleCards: VisibleCard[] = []
 
-    // Choose visible cards based on real layout + computed opacity, not
-    // only inline `visibility` which may be stale after recent refactors.
     baseImagesRef.current.forEach((el) => {
       if (!el) return
+      if (el.style.visibility === 'hidden') return
       const rect = el.getBoundingClientRect()
-      // Prefer inline style opacity but fall back to computed style
-      const inlineOpacity = parseFloat(el.style.opacity || '')
-      const computedOpacity = inlineOpacity || parseFloat(getComputedStyle(el).opacity || '0')
-      const opacity = Number.isFinite(inlineOpacity) && inlineOpacity > 0 ? inlineOpacity : computedOpacity
-
-      const inViewport = rect.width > 0 && rect.height > 0 && rect.bottom >= 0 && rect.top <= window.innerHeight && rect.right >= 0 && rect.left <= window.innerWidth
-
-      if (opacity > 0.05 && inViewport) {
+      // Ảnh thực sự hiển thị: có kích thước và nằm trong viewport
+      const inViewport = rect.width > 0 && rect.height > 0
+        && rect.bottom >= 0 && rect.top <= window.innerHeight
+        && rect.right >= 0 && rect.left <= window.innerWidth
+      if (inViewport) {
         visibleCards.push({ el, cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 })
       }
     })
