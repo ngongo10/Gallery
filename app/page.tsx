@@ -22,11 +22,10 @@ export default function Page() {
     <Wrapper lenis={enableLenis}>
       {currentRoute === 'loader' && <Loader />}
 
-      {/* HomeMosaic luôn ở trong DOM sau khi đã load, chỉ ẩn bằng CSS */}
-      {/* Dùng visibility thay display:none để RAF/GSAP vẫn animate khi ở route khác */}
+      {/* Dùng display:none khi ở route khác để giải phóng hoàn toàn DOM layers khỏi 3D View */}
       {currentRoute !== 'loader' && (
         <div style={{
-          visibility: currentRoute === 'home' ? 'visible' : 'hidden',
+          display: currentRoute === 'home' ? 'block' : 'none',
           pointerEvents: currentRoute === 'home' ? 'auto' : 'none',
           position: 'fixed',
           inset: 0

@@ -484,19 +484,25 @@ export function HomeMosaic() {
           const relativeZ = absoluteZ + px.currentCamZ
           
           let depthOpacity = 0
-          // Siết chặt vùng hiển thị: Chỉ render các ảnh ở khoảng nhìn thấy rõ (-1800px tới 800px)
-          if (relativeZ >= -1800 && relativeZ <= 800) {
-            if (relativeZ < -1000) {
-              depthOpacity = (relativeZ - (-1800)) / 800
-            } else if (relativeZ > 300) {
-              depthOpacity = (800 - relativeZ) / 500
+          // Siết chặt vùng hiển thị: Chỉ render các ảnh ở khoảng nhìn thấy rõ (-3000px tới 1200px)
+          if (relativeZ >= -3000 && relativeZ <= 1200) {
+            if (relativeZ < -1500) {
+              depthOpacity = (relativeZ - (-3000)) / 1500
+            } else if (relativeZ > 400) {
+              depthOpacity = (1200 - relativeZ) / 800
             } else {
               depthOpacity = 1
             }
           }
 
           const isVisible = depthOpacity > 0.01
-          const imgTransform = `translate3d(${px.x}px, ${px.y}px, ${relativeZ}px) translate(-50%, -50%)`
+          // 2D Projection Formula: focal length = 1000px
+          const FOCAL = 1000
+          const scale2d = Math.max(0.001, FOCAL / (FOCAL - relativeZ))
+          const projX = px.x * scale2d
+          const projY = px.y * scale2d
+
+          const imgTransform = `translate(${projX}px, ${projY}px) scale(${scale2d}) translate(-50%, -50%)`
 
           const baseEl = baseImagesRef.current[i]
           const maskedEl = maskedImagesRef.current[i]
@@ -524,23 +530,27 @@ export function HomeMosaic() {
           }
         })
       } else {
-        // UFO transition mode: apply animated px.x/px.y positions, keep images visible
+        // UFO transition mode: apply animated px.x/px.y positions
         TUNNEL_LAYOUT.forEach((_layout, i) => {
           const px = layoutPxRef.current[i]
           if (!px) return
           const frozenZ = px.frozenRelativeZ ?? 0
-          const imgTransform = `translate3d(${px.x}px, ${px.y}px, ${frozenZ}px) translate(-50%, -50%)`
+          const FOCAL = 1000
+          const scale2d = Math.max(0.001, FOCAL / (FOCAL - frozenZ))
+          const imgTransform = `translate(${px.x * scale2d}px, ${px.y * scale2d}px) scale(${scale2d}) translate(-50%, -50%)`
           const baseEl = baseImagesRef.current[i]
           const maskedEl = maskedImagesRef.current[i]
           if (baseEl) {
             baseEl.style.transform = imgTransform
             baseEl.style.opacity = '1'
             baseEl.style.visibility = 'visible'
+            baseEl.style.display = ''
           }
           if (maskedEl) {
             maskedEl.style.transform = imgTransform
             maskedEl.style.opacity = '1'
             maskedEl.style.visibility = 'visible'
+            maskedEl.style.display = ''
           }
         })
       }
