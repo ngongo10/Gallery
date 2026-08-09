@@ -831,9 +831,9 @@ export function HomeMosaic() {
     }
 
     // 2. Animate toàn bộ camera Container trượt chìm xuống dưới nhẹ nhàng + mờ dần
-    const cameraEl = cameraRef.current
+    const cameraEl = baseCameraRef.current
     if (cameraEl) {
-      gsap.to(cameraEl, {
+      gsap.to([baseCameraRef.current, maskedCameraRef.current], {
         y: window.innerHeight * 0.8,
         scale: 0.9,
         opacity: 0,
@@ -841,8 +841,7 @@ export function HomeMosaic() {
         ease: 'power3.in',
         onComplete: () => {
           setRoute('detail')
-          // Reset transform sau khi đã chuyển route để không bị lệch khi back về Home
-          gsap.set(cameraEl, { y: 0, scale: 1, opacity: 1 })
+          gsap.set([baseCameraRef.current, maskedCameraRef.current], { y: 0, scale: 1, opacity: 1 })
         }
       })
     } else {
