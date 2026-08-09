@@ -824,54 +824,30 @@ export function HomeMosaic() {
     if (isLeavingPageRef.current) return
     isLeavingPageRef.current = true
 
-    // Thu nhỏ kính lúp + ẩn tiêu đề (KHÔNG thay đổi hệ thống kính lúp gốc)
-    gsap.to(maskSizeRef.current, { size: 0, duration: 0.25, ease: 'power2.inOut' })
+    // 1. Thu nhỏ kính lúp + mờ tiêu đề
+    gsap.to(maskSizeRef.current, { size: 0, duration: 0.3, ease: 'power2.inOut' })
     if (titleRef.current) {
-      gsap.to(titleRef.current, { opacity: 0, y: -20, duration: 0.22, ease: 'power2.in' })
+      gsap.to(titleRef.current, { opacity: 0, y: 30, duration: 0.3, ease: 'power2.in' })
     }
 
-    // YÊU CẦU 2: Genie Effect — từng ảnh đơn lẻ hút lần lượt về MIDPOINT OF BOTTOM EDGE
-    type VisibleCard = { el: HTMLDivElement; cx: number; cy: number }
-    const visibleCards: VisibleCard[] = []
-
-    baseImagesRef.current.forEach((el) => {
-      if (!el) return
-      if (el.style.visibility === 'hidden') return
-      const rect = el.getBoundingClientRect()
-      // Ảnh thực sự hiển thị: có kích thước và nằm trong viewport
-      const inViewport = rect.width > 0 && rect.height > 0
-        && rect.bottom >= 0 && rect.top <= window.innerHeight
-        && rect.right >= 0 && rect.left <= window.innerWidth
-      if (inViewport) {
-        visibleCards.push({ el, cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 })
-      }
-    })
-
-    if (visibleCards.length === 0) {
+    // 2. Animate toàn bộ camera Container trượt chìm xuống dưới nhẹ nhàng + mờ dần
+    const cameraEl = cameraRef.current
+    if (cameraEl) {
+      gsap.to(cameraEl, {
+        y: window.innerHeight * 0.8,
+        scale: 0.9,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power3.in',
+        onComplete: () => {
+          setRoute('detail')
+          // Reset transform sau khi đã chuyển route để không bị lệch khi back về Home
+          gsap.set(cameraEl, { y: 0, scale: 1, opacity: 1 })
+        }
+      })
+    } else {
       setRoute('detail')
-      return
     }
-
-    // Điểm hút: chính giữa mép dưới màn hình
-    const targetX = window.innerWidth / 2
-    const targetY = window.innerHeight
-
-    // Sắp xếp từ xa nhất đến gần điểm hút
-    visibleCards.sort((a, b) =>
-      Math.hypot(b.cx - targetX, b.cy - targetY) - Math.hypot(a.cx - targetX, a.cy - targetY)
-    )
-
-    visibleCards.forEach((card, order) => {
-      const delay = order * 0.06
-      const deltaX = targetX - card.cx
-      const deltaY = targetY - card.cy
-      gsap.timeline()
-        .to(card.el, { scale: 1.08, duration: 0.1, ease: 'power2.out', delay, overwrite: 'auto' })
-        .to(card.el, { x: `+=${deltaX}`, y: `+=${deltaY}`, scale: 0, opacity: 0, duration: 0.4, ease: 'power3.in' })
-    })
-
-    const totalDuration = (visibleCards.length - 1) * 0.06 + 0.55
-    gsap.delayedCall(totalDuration, () => setRoute('detail'))
   }
 
   const handleImageClick = () => {
