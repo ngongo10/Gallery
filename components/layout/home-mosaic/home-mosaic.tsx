@@ -527,30 +527,8 @@ export function HomeMosaic() {
             lastImageVisibleRef.current[i] = isVisible
           }
         })
-      } else {
-        // UFO transition mode: apply animated px.x/px.y positions
-        TUNNEL_LAYOUT.forEach((_layout, i) => {
-          const px = layoutPxRef.current[i]
-          if (!px) return
-          const frozenZ = px.frozenRelativeZ ?? 0
-          const FOCAL = 1000
-          const scale2d = Math.max(0.001, FOCAL / (FOCAL - frozenZ))
-          const imgTransform = `translate(${px.x * scale2d}px, ${px.y * scale2d}px) scale(${scale2d}) translate(-50%, -50%)`
-          const baseEl = baseImagesRef.current[i]
-          const maskedEl = maskedImagesRef.current[i]
-          if (baseEl) {
-            baseEl.style.transform = imgTransform
-            baseEl.style.opacity = '1'
-            baseEl.style.visibility = 'visible'
-            baseEl.style.display = ''
-          }
-          if (maskedEl) {
-            maskedEl.style.transform = imgTransform
-            maskedEl.style.opacity = '1'
-            maskedEl.style.visibility = 'visible'
-            maskedEl.style.display = ''
-          }
-        })
+        // Khi isLeaving=true: GSAP Genie Effect toàn quyền điều khiển transform/opacity
+        // RAF loop không được override để tránh xung đột 60fps vs GSAP
       }
     }
 
@@ -850,9 +828,19 @@ export function HomeMosaic() {
     type VisibleCard = { el: HTMLDivElement; cx: number; cy: number }
     const visibleCards: VisibleCard[] = []
 
+    // Choose visible cards based on real layout + computed opacity, not
+    // only inline `visibility` which may be stale after recent refactors.
     baseImagesRef.current.forEach((el) => {
-      if (el && el.style.visibility !== 'hidden' && parseFloat(el.style.opacity || '0') > 0.05) {
-        const rect = el.getBoundingClientRect()
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      // Prefer inline style opacity but fall back to computed style
+      const inlineOpacity = parseFloat(el.style.opacity || '')
+      const computedOpacity = inlineOpacity || parseFloat(getComputedStyle(el).opacity || '0')
+      const opacity = Number.isFinite(inlineOpacity) && inlineOpacity > 0 ? inlineOpacity : computedOpacity
+
+      const inViewport = rect.width > 0 && rect.height > 0 && rect.bottom >= 0 && rect.top <= window.innerHeight && rect.right >= 0 && rect.left <= window.innerWidth
+
+      if (opacity > 0.05 && inViewport) {
         visibleCards.push({ el, cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 })
       }
     })
