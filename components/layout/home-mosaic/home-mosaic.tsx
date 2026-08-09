@@ -895,7 +895,6 @@ export function HomeMosaic() {
   const renderImages = (isMasked: boolean) => {
     return ALL_IMAGES.map((img, i) => {
       const layout = TUNNEL_LAYOUT[i]!
-      const ar = layout.ar && layout.ar > 0 ? layout.ar : 1.5
       return (
         <ScatteredImage
           key={`${img.seriesId}-${i}-${isMasked ? 'mask' : 'base'}`}
