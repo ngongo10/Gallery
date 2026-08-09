@@ -13,22 +13,28 @@ import { Wrapper } from '@/components/layout/wrapper'
 
 export default function Page() {
   const currentRoute = usePortfolioStore((state) => state.currentRoute)
+  const prevRoute = usePortfolioStore((state) => state.prevRoute)
   const infoOpen = usePortfolioStore((state) => state.infoOpen)
 
-  // Disable Lenis on home (wheel-driven), enable on scrollable content views
   const enableLenis = currentRoute === 'detail' || currentRoute === 'shop' || currentRoute === 'product' || currentRoute === 'about'
+
+  // Khi prevRoute='home' và currentRoute='detail': Genie Effect đang chạy
+  // → HomeMosaic phải ở Z-index cao hơn SeriesDetail để che đậy trong suốt animation
+  const genieInProgress = prevRoute === 'home' && currentRoute === 'detail'
+  const homeVisible = currentRoute === 'home' || genieInProgress
 
   return (
     <Wrapper lenis={enableLenis}>
       {currentRoute === 'loader' && <Loader />}
 
-      {/* Render HomeMosaic khi khác loader */}
+      {/* HomeMosaic: z-index cao nhất khi Genie đang chạy để che SeriesDetail đang mount bên dưới */}
       {currentRoute !== 'loader' && (
         <div style={{
-          visibility: currentRoute === 'home' ? 'visible' : 'hidden',
-          pointerEvents: currentRoute === 'home' ? 'auto' : 'none',
+          visibility: homeVisible ? 'visible' : 'hidden',
+          pointerEvents: homeVisible ? 'auto' : 'none',
           position: 'fixed',
-          inset: 0
+          inset: 0,
+          zIndex: genieInProgress ? 9999 : 0,
         }}>
           <HomeMosaic />
         </div>
@@ -38,11 +44,9 @@ export default function Page() {
       {currentRoute === 'shop' && <ShopGrid />}
       {currentRoute === 'product' && <ProductDetail />}
       {currentRoute === 'about' && <AboutContact />}
-      
-      {/* Overlays render independently of route */}
+
       {infoOpen && <InfoOverlay />}
       <MenuOverlay />
     </Wrapper>
   )
 }
-
