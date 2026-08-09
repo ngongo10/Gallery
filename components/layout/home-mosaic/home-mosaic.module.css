@@ -37,11 +37,13 @@
 
 .imageWrapper {
   position: absolute;
-  left: 50%; /* Center origin */
+  left: 50%;
   top: 50%;
   transform-origin: center center;
   cursor: pointer;
   z-index: 1;
+  /* No overflow — children fill 100% via inset: 0 */
+  overflow: hidden;
 }
 
 @keyframes gridEntrance {
@@ -55,21 +57,27 @@
   }
 }
 
-/* The Solid Color Placeholder */
-.imagePlaceholder {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  /* Opacity/visibility controlled by RAF ticker — no CSS animation to avoid conflict */
-}
-
-.image {
+/* Khối màu solid — fill đúng 100% vùng container (base layer) */
+.placeholder {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  will-change: transform, opacity;
+}
+
+/* Ảnh thật — fill 100% vùng container, cover khớp tỷ lệ (masked layer) */
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.photoLoaded {
+  opacity: 1;
 }
 
 

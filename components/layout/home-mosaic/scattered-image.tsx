@@ -19,13 +19,13 @@ interface ScatteredImageProps {
   style?: CSSProperties | undefined
 }
 
-export function ScatteredImage({ 
+export function ScatteredImage({
   ref,
-  src, 
-  aspectRatio, 
-  isMasked, 
-  onClick, 
-  onMouseEnter, 
+  src,
+  aspectRatio,
+  isMasked,
+  onClick,
+  onMouseEnter,
   onMouseLeave,
   className,
   style
@@ -33,48 +33,47 @@ export function ScatteredImage({
   const [loaded, setLoaded] = useState(false)
   const imgRef = useRef<HTMLImageElement>(null)
 
-  // Lấy màu chủ đạo đã được tính sẵn 100% trong quá trình Loading
-  const bgColor = dominantColorMap.get(src) || '#262626'
+  const bgColor = dominantColorMap.get(src) || '#1a1a1a'
+  const validAr = aspectRatio && aspectRatio > 0 ? aspectRatio : 1.5
 
   useEffect(() => {
-    // Check nếu ảnh HTML đã complete sẵn trong DOM (từ browser cache)
     if (imgRef.current?.complete) {
       setLoaded(true)
     }
   }, [src])
 
-    const validAr = aspectRatio && aspectRatio > 0 ? aspectRatio : 1.5
-
-    return (
-      <div 
-        ref={ref}
-        className={cn(s.imageWrapper, className)}
-        style={{ ...style, aspectRatio: String(validAr) }}
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
-      {/* 1. SOLID COLOR BLOCK (Màu chủ đạo được nạp sẵn 100% từ màn hình Loading) */}
+  return (
+    <div
+      ref={ref}
+      className={cn(s.imageWrapper, className)}
+      style={{
+        ...style,
+        // CSS aspect-ratio điều khiển HEIGHT dựa trên WIDTH đã set ở parent
+        aspectRatio: String(validAr),
+      }}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {/* Layer 1: Khối màu solid (chỉ hiện ở base layer - lớp ngoài kính lúp) */}
       {!isMasked && (
-        <div 
-          className={s.imagePlaceholder} 
-          style={{ backgroundColor: bgColor, opacity: 1 }} 
+        <div
+          className={s.placeholder}
+          style={{ backgroundColor: bgColor }}
         />
       )}
-      
-      {/* 2. ACTUAL IMAGE (Only visible in Masked layer) */}
+
+      {/* Layer 2: Ảnh thật (chỉ hiện ở masked layer - bên trong kính lúp) */}
       {isMasked && (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            ref={imgRef}
-            src={src} 
-            alt="" 
-            decoding="async"
-            className={cn(s.image, loaded && s.loaded, s.colorImg)} 
-            onLoad={() => setLoaded(true)}
-          />
-        </>
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          ref={imgRef}
+          src={src}
+          alt=""
+          decoding="async"
+          className={cn(s.photo, loaded && s.photoLoaded)}
+          onLoad={() => setLoaded(true)}
+        />
       )}
     </div>
   )
