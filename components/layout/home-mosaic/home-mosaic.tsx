@@ -496,13 +496,19 @@ export function HomeMosaic() {
           }
 
           const isVisible = depthOpacity > 0.01
-          // 2D Projection Formula: focal length = 1000px
+          // 2D Projection Formula: focal = 1000px
+          // Công thức đúng: tịnh tiến phần tử sao cho TÂM của nó nằm đúng vị trí perspective
+          // center_on_screen = parentCenter + (px.x * scale2d, px.y * scale2d)
+          // Vì left:50% top:50% nên top-left phần tử bắt đầu tại parentCenter
+          // → TX = px.x*scale - elemW/2, TY = px.y*scale - elemH/2
           const FOCAL = 1000
           const scale2d = Math.max(0.001, FOCAL / (FOCAL - relativeZ))
-          const projX = px.x * scale2d
-          const projY = px.y * scale2d
-
-          const imgTransform = `translate(${projX}px, ${projY}px) scale(${scale2d}) translate(-50%, -50%)`
+          const ar = layout.ar && layout.ar > 0 ? layout.ar : 1.5
+          const elemW = px.width
+          const elemH = elemW / ar
+          const TX = px.x * scale2d - elemW / 2
+          const TY = px.y * scale2d - elemH / 2
+          const imgTransform = `translate(${TX}px, ${TY}px) scale(${scale2d})`
 
           const baseEl = baseImagesRef.current[i]
           const maskedEl = maskedImagesRef.current[i]

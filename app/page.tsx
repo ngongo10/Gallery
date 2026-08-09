@@ -13,28 +13,24 @@ import { Wrapper } from '@/components/layout/wrapper'
 
 export default function Page() {
   const currentRoute = usePortfolioStore((state) => state.currentRoute)
-  const prevRoute = usePortfolioStore((state) => state.prevRoute)
   const infoOpen = usePortfolioStore((state) => state.infoOpen)
 
   const enableLenis = currentRoute === 'detail' || currentRoute === 'shop' || currentRoute === 'product' || currentRoute === 'about'
-
-  // Khi prevRoute='home' và currentRoute='detail': Genie Effect đang chạy
-  // → HomeMosaic phải ở Z-index cao hơn SeriesDetail để che đậy trong suốt animation
-  const genieInProgress = prevRoute === 'home' && currentRoute === 'detail'
-  const homeVisible = currentRoute === 'home' || genieInProgress
 
   return (
     <Wrapper lenis={enableLenis}>
       {currentRoute === 'loader' && <Loader />}
 
-      {/* HomeMosaic: z-index cao nhất khi Genie đang chạy để che SeriesDetail đang mount bên dưới */}
+      {/* HomeMosaic: luôn giữ trong DOM sau loader để không mất state.
+          Genie Effect chạy xong TRƯỚC khi setRoute('detail') được gọi,
+          nên visibility:hidden chỉ apply sau khi animation hoàn tất. */}
       {currentRoute !== 'loader' && (
         <div style={{
-          visibility: homeVisible ? 'visible' : 'hidden',
-          pointerEvents: homeVisible ? 'auto' : 'none',
+          visibility: currentRoute === 'home' ? 'visible' : 'hidden',
+          pointerEvents: currentRoute === 'home' ? 'auto' : 'none',
           position: 'fixed',
           inset: 0,
-          zIndex: genieInProgress ? 9999 : 0,
+          zIndex: 0,
         }}>
           <HomeMosaic />
         </div>
