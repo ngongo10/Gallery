@@ -43,15 +43,17 @@ export function ScatteredImage({
     }
   }, [src])
 
-  return (
-    <div 
-      ref={ref}
-      className={cn(s.imageWrapper, className)}
-      style={{ ...style, aspectRatio: aspectRatio }}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+    const validAr = aspectRatio && aspectRatio > 0 ? aspectRatio : 1.5
+
+    return (
+      <div 
+        ref={ref}
+        className={cn(s.imageWrapper, className)}
+        style={{ ...style, aspectRatio: String(validAr) }}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
       {/* 1. SOLID COLOR BLOCK (Màu chủ đạo được nạp sẵn 100% từ màn hình Loading) */}
       {!isMasked && (
         <div 

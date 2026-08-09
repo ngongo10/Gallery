@@ -912,8 +912,6 @@ export function HomeMosaic() {
           className={s.imageWrapper}
           style={{
             width: `${layout.width}vw`,
-            // YÊU CẦU 3: height tính từ ar thực → không bị crop hay thừa màu
-            height: `${layout.width / ar}vw`,
             '--entrance-delay': `${(i % 12) * 0.08}s`
           } as React.CSSProperties}
           onClick={handleImageClick}
