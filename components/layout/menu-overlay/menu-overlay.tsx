@@ -60,13 +60,17 @@ export function MenuOverlay() {
   }, [menuOpen])
 
 
+  const toggleMenu = usePortfolioStore((state) => state.toggleMenu)
+
   const handleSeriesClick = (id: string) => {
     setActiveSeriesId(id)
     setRoute('detail')
+    toggleMenu(false)
   }
 
   const handleNavigation = (route: 'home' | 'shop' | 'about') => {
     setRoute(route)
+    toggleMenu(false)
   }
 
   return (
