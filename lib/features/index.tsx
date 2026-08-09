@@ -26,13 +26,6 @@ const GSAPRuntime = dynamic(
 
 // Root WebGL canvas. Mounted once here (in the shared layout) so the context
 // persists across route navigation; pages portal content in via <WebGLTunnel>.
-const LazyWebGLCanvas = dynamic(
-  () =>
-    import('@/webgl/components/canvas').then((mod) => ({
-      default: mod.Canvas,
-    })),
-  { ssr: false }
-)
 
 /**
  * Conditionally loads optional root layout features
