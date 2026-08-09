@@ -520,11 +520,9 @@ export function HomeMosaic() {
           if (lastImageVisibleRef.current[i] !== isVisible) {
             if (baseEl) {
               baseEl.style.visibility = isVisible ? 'visible' : 'hidden'
-              baseEl.style.display = isVisible ? '' : 'none'
             }
             if (maskedEl) {
               maskedEl.style.visibility = isVisible ? 'visible' : 'hidden'
-              maskedEl.style.display = isVisible ? '' : 'none'
             }
             lastImageVisibleRef.current[i] = isVisible
           }

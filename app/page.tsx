@@ -22,10 +22,10 @@ export default function Page() {
     <Wrapper lenis={enableLenis}>
       {currentRoute === 'loader' && <Loader />}
 
-      {/* Dùng display:none khi ở route khác để giải phóng hoàn toàn DOM layers khỏi 3D View */}
+      {/* Render HomeMosaic khi khác loader */}
       {currentRoute !== 'loader' && (
         <div style={{
-          display: currentRoute === 'home' ? 'block' : 'none',
+          visibility: currentRoute === 'home' ? 'visible' : 'hidden',
           pointerEvents: currentRoute === 'home' ? 'auto' : 'none',
           position: 'fixed',
           inset: 0
