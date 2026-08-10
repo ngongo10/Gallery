@@ -29,27 +29,27 @@ function hashString(str: string) {
 }
 
 // Module-level tracking arrays for Collision Detection (reset per series)
-// Canvas ảo rộng mở hơn rất nhiều để các ảnh xích ra xa nhau rải rác toàn bộ không gian
-const VIRTUAL_W = 3800;
-const VIRTUAL_H = 2400;
-const TABLE_X = VIRTUAL_W * 0.46; // ±1748px
-const TABLE_Y = VIRTUAL_H * 0.46; // ±1104px
-const GAP = 350; // Tăng khoảng cách tối thiểu giữa các ảnh ra rất xa (~10-15cm)
+// Canvas ảo có kích thước vừa vặn tầm mắt màn hình
+const VIRTUAL_W = 2600;
+const VIRTUAL_H = 1600;
+const TABLE_X = VIRTUAL_W * 0.42; // ±1092px
+const TABLE_Y = VIRTUAL_H * 0.42; // ±672px
+const GAP = 150; // Khoảng cách xích xa nhau hợp lý giữa các bức ảnh (~4-5cm)
 
-// --- PHASE 1: Tính toán trước vị trí rải xa cho TỪNG ALBUM ---
+// --- PHASE 1: Tính toán vị trí hài hòa xung quanh TÂM CANVAS cho TỪNG ALBUM ---
 type BoxEntry = { x: number; y: number; w: number; h: number };
 const SERIES_POSITIONS = new Map<string, BoxEntry[]>();
 
-// Định nghĩa 8 vùng grid độc lập trên canvas để ép 8 ảnh xích rộng ra 8 hướng khác nhau
+// Các ảnh phân bố rải rác xung quanh khu vực tâm (tỉ lệ từ 0.25 đến 0.48 so với tâm)
 const SECTOR_OFFSETS = [
-  { xRatio: -0.7, yRatio: -0.7 }, // Góc trên trái
-  { xRatio: 0.0,  yRatio: -0.75 },// Giữa trên
-  { xRatio: 0.7,  yRatio: -0.7 }, // Góc trên phải
-  { xRatio: -0.75,yRatio: 0.0 },  // Giữa trái
-  { xRatio: 0.75, yRatio: 0.0 },  // Giữa phải
-  { xRatio: -0.7, yRatio: 0.7 },  // Góc dưới trái
-  { xRatio: 0.0,  yRatio: 0.75 }, // Giữa dưới
-  { xRatio: 0.7,  yRatio: 0.7 }   // Góc dưới phải
+  { xRatio: -0.45, yRatio: -0.42 }, // Trên trái
+  { xRatio:  0.0,  yRatio: -0.48 }, // Trên giữa
+  { xRatio:  0.45, yRatio: -0.42 }, // Trên phải
+  { xRatio: -0.48, yRatio:  0.05 }, // Giữa trái
+  { xRatio:  0.48, yRatio:  0.05 }, // Giữa phải
+  { xRatio: -0.45, yRatio:  0.45 }, // Dưới trái
+  { xRatio:  0.0,  yRatio:  0.48 }, // Dưới giữa
+  { xRatio:  0.45, yRatio:  0.45 }  // Dưới phải
 ];
 
 for (const series of portfolioData.series) {
