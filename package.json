@@ -28,6 +28,7 @@
     "setup:project": "bun ./lib/scripts/setup-project.ts",
     "test": "bun test",
     "sync:galleries": "bun ./replace_all_galleries.cjs",
+    "sync:images": "npx tsx ./lib/scripts/sync-images.ts",
     "test:e2e": "playwright test",
     "test:setup": "bun test lib/scripts/setup-project.test.ts",
     "doctor": "bun ./lib/scripts/doctor.ts",
