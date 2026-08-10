@@ -34,7 +34,6 @@ export function ScatteredImage({
   const [loaded, setLoaded] = useState(false)
   const imgRef = useRef<HTMLImageElement>(null)
 
-  // Lấy màu chủ đạo đã được tính sẵn trong quá trình Loading (dùng cho background placeholder)
   const bgColor = dominantColorMap.get(src) || '#262626'
 
   useEffect(() => {
@@ -47,30 +46,29 @@ export function ScatteredImage({
     <div 
       ref={ref}
       className={cn(s.imageWrapper, className, isMasked && s.isMaskedLayer)}
-      style={{ ...style, backgroundColor: bgColor }}
+      style={{ ...style, position: 'relative' }}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      {/* Layer 1 (Layer bên ngoài): Hiện mảng khối màu đại diện che đi theo đúng kích thước vốn có của ảnh */}
+      {/* Ảnh ẩn (visibility:hidden) để container có chiều cao tự nhiên theo kích thước gốc của ảnh ở CẢ 2 LAYER */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img 
+        ref={imgRef}
+        src={src} 
+        alt="" 
+        decoding="async"
+        className={cn(s.image, loaded && s.loaded)}
+        style={{ visibility: isMasked ? 'visible' : 'hidden' }}
+        onLoad={() => setLoaded(true)}
+      />
+
+      {/* Layer 1: Khối màu chủ đạo phủ lên trên ảnh ẩn (chỉ hiện bên ngoài kính lúp) */}
       {!isMasked && (
         <div 
           className={s.imagePlaceholder} 
-          style={{ backgroundColor: bgColor, opacity: 1 }} 
-        />
-      )}
-
-      {/* Layer 2 (Layer bên trong kính lúp): Hiện ra ảnh thật 100% kích thước tự nhiên vốn có */}
-      {isMasked && (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img 
-          ref={imgRef}
-          src={src} 
-          alt="" 
-          decoding="async"
-          className={cn(s.image, loaded && s.loaded, s.colorImg)} 
-          onLoad={() => setLoaded(true)}
+          style={{ backgroundColor: bgColor }}
         />
       )}
     </div>
