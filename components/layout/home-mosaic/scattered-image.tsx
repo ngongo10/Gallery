@@ -53,16 +53,26 @@ export function ScatteredImage({
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      {/* Hiển thị hình ảnh thật ở CẢ HÀI LAYER (Base Layer và Masked Layer kính lúp) */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img 
-        ref={imgRef}
-        src={src} 
-        alt="" 
-        decoding="async"
-        className={cn(s.image, loaded && s.loaded, s.colorImg)} 
-        onLoad={() => setLoaded(true)}
-      />
+      {/* Layer 1 (Layer bên ngoài): Hiện mảng khối màu đại diện che đi theo đúng kích thước vốn có của ảnh */}
+      {!isMasked && (
+        <div 
+          className={s.imagePlaceholder} 
+          style={{ backgroundColor: bgColor, opacity: 1 }} 
+        />
+      )}
+
+      {/* Layer 2 (Layer bên trong kính lúp): Hiện ra ảnh thật 100% kích thước tự nhiên vốn có */}
+      {isMasked && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img 
+          ref={imgRef}
+          src={src} 
+          alt="" 
+          decoding="async"
+          className={cn(s.image, loaded && s.loaded, s.colorImg)} 
+          onLoad={() => setLoaded(true)}
+        />
+      )}
     </div>
   )
 }
