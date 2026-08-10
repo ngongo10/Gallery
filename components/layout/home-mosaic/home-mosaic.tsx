@@ -29,19 +29,28 @@ function hashString(str: string) {
 }
 
 // Module-level tracking arrays for Collision Detection (reset per series)
-// Tất cả tính toán dùng canvas ảo lớn hơn để đảm bảo các ảnh có đủ diện tích rải rác không chạm nhau
-const VIRTUAL_W = 2800;
-const VIRTUAL_H = 1600;
-// Nới rộng vùng đặt ảnh ra xa hơn
-const TABLE_X = VIRTUAL_W * 0.44; // ±1232px
-const TABLE_Y = VIRTUAL_H * 0.44; // ±704px
-const GAP = 220; // Khoảng cách an toàn tối thiểu (~3cm trên màn hình)
+// Canvas ảo rộng mở hơn rất nhiều để các ảnh xích ra xa nhau rải rác toàn bộ không gian
+const VIRTUAL_W = 3800;
+const VIRTUAL_H = 2400;
+const TABLE_X = VIRTUAL_W * 0.46; // ±1748px
+const TABLE_Y = VIRTUAL_H * 0.46; // ±1104px
+const GAP = 350; // Tăng khoảng cách tối thiểu giữa các ảnh ra rất xa (~10-15cm)
 
-
-// --- PHASE 1: Tính toán trước vị trí cho TỪNG ALBUM ---
-// Đảm bảo mỗi album có đúng 1 bộ vị trí không đè nhau
+// --- PHASE 1: Tính toán trước vị trí rải xa cho TỪNG ALBUM ---
 type BoxEntry = { x: number; y: number; w: number; h: number };
 const SERIES_POSITIONS = new Map<string, BoxEntry[]>();
+
+// Định nghĩa 8 vùng grid độc lập trên canvas để ép 8 ảnh xích rộng ra 8 hướng khác nhau
+const SECTOR_OFFSETS = [
+  { xRatio: -0.7, yRatio: -0.7 }, // Góc trên trái
+  { xRatio: 0.0,  yRatio: -0.75 },// Giữa trên
+  { xRatio: 0.7,  yRatio: -0.7 }, // Góc trên phải
+  { xRatio: -0.75,yRatio: 0.0 },  // Giữa trái
+  { xRatio: 0.75, yRatio: 0.0 },  // Giữa phải
+  { xRatio: -0.7, yRatio: 0.7 },  // Góc dưới trái
+  { xRatio: 0.0,  yRatio: 0.75 }, // Giữa dưới
+  { xRatio: 0.7,  yRatio: 0.7 }   // Góc dưới phải
+];
 
 for (const series of portfolioData.series) {
   const placed: BoxEntry[] = [];
@@ -49,23 +58,28 @@ for (const series of portfolioData.series) {
 
   for (let idx = 0; idx < images.length; idx++) {
     const img = images[idx]!;
-    // Seed riêng biệt cho mỗi ảnh dựa trên series.id + index để tránh trùng
     const seed = hashString(series.id + '::' + idx);
-    // Biên độ kích thước thực tế lớn hơn (từ 220px đến 480px) để hiển thị ảnh & khối màu to rõ ràng đúng kích thước vốn có
-    const w_px = 220 + pseudoRandom(seed) * 260;
+    
+    // Kích thước vừa phải để tạo độ thoáng không gian
+    const w_px = 220 + pseudoRandom(seed) * 220;
     const h_px = w_px / (img.aspectRatio || 1.5);
-    // Tốc độ đàn hồi ngẫu nhiên cho từng ảnh để tạo hiệu ứng delay trôi nổi khác nhau khi cuộn
-    const _lagSpeed = 0.05 + pseudoRandom(seed + 99) * 0.10;
-    void _lagSpeed; // reserved for future parallax use
 
-    let bestX = 0;
-    let bestY = 0;
+    // Xác định tâm của Sector tương ứng
+    const sector = SECTOR_OFFSETS[idx % SECTOR_OFFSETS.length]!;
+    const sectorCenterX = sector.xRatio * TABLE_X;
+    const sectorCenterY = sector.yRatio * TABLE_Y;
+
+    let bestX = sectorCenterX;
+    let bestY = sectorCenterY;
     let found = false;
 
-    for (let attempt = 0; attempt < 1000 && !found; attempt++) {
-      // Mỗi lần thử dùng seed khác để tạo vị trí hoàn toàn khác nhau
-      const testX = -TABLE_X + pseudoRandom(seed + attempt * 13 + 99) * TABLE_X * 2;
-      const testY = -TABLE_Y + pseudoRandom(seed + attempt * 17 + 199) * TABLE_Y * 2;
+    // Thử đặt trong bán kính xung quanh vùng sector tâm
+    for (let attempt = 0; attempt < 500 && !found; attempt++) {
+      const offsetX = (-0.5 + pseudoRandom(seed + attempt * 13 + 99)) * (TABLE_X * 0.45);
+      const offsetY = (-0.5 + pseudoRandom(seed + attempt * 17 + 199)) * (TABLE_Y * 0.45);
+      
+      const testX = Math.max(-TABLE_X, Math.min(TABLE_X, sectorCenterX + offsetX));
+      const testY = Math.max(-TABLE_Y, Math.min(TABLE_Y, sectorCenterY + offsetY));
 
       let collides = false;
       for (const box of placed) {
@@ -90,10 +104,9 @@ for (const series of portfolioData.series) {
       }
     }
 
-    // Nếu vẫn không tìm được sau 1000 lần (rất hiếm), đặt ở góc xa
     if (!found) {
-      bestX = -TABLE_X + (idx % 3) * (TABLE_X * 2 / 3) + pseudoRandom(seed + 9999) * 80;
-      bestY = -TABLE_Y + Math.floor(idx / 3) * (TABLE_Y * 2 / 3) + pseudoRandom(seed + 8888) * 80;
+      bestX = sectorCenterX;
+      bestY = sectorCenterY;
     }
 
     placed.push({ x: bestX, y: bestY, w: w_px, h: h_px });
