@@ -323,14 +323,13 @@ export function HomeMosaic() {
       })
 
       // ── HIỆU ỨNG MỞ ĐẦU MỚI (NEW INTRO ANIMATION) ──
-      // 1. Kính lúp (Lens) bung mở ấn tượng: từ 0 -> bung lớn 540px -> co lại 450px chuẩn
+      // 1. Kính lúp (Lens) bung mở ấn tượng ngay lập tức: từ 0 -> bung lớn 540px -> co lại 450px chuẩn
       maskSizeRef.current.size = 0
       gsap.timeline()
         .to(maskSizeRef.current, {
           size: 540,
           duration: 0.9,
-          ease: 'power3.out',
-          delay: 0.1
+          ease: 'power3.out'
         })
         .to(maskSizeRef.current, {
           size: 450,

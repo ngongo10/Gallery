@@ -56,14 +56,12 @@ export function Loader() {
 
     const finishLoading = () => {
       updateProgress(100)
+      // Kích hoạt 'home' ngay lập tức để intro animation khởi chạy liền
+      setRoute('home')
       if (container) {
-        container.style.transition = 'opacity 0.5s ease'
+        container.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
         container.style.opacity = '0'
-        setTimeout(() => {
-          setRoute('home')
-        }, 500)
-      } else {
-        setRoute('home')
+        container.style.pointerEvents = 'none'
       }
     }
 
