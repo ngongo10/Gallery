@@ -322,28 +322,42 @@ export function HomeMosaic() {
         }
       })
 
-      // Mở kính lúp từ 0 nở ra 450px khi vừa hoàn tất loader
+      // ── HIỆU ỨNG MỞ ĐẦU MỚI (NEW INTRO ANIMATION) ──
+      // 1. Kính lúp (Lens) bung mở ấn tượng: từ 0 -> bung lớn 540px -> co lại 450px chuẩn
       maskSizeRef.current.size = 0
-      gsap.to(maskSizeRef.current, {
-        size: 450,
-        duration: 1.2,
-        ease: 'power3.out',
-        delay: 0.1
-      })
+      gsap.timeline()
+        .to(maskSizeRef.current, {
+          size: 540,
+          duration: 0.9,
+          ease: 'power3.out',
+          delay: 0.1
+        })
+        .to(maskSizeRef.current, {
+          size: 450,
+          duration: 0.6,
+          ease: 'power2.inOut'
+        })
 
-      // Efffect camera z zoom vào nhẹ mượt mà
-      cameraZRef.current.z = targetZ - 600
+      // 2. Camera 3D Fly-In: Bay từ chiều sâu cực xa (-2200px) tiến thẳng vào điểm nét
+      cameraZRef.current.z = targetZ - 2200
       gsap.to(cameraZRef.current, {
         z: targetZ,
-        duration: 1.4,
-        ease: 'power2.out'
+        duration: 1.6,
+        ease: 'power4.out'
       })
 
-      // Reset title
+      // 3. Tiêu đề chính xuất hiện mượt với độ nẩy nhẹ
       if (titleRef.current) {
         gsap.killTweensOf(titleRef.current)
-        gsap.set(titleRef.current, { opacity: 0, y: 20 })
-        gsap.to(titleRef.current, { opacity: 1, y: 0, duration: 0.8, delay: 0.3, ease: 'power2.out' })
+        gsap.set(titleRef.current, { opacity: 0, y: 35, scale: 0.95 })
+        gsap.to(titleRef.current, { 
+          opacity: 1, 
+          y: 0, 
+          scale: 1, 
+          duration: 1.0, 
+          delay: 0.4, 
+          ease: 'back.out(1.4)' 
+        })
       }
 
       // Đứng yên vị trí chuẩn ngay lập tức khi về Home
