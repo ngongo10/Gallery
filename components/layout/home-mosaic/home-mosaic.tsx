@@ -866,9 +866,28 @@ export function HomeMosaic() {
     handleTransitionOut()
   }
 
-  // No scale animation on hover — cursor frame is purely visual for previewing
-  const handleMouseEnter = (_i: number) => { /* intentionally empty */ }
-  const handleMouseLeave = (_i: number) => { /* intentionally empty */ }
+  // Hover scale & subtle tilt effect when mouse enters an image
+  const handleMouseEnter = (i: number) => {
+    const baseEl = baseImagesRef.current[i]
+    const maskedEl = maskedImagesRef.current[i]
+    if (baseEl) {
+      gsap.to(baseEl, { scale: 1.06, duration: 0.35, ease: 'power2.out', overwrite: 'auto' })
+    }
+    if (maskedEl) {
+      gsap.to(maskedEl, { scale: 1.06, duration: 0.35, ease: 'power2.out', overwrite: 'auto' })
+    }
+  }
+
+  const handleMouseLeave = (i: number) => {
+    const baseEl = baseImagesRef.current[i]
+    const maskedEl = maskedImagesRef.current[i]
+    if (baseEl) {
+      gsap.to(baseEl, { scale: 1.0, duration: 0.35, ease: 'power2.out', overwrite: 'auto' })
+    }
+    if (maskedEl) {
+      gsap.to(maskedEl, { scale: 1.0, duration: 0.35, ease: 'power2.out', overwrite: 'auto' })
+    }
+  }
 
   const renderImages = (isMasked: boolean) => {
     return ALL_IMAGES.map((img, i) => {
