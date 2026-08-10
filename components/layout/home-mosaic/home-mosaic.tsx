@@ -866,27 +866,55 @@ export function HomeMosaic() {
     handleTransitionOut()
   }
 
-  // Hover scale & subtle tilt effect when mouse enters an image
-  const handleMouseEnter = (i: number) => {
+  // Hiệu ứng Thị Sai 3D (Parallax Tilt & Shift) khi rê chuột qua từng tấm ảnh
+  const handleMouseMoveImage = (e: React.MouseEvent<HTMLDivElement>, i: number) => {
     const baseEl = baseImagesRef.current[i]
     const maskedEl = maskedImagesRef.current[i]
-    if (baseEl) {
-      gsap.to(baseEl, { scale: 1.06, duration: 0.35, ease: 'power2.out', overwrite: 'auto' })
+    if (!baseEl) return
+
+    const rect = baseEl.getBoundingClientRect()
+    // Tọa độ con trỏ chuột so với tâm tấm ảnh (từ -1 đến 1)
+    const relativeX = ((e.clientX - rect.left) / rect.width - 0.5) * 2
+    const relativeY = ((e.clientY - rect.top) / rect.height - 0.5) * 2
+
+    // Độ nghiêng xoay (Rotate Tilt) và dịch chuyển nhẹ (Shift)
+    const tiltX = -relativeY * 12 // Nghiêng theo trục X (độ)
+    const tiltY = relativeX * 12  // Nghiêng theo trục Y (độ)
+    const shiftX = relativeX * 8  // Dịch chuyển X (px)
+    const shiftY = relativeY * 8  // Dịch chuyển Y (px)
+
+    const targetStyle = {
+      rotateX: tiltX,
+      rotateY: tiltY,
+      x: shiftX,
+      y: shiftY,
+      duration: 0.3,
+      ease: 'power2.out',
+      overwrite: 'auto' as const
     }
-    if (maskedEl) {
-      gsap.to(maskedEl, { scale: 1.06, duration: 0.35, ease: 'power2.out', overwrite: 'auto' })
-    }
+
+    if (baseEl) gsap.to(baseEl, targetStyle)
+    if (maskedEl) gsap.to(maskedEl, targetStyle)
+  }
+
+  const handleMouseEnter = (_i: number) => {
+    // Event listener chính dùng handleMouseMoveImage để tính toán tọa độ thị sai
   }
 
   const handleMouseLeave = (i: number) => {
     const baseEl = baseImagesRef.current[i]
     const maskedEl = maskedImagesRef.current[i]
-    if (baseEl) {
-      gsap.to(baseEl, { scale: 1.0, duration: 0.35, ease: 'power2.out', overwrite: 'auto' })
+    const resetStyle = {
+      rotateX: 0,
+      rotateY: 0,
+      x: 0,
+      y: 0,
+      duration: 0.5,
+      ease: 'power2.out',
+      overwrite: 'auto' as const
     }
-    if (maskedEl) {
-      gsap.to(maskedEl, { scale: 1.0, duration: 0.35, ease: 'power2.out', overwrite: 'auto' })
-    }
+    if (baseEl) gsap.to(baseEl, resetStyle)
+    if (maskedEl) gsap.to(maskedEl, resetStyle)
   }
 
   const renderImages = (isMasked: boolean) => {
@@ -912,6 +940,7 @@ export function HomeMosaic() {
           } as React.CSSProperties}
           onClick={handleImageClick}
           onMouseEnter={!isMasked ? () => handleMouseEnter(i) : undefined}
+          onMouseMove={!isMasked ? (e) => handleMouseMoveImage(e, i) : undefined}
           onMouseLeave={!isMasked ? () => handleMouseLeave(i) : undefined}
         />
       )

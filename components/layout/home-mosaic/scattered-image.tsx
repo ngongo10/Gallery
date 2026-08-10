@@ -14,6 +14,7 @@ interface ScatteredImageProps {
   isMasked: boolean
   onClick?: MouseEventHandler<HTMLDivElement> | undefined
   onMouseEnter?: MouseEventHandler<HTMLDivElement> | undefined
+  onMouseMove?: MouseEventHandler<HTMLDivElement> | undefined
   onMouseLeave?: MouseEventHandler<HTMLDivElement> | undefined
   className?: string | undefined
   style?: CSSProperties | undefined
@@ -25,7 +26,8 @@ export function ScatteredImage({
   aspectRatio, 
   isMasked, 
   onClick, 
-  onMouseEnter, 
+  onMouseEnter,
+  onMouseMove,
   onMouseLeave,
   className,
   style
@@ -50,6 +52,7 @@ export function ScatteredImage({
       style={{ ...style, aspectRatio: aspectRatio }}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
+      onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
       {/* 1. SOLID COLOR BLOCK (Màu chủ đạo được nạp sẵn 100% từ màn hình Loading) */}
