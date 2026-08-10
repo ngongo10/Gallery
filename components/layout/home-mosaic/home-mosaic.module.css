@@ -38,7 +38,7 @@
 }
 
 .imageWrapper {
-  position: relative;
+  position: absolute;
   left: 50%; /* Center origin */
   top: 50%;
   transform-origin: center center;
@@ -46,6 +46,12 @@
   will-change: transform;
   cursor: pointer;
   z-index: 1;
+}
+
+/* Inner wrapper makes imagePlaceholder (position:absolute) anchor correctly */
+.imageWrapperInner {
+  position: relative;
+  display: inline-block;
 }
 
 @keyframes gridEntrance {

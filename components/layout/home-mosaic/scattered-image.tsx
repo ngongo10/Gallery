@@ -52,25 +52,27 @@ export function ScatteredImage({
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      {/* Ảnh ẩn (visibility:hidden) để container có chiều cao tự nhiên theo kích thước gốc của ảnh ở CẢ 2 LAYER */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img 
-        ref={imgRef}
-        src={src} 
-        alt="" 
-        decoding="async"
-        className={cn(s.image, loaded && s.loaded)}
-        style={{ visibility: isMasked ? 'visible' : 'hidden' }}
-        onLoad={() => setLoaded(true)}
-      />
-
-      {/* Layer 1: Khối màu chủ đạo phủ lên trên ảnh ẩn (chỉ hiện bên ngoài kính lúp) */}
-      {!isMasked && (
-        <div 
-          className={s.imagePlaceholder} 
-          style={{ backgroundColor: bgColor }}
+      <div className={s.imageWrapperInner}>
+        {/* Ảnh ẩn (visibility:hidden) để container có chiều cao tự nhiên của ảnh gốc ở cả 2 layer */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img 
+          ref={imgRef}
+          src={src} 
+          alt="" 
+          decoding="async"
+          className={cn(s.image, loaded && s.loaded)}
+          style={{ visibility: isMasked ? 'visible' : 'hidden' }}
+          onLoad={() => setLoaded(true)}
         />
-      )}
+
+        {/* Layer 1: Khối màu chủ đạo phủ lên trên ảnh ẩn (chỉ hiện bên ngoài kính lúp) */}
+        {!isMasked && (
+          <div 
+            className={s.imagePlaceholder} 
+            style={{ backgroundColor: bgColor }}
+          />
+        )}
+      </div>
     </div>
   )
 }
