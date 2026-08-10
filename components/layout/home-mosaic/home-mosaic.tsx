@@ -51,8 +51,8 @@ for (const series of portfolioData.series) {
     const img = images[idx]!;
     // Seed riêng biệt cho mỗi ảnh dựa trên series.id + index để tránh trùng
     const seed = hashString(series.id + '::' + idx);
-    // Tăng biên độ ngẫu nhiên từ 160px đến 420px để có ảnh to ảnh nhỏ rõ rệt
-    const w_px = 160 + pseudoRandom(seed) * 260;
+    // Biên độ kích thước thực tế lớn hơn (từ 220px đến 480px) để hiển thị ảnh & khối màu to rõ ràng đúng kích thước vốn có
+    const w_px = 220 + pseudoRandom(seed) * 260;
     const h_px = w_px / (img.aspectRatio || 1.5);
     // Tốc độ đàn hồi ngẫu nhiên cho từng ảnh để tạo hiệu ứng delay trôi nổi khác nhau khi cuộn
     const _lagSpeed = 0.05 + pseudoRandom(seed + 99) * 0.10;
