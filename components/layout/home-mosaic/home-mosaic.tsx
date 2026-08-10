@@ -799,6 +799,9 @@ export function HomeMosaic() {
     if (isLeavingPageRef.current) return
     isLeavingPageRef.current = true
 
+    // Báo page.tsx giữ HomeMosaic visible trong suốt animation
+    window.dispatchEvent(new Event('home-transition-start'))
+
     // Thu nhỏ nhẹ kính lúp + mờ tiêu đề
     gsap.to(maskSizeRef.current, { size: 0, duration: 0.25, ease: 'power2.inOut' })
     if (titleRef.current) {
@@ -815,6 +818,8 @@ export function HomeMosaic() {
       ease: 'power3.in',
       onComplete: () => {
         setRoute('detail')
+        // Báo page.tsx animation xong, có thể ẩn HomeMosaic
+        window.dispatchEvent(new Event('home-transition-done'))
       }
     })
   }

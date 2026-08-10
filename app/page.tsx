@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { usePortfolioStore } from '@/lib/store/portfolioStore'
 import { Loader } from '@/components/layout/loader/loader'
 import { HomeMosaic } from '@/components/layout/home-mosaic/home-mosaic'
@@ -14,22 +15,37 @@ import { Wrapper } from '@/components/layout/wrapper'
 export default function Page() {
   const currentRoute = usePortfolioStore((state) => state.currentRoute)
   const infoOpen = usePortfolioStore((state) => state.infoOpen)
+  // isLeaving: true khi HomeMosaic đang chạy animation rời đi, giữ visible cho đến khi xong
+  const [isLeaving, setIsLeaving] = useState(false)
 
-  // Disable Lenis on home (wheel-driven), enable on scrollable content views
+  useEffect(() => {
+    const onStartLeave = () => setIsLeaving(true)
+    const onFinishLeave = () => setIsLeaving(false)
+    window.addEventListener('home-transition-start', onStartLeave)
+    window.addEventListener('home-transition-done', onFinishLeave)
+    return () => {
+      window.removeEventListener('home-transition-start', onStartLeave)
+      window.removeEventListener('home-transition-done', onFinishLeave)
+    }
+  }, [])
+
   const enableLenis = currentRoute === 'detail' || currentRoute === 'shop' || currentRoute === 'product' || currentRoute === 'about'
+
+  // HomeMosaic phải hiển thị khi: đang ở home, hoặc đang trong animation chưa xong
+  const showHomeMosaic = currentRoute !== 'loader'
+  const homeMosaicVisible = currentRoute === 'home' || isLeaving
 
   return (
     <Wrapper lenis={enableLenis}>
       {currentRoute === 'loader' && <Loader />}
 
-      {/* HomeMosaic luôn ở trong DOM sau khi đã load, chỉ ẩn bằng CSS */}
-      {/* Dùng visibility thay display:none để RAF/GSAP vẫn animate khi ở route khác */}
-      {currentRoute !== 'loader' && (
+      {showHomeMosaic && (
         <div style={{
-          visibility: currentRoute === 'home' ? 'visible' : 'hidden',
-          pointerEvents: currentRoute === 'home' ? 'auto' : 'none',
+          visibility: homeMosaicVisible ? 'visible' : 'hidden',
+          pointerEvents: homeMosaicVisible && currentRoute === 'home' ? 'auto' : 'none',
           position: 'fixed',
-          inset: 0
+          inset: 0,
+          zIndex: isLeaving ? 10 : 0,
         }}>
           <HomeMosaic />
         </div>
@@ -39,11 +55,9 @@ export default function Page() {
       {currentRoute === 'shop' && <ShopGrid />}
       {currentRoute === 'product' && <ProductDetail />}
       {currentRoute === 'about' && <AboutContact />}
-      
-      {/* Overlays render independently of route */}
+
       {infoOpen && <InfoOverlay />}
       <MenuOverlay />
     </Wrapper>
   )
 }
-
