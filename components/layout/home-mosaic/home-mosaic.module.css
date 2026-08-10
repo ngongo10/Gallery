@@ -52,6 +52,8 @@
 .imageWrapperInner {
   position: relative;
   display: inline-block;
+  animation: gridEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: var(--entrance-delay, 0s);
 }
 
 @keyframes gridEntrance {
