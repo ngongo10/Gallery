@@ -29,27 +29,27 @@ function hashString(str: string) {
 }
 
 // Module-level tracking arrays for Collision Detection (reset per series)
-// Canvas ảo có kích thước vừa vặn tầm mắt màn hình
-const VIRTUAL_W = 2600;
-const VIRTUAL_H = 1600;
-const TABLE_X = VIRTUAL_W * 0.42; // ±1092px
-const TABLE_Y = VIRTUAL_H * 0.42; // ±672px
-const GAP = 150; // Khoảng cách xích xa nhau hợp lý giữa các bức ảnh (~4-5cm)
+// Canvas ảo có kích thước chuẩn vừa tầm mắt và thoáng đãng
+const VIRTUAL_W = 3200;
+const VIRTUAL_H = 2000;
+const TABLE_X = VIRTUAL_W * 0.44; // ±1408px
+const TABLE_Y = VIRTUAL_H * 0.44; // ±880px
+const GAP = 240; // Điểm cân bằng hoàn hảo: xích xa nhau vừa đủ thoáng, không đè không quá sát (~6-8cm)
 
-// --- PHASE 1: Tính toán vị trí hài hòa xung quanh TÂM CANVAS cho TỪNG ALBUM ---
+// --- PHASE 1: Tính toán vị trí hài hòa cân bằng cho TỪNG ALBUM ---
 type BoxEntry = { x: number; y: number; w: number; h: number };
 const SERIES_POSITIONS = new Map<string, BoxEntry[]>();
 
-// Các ảnh phân bố rải rác xung quanh khu vực tâm (tỉ lệ từ 0.25 đến 0.48 so với tâm)
+// Tỉ lệ bán kính 0.55 - 0.60: Vừa không dạt ra rìa biên xa tít, vừa không đứng sát nhụm lại ở tâm
 const SECTOR_OFFSETS = [
-  { xRatio: -0.45, yRatio: -0.42 }, // Trên trái
-  { xRatio:  0.0,  yRatio: -0.48 }, // Trên giữa
-  { xRatio:  0.45, yRatio: -0.42 }, // Trên phải
-  { xRatio: -0.48, yRatio:  0.05 }, // Giữa trái
-  { xRatio:  0.48, yRatio:  0.05 }, // Giữa phải
-  { xRatio: -0.45, yRatio:  0.45 }, // Dưới trái
-  { xRatio:  0.0,  yRatio:  0.48 }, // Dưới giữa
-  { xRatio:  0.45, yRatio:  0.45 }  // Dưới phải
+  { xRatio: -0.58, yRatio: -0.55 }, // Trên trái
+  { xRatio:  0.0,  yRatio: -0.60 }, // Trên giữa
+  { xRatio:  0.58, yRatio: -0.55 }, // Trên phải
+  { xRatio: -0.60, yRatio:  0.05 }, // Giữa trái
+  { xRatio:  0.60, yRatio:  0.05 }, // Giữa phải
+  { xRatio: -0.58, yRatio:  0.58 }, // Dưới trái
+  { xRatio:  0.0,  yRatio:  0.60 }, // Dưới giữa
+  { xRatio:  0.58, yRatio:  0.58 }  // Dưới phải
 ];
 
 for (const series of portfolioData.series) {
