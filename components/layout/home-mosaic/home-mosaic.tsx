@@ -797,31 +797,69 @@ export function HomeMosaic() {
 
   const handleTransitionOut = () => {
     if (isLeavingPageRef.current) return
+
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+
+    // 1. Đóng kính lúp + mờ tiêu đề
+    gsap.to(maskSizeRef.current, { size: 0, duration: 0.3, ease: 'power2.inOut' })
+    if (titleRef.current) {
+      gsap.to(titleRef.current, { opacity: 0, y: 30, duration: 0.3, ease: 'power2.in' })
+    }
+
+    // 2. Lưu frozenRelativeZ cho từng ảnh trước khi isLeaving = true
+    const targetCamZ = cameraZRef.current.z
+    const LOOP_DEPTH = portfolioData.series.length * CHAPTER_Z_SPACING
+    layoutPxRef.current.forEach((px, i) => {
+      if (!px) return
+      const layout = TUNNEL_LAYOUT[i]!
+      const baseChapterZ = -(layout.seriesIndex * CHAPTER_Z_SPACING)
+      const offset = Math.round((-targetCamZ - baseChapterZ) / LOOP_DEPTH) * LOOP_DEPTH
+      const absoluteZ = baseChapterZ + offset
+      px.frozenRelativeZ = absoluteZ + (px.currentCamZ ?? targetCamZ)
+    })
+
+    // 3. Bật cờ transition — RAF ticker chuyển sang UFO branch
     isLeavingPageRef.current = true
 
     // Báo page.tsx giữ HomeMosaic visible trong suốt animation
     window.dispatchEvent(new Event('home-transition-start'))
 
-    // Thu nhỏ nhẹ kính lúp + mờ tiêu đề
-    gsap.to(maskSizeRef.current, { size: 0, duration: 0.25, ease: 'power2.inOut' })
-    if (titleRef.current) {
-      gsap.to(titleRef.current, { opacity: 0, y: 20, duration: 0.25, ease: 'power2.in' })
-    }
-
-    // GSAP animate camera lùi trượt nhẹ cực mượt nhờ GPU layer
-    const ts = transitionStateRef.current
-    gsap.to(ts, {
-      ty: window.innerHeight * 0.8,
-      scale: 0.9,
-      opacity: 0,
-      duration: 0.45,
-      ease: 'power3.in',
+    // 4. GSAP Timeline UFO Suction Effect
+    const tl = gsap.timeline({
       onComplete: () => {
         setRoute('detail')
-        // Báo page.tsx animation xong, có thể ẩn HomeMosaic
         window.dispatchEvent(new Event('home-transition-done'))
       }
     })
+
+    // Camera pan xuống đáy màn hình
+    tl.to(lerpState.current, {
+      mouseX: vw / 2,
+      mouseY: vh + 500,
+      duration: 0.9,
+      ease: 'power2.in'
+    }, 0)
+
+    // Từng ảnh: thu về trung tâm X, hút xuống đáy Y với stagger theo khoảng cách tâm
+    layoutPxRef.current.forEach((px) => {
+      if (!px) return
+      const distFromCenter = Math.abs(px.x) / (vw * 0.5)
+      const stagger = distFromCenter * 0.15
+      tl.to(px, {
+        x: 0,
+        y: px.y + vh * 2.0,
+        duration: 0.75,
+        ease: 'power3.in'
+      }, stagger)
+    })
+
+    // Fade toàn bộ camera ra
+    tl.to(transitionStateRef.current, {
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.in'
+    }, 0.3)
   }
 
   const handleImageClick = () => {
