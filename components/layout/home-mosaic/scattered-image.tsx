@@ -35,11 +35,10 @@ export function ScatteredImage({
   const [loaded, setLoaded] = useState(false)
   const imgRef = useRef<HTMLImageElement>(null)
 
-  // Lấy màu chủ đạo đã được tính sẵn 100% trong quá trình Loading
+  // Lấy màu chủ đạo đã được tính sẵn trong quá trình Loading (dùng cho background placeholder)
   const bgColor = dominantColorMap.get(src) || '#262626'
 
   useEffect(() => {
-    // Check nếu ảnh HTML đã complete sẵn trong DOM (từ browser cache)
     if (imgRef.current?.complete) {
       setLoaded(true)
     }
@@ -48,35 +47,23 @@ export function ScatteredImage({
   return (
     <div 
       ref={ref}
-      className={cn(s.imageWrapper, className)}
-      style={{ ...style, aspectRatio: aspectRatio }}
+      className={cn(s.imageWrapper, className, isMasked && s.isMaskedLayer)}
+      style={{ ...style, aspectRatio: aspectRatio, backgroundColor: bgColor }}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      {/* 1. SOLID COLOR BLOCK (Màu chủ đạo được nạp sẵn 100% từ màn hình Loading) */}
-      {!isMasked && (
-        <div 
-          className={s.imagePlaceholder} 
-          style={{ backgroundColor: bgColor, opacity: 1 }} 
-        />
-      )}
-      
-      {/* 2. ACTUAL IMAGE (Only visible in Masked layer) */}
-      {isMasked && (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            ref={imgRef}
-            src={src} 
-            alt="" 
-            decoding="async"
-            className={cn(s.image, loaded && s.loaded, s.colorImg)} 
-            onLoad={() => setLoaded(true)}
-          />
-        </>
-      )}
+      {/* Hiển thị hình ảnh thật ở CẢ HÀI LAYER (Base Layer và Masked Layer kính lúp) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img 
+        ref={imgRef}
+        src={src} 
+        alt="" 
+        decoding="async"
+        className={cn(s.image, loaded && s.loaded, s.colorImg)} 
+        onLoad={() => setLoaded(true)}
+      />
     </div>
   )
 }
