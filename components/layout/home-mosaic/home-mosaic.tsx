@@ -936,6 +936,7 @@ export function HomeMosaic() {
           className={s.imageWrapper}
           style={{
             width: `${layout.width}vw`,
+            aspectRatio: String(img.aspectRatio || 1.5),
             '--entrance-delay': `${(i % 12) * 0.08}s`
           } as React.CSSProperties}
           onClick={handleImageClick}
