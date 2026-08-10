@@ -59,7 +59,6 @@
   }
 }
 
-/* The Solid Color Placeholder */
 .imagePlaceholder {
   position: absolute;
   inset: 0;
@@ -69,9 +68,11 @@
 }
 
 .image {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   will-change: transform, opacity;
 }
 

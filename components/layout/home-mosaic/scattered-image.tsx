@@ -23,6 +23,7 @@ interface ScatteredImageProps {
 export function ScatteredImage({ 
   ref,
   src, 
+  aspectRatio,
   isMasked, 
   onClick, 
   onMouseEnter,
@@ -43,11 +44,13 @@ export function ScatteredImage({
     }
   }, [src])
 
+  const validAr = aspectRatio && aspectRatio > 0 ? aspectRatio : 1.5
+
   return (
     <div 
       ref={ref}
       className={cn(s.imageWrapper, className, isMasked && s.isMaskedLayer)}
-      style={{ ...style, backgroundColor: bgColor }}
+      style={{ ...style, aspectRatio: String(validAr), backgroundColor: bgColor }}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
