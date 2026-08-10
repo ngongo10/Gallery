@@ -45,8 +45,8 @@ export function ScatteredImage({
   return (
     <div 
       ref={ref}
-      className={cn(s.imageWrapper, className, isMasked && s.isMaskedLayer)}
-      style={{ ...style, position: 'relative' }}
+      className={cn(s.imageWrapper, className)}
+      style={style}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}

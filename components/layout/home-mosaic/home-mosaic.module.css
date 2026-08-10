@@ -38,7 +38,7 @@
 }
 
 .imageWrapper {
-  position: absolute;
+  position: relative;
   left: 50%; /* Center origin */
   top: 50%;
   transform-origin: center center;
