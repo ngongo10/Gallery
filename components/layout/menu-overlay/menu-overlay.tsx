@@ -81,7 +81,7 @@ export function MenuOverlay() {
     >
       <div className={s.contentGrid}>
         {/* Left Column: Projects list */}
-        <div className={s.leftCol}>
+        <div className={s.leftCol} data-lenis-prevent>
           <nav className={s.nav}>
             {portfolioData.series.map((item) => {
               return (

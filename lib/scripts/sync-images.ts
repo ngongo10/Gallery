@@ -30,7 +30,8 @@ function scanImages() {
       let aspectRatio = 1.5
 
       try {
-        const dimensions = sizeOf(filePath)
+        const buffer = fs.readFileSync(filePath)
+        const dimensions = sizeOf(buffer)
         if (dimensions.width && dimensions.height) {
           aspectRatio = Number((dimensions.width / dimensions.height).toFixed(2))
         }
