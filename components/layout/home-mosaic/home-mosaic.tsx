@@ -322,17 +322,31 @@ export function HomeMosaic() {
         }
       })
 
-      // Mở kính lúp
-      maskSizeRef.current.size = 450
+      // Mở kính lúp từ 0 nở ra 450px khi vừa hoàn tất loader
+      maskSizeRef.current.size = 0
+      gsap.to(maskSizeRef.current, {
+        size: 450,
+        duration: 1.2,
+        ease: 'power3.out',
+        delay: 0.1
+      })
+
+      // Efffect camera z zoom vào nhẹ mượt mà
+      cameraZRef.current.z = targetZ - 600
+      gsap.to(cameraZRef.current, {
+        z: targetZ,
+        duration: 1.4,
+        ease: 'power2.out'
+      })
 
       // Reset title
       if (titleRef.current) {
         gsap.killTweensOf(titleRef.current)
-        gsap.set(titleRef.current, { opacity: 0 })
-        gsap.to(titleRef.current, { opacity: 1, duration: 0.6, delay: 0.3, ease: 'power2.out' })
+        gsap.set(titleRef.current, { opacity: 0, y: 20 })
+        gsap.to(titleRef.current, { opacity: 1, y: 0, duration: 0.8, delay: 0.3, ease: 'power2.out' })
       }
 
-      // Đứng yên vị trí chuẩn ngay lập tức khi về Home, không chạy animation trượt từ 100vh nữa
+      // Đứng yên vị trí chuẩn ngay lập tức khi về Home
       if (pageWrapperRef.current) {
         gsap.killTweensOf(pageWrapperRef.current)
         gsap.set(pageWrapperRef.current, { y: 0, opacity: 1 })
