@@ -70,7 +70,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
-    "@axe-core/playwright": "4.12.1",
+    "@axe-core/playwright": "4.13.0",
     "@biomejs/biome": "2.5.3",
     "@clack/prompts": "^1.6.0",
     "@csstools/postcss-global-data": "^4.0.0",
